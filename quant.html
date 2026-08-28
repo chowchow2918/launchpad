@@ -1,0 +1,3321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuantDesk</title>
+<meta name="description" content="A self-contained quantitative finance workbench: options pricing and greeks, strategy payoffs, portfolio optimisation, Monte Carlo, performance and risk analytics, and bond maths.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M6 22.5 12 14l5 5 8-11' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ---------- design tokens: light is the base, dark redefines only these ---- */
+:root{
+  color-scheme:light;
+  --page:#f9f9f7; --surface:#fcfcfb; --surface-2:#f2f2ef;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10); --border-2:rgba(11,11,11,0.16);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --good-text:#006300;
+  --accent:#2a78d6; --accent-soft:#e8f1fd;
+  --band-outer:#cde2fb; --band-inner:#9ec5f4;
+  --shadow:0 1px 2px rgba(11,11,11,.05),0 8px 24px rgba(11,11,11,.06);
+  --r:10px; --r-lg:14px;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232321;
+    --ink:#fff; --ink-2:#c3c2b7; --ink-muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10); --border-2:rgba(255,255,255,0.18);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --good-text:#0ca30c;
+    --accent:#3987e5; --accent-soft:#16283d;
+    --band-outer:#10305c; --band-inner:#1c5cab;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232321;
+  --ink:#fff; --ink-2:#c3c2b7; --ink-muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10); --border-2:rgba(255,255,255,0.18);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --good-text:#0ca30c;
+  --accent:#3987e5; --accent-soft:#16283d;
+  --band-outer:#10305c; --band-inner:#1c5cab;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--ink);font:14px/1.5 var(--sans);
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+
+/* ---------- shell ---------- */
+.top{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:1px solid var(--border)}
+.top-in{max-width:1440px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--accent);flex:none;
+  display:grid;place-items:center}
+.logo svg{width:19px;height:19px}
+.brand h1{font-size:16px;font-weight:650;letter-spacing:-.01em;line-height:1.2}
+.brand p{font-size:11.5px;color:var(--ink-muted);line-height:1.2}
+.top-sp{flex:1}
+.icon-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--ink-2)}
+.icon-btn:hover{background:var(--surface-2);color:var(--ink)}
+.icon-btn svg{width:17px;height:17px}
+
+.tabs{max-width:1440px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto;
+  scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:11px 14px;border:0;background:none;cursor:pointer;color:var(--ink-2);
+  font-size:13.5px;font-weight:500;white-space:nowrap;border-bottom:2px solid transparent;
+  margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+.wrap{max-width:1440px;margin:0 auto;padding:20px}
+.panel[hidden]{display:none}
+.layout{display:grid;grid-template-columns:322px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:1fr}}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.card:last-child{margin-bottom:0}
+.card-h{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.card-h h2{font-size:13.5px;font-weight:650;letter-spacing:-.01em}
+.card-h p{font-size:11.5px;color:var(--ink-muted)}
+.card-h .sp{flex:1}
+.side{position:sticky;top:104px}
+@media (max-width:980px){.side{position:static}}
+
+/* ---------- form controls ---------- */
+.field{margin-bottom:11px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:11.5px;font-weight:550;color:var(--ink-2);margin-bottom:4px}
+.field .hint{font-size:10.5px;color:var(--ink-muted);margin-top:3px;line-height:1.35}
+.inp{width:100%;padding:8px 10px;border:1px solid var(--border-2);border-radius:9px;
+  background:var(--surface);font-variant-numeric:tabular-nums;outline:none}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.inp[aria-invalid="true"]{border-color:var(--critical)}
+select.inp{cursor:pointer}
+textarea.inp{font-family:var(--mono);font-size:12px;resize:vertical;min-height:120px;
+  font-variant-numeric:normal}
+.suffixed{position:relative}
+.suffixed .sfx{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  font-size:11.5px;color:var(--ink-muted);pointer-events:none}
+.suffixed .inp{padding-right:30px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.seg{display:flex;background:var(--surface-2);border-radius:9px;padding:2px;gap:2px}
+.seg button{flex:1;padding:6px 8px;border:0;border-radius:7px;background:none;cursor:pointer;
+  font-size:12px;font-weight:550;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.btn{padding:8px 13px;border:1px solid var(--border-2);border-radius:9px;background:var(--surface);
+  cursor:pointer;font-size:12.5px;font-weight:550}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent);filter:brightness(1.07)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:5px 10px;border:1px solid var(--border-2);border-radius:99px;background:var(--surface);
+  cursor:pointer;font-size:11.5px;font-weight:500;color:var(--ink-2)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- stat tiles ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.stats-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:1180px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.stats,.stats-2{grid-template-columns:1fr}}
+.stat{background:var(--surface);padding:11px 12px}
+.stat .k{font-size:10.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--ink-muted);display:flex;align-items:center;gap:4px}
+.stat .v{font-size:20px;font-weight:640;letter-spacing:-.02em;margin-top:3px;line-height:1.15}
+.stat .s{font-size:11px;color:var(--ink-muted);margin-top:2px}
+.stat.hero .v{font-size:27px}
+.pos{color:var(--good-text)} .neg{color:var(--critical)}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+th{font-size:10.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--ink-muted);border-bottom-color:var(--border-2)}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+tbody tr:last-child td{border-bottom:0}
+.tbl-scroll{overflow-x:auto}
+.matrix input{width:100%;min-width:58px;padding:5px 7px;border:1px solid var(--border-2);
+  border-radius:6px;background:var(--surface);text-align:right;font-size:12px;
+  font-variant-numeric:tabular-nums;outline:none}
+.matrix input:focus{border-color:var(--accent)}
+.matrix input:disabled{background:var(--surface-2);color:var(--ink-muted);border-color:transparent}
+.matrix td,.matrix th{padding:3px 5px;border:0}
+.del-btn{border:0;background:none;cursor:pointer;color:var(--ink-muted);padding:2px 5px;
+  border-radius:6px;font-size:15px;line-height:1}
+.del-btn:hover{background:var(--surface-2);color:var(--critical)}
+
+/* ---------- charts ---------- */
+.chart-wrap{position:relative}
+.cv{display:block;width:100%;height:auto;overflow:visible}
+.cv .hit{cursor:crosshair}
+.tip{position:absolute;z-index:20;background:var(--surface);border:1px solid var(--border-2);
+  border-radius:9px;box-shadow:var(--shadow);padding:7px 9px;font-size:11.5px;pointer-events:none;
+  min-width:112px}
+.tip-h{font-weight:650;margin-bottom:4px;color:var(--ink)}
+.tip-r{display:flex;align-items:center;gap:6px;line-height:1.7;color:var(--ink-2)}
+.tip-r i{width:9px;height:9px;border-radius:3px;flex:none}
+.tip-r b{margin-left:auto;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 15px;margin-top:9px;padding-left:2px}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
+.lg i{width:10px;height:10px;border-radius:3px;flex:none}
+.lg-note{font-size:11px;color:var(--ink-muted)}
+.tbl{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.tbl summary{font-size:11.5px;color:var(--ink-muted);cursor:pointer;user-select:none;
+  list-style:none;display:inline-flex;align-items:center;gap:5px}
+.tbl summary::-webkit-details-marker{display:none}
+.tbl summary::before{content:"▸";font-size:9px}
+.tbl[open] summary::before{content:"▾"}
+.tbl summary:hover{color:var(--ink-2)}
+.tbl .tbl-scroll{max-height:260px;overflow:auto;margin-top:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:1180px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- misc ---------- */
+.note{background:var(--surface-2);border-radius:var(--r);padding:10px 12px;font-size:12px;
+  color:var(--ink-2);line-height:1.55}
+.note b{color:var(--ink);font-weight:600}
+.alert{display:flex;gap:8px;align-items:flex-start;border-radius:var(--r);padding:9px 11px;
+  font-size:12px;line-height:1.5;margin-bottom:12px;border:1px solid var(--border-2)}
+.alert svg{width:15px;height:15px;flex:none;margin-top:1px}
+.alert-warn{background:var(--surface-2);color:var(--ink-2)}
+.alert-warn svg{color:var(--warning)}
+.alert-err{background:var(--surface-2);color:var(--ink-2)}
+.alert-err svg{color:var(--critical)}
+.expl{margin-top:12px}
+.expl summary{font-size:11.5px;font-weight:550;color:var(--ink-2);cursor:pointer;
+  list-style:none;display:inline-flex;align-items:center;gap:5px}
+.expl summary::-webkit-details-marker{display:none}
+.expl summary::before{content:"▸";font-size:9px}
+.expl[open] summary::before{content:"▾"}
+.expl-body{font-size:12px;color:var(--ink-2);line-height:1.6;margin-top:8px;
+  padding-left:12px;border-left:2px solid var(--border)}
+.expl-body code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);
+  padding:1px 5px;border-radius:4px}
+.expl-body p{margin-bottom:7px}
+.expl-body p:last-child{margin-bottom:0}
+.foot{max-width:1440px;margin:0 auto;padding:22px 20px 34px;font-size:11.5px;
+  color:var(--ink-muted);line-height:1.6;border-top:1px solid var(--border);margin-top:8px}
+.legs th,.legs td{padding:5px 6px}
+.legs select,.legs input{width:100%;min-width:52px;max-width:150px;padding:5px 6px;border:1px solid var(--border-2);
+  border-radius:6px;background:var(--surface);font-size:12px;text-align:right;
+  font-variant-numeric:tabular-nums;outline:none}
+.legs select{text-align:left;cursor:pointer}
+.legs input:focus,.legs select:focus{border-color:var(--accent)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media print{.top,.tabs,.btn-row,.icon-btn{display:none}.card{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M6 22.5 12 14l5 5 8-11" stroke="#fff"
+        stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="brand">
+      <h1>QuantDesk</h1>
+      <p>Options · portfolios · simulation · risk</p>
+    </div>
+    <div class="top-sp"></div>
+    <button class="icon-btn" id="themeBtn" title="Switch theme" aria-label="Switch colour theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></svg>
+    </button>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Modules">
+    <button class="tab" role="tab" data-tab="options"  aria-selected="true">Options</button>
+    <button class="tab" role="tab" data-tab="strategy" aria-selected="false">Strategy builder</button>
+    <button class="tab" role="tab" data-tab="portfolio" aria-selected="false">Portfolio</button>
+    <button class="tab" role="tab" data-tab="mc"        aria-selected="false">Monte Carlo</button>
+    <button class="tab" role="tab" data-tab="perf"      aria-selected="false">Performance</button>
+    <button class="tab" role="tab" data-tab="bonds"     aria-selected="false">Bonds</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- ============================ OPTIONS ============================ -->
+<section class="panel" id="p-options" role="tabpanel" aria-label="Options pricer">
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Contract</h2></div>
+
+    <div class="field">
+      <label for="o-model">Pricing model</label>
+      <select class="inp" id="o-model">
+        <option value="bs">European — Black-Scholes</option>
+        <option value="us">American — binomial tree</option>
+      </select>
+      <div class="hint" id="o-model-hint">Closed form. Exercise only at expiry.</div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label for="o-spot">Spot price</label>
+        <div class="suffixed"><input class="inp" id="o-spot" type="number" step="any" value="100"><span class="sfx">$</span></div>
+      </div>
+      <div class="field"><label for="o-strike">Strike</label>
+        <div class="suffixed"><input class="inp" id="o-strike" type="number" step="any" value="100"><span class="sfx">$</span></div>
+      </div>
+    </div>
+
+    <div class="field"><label for="o-days">Days to expiry</label>
+      <input class="inp" id="o-days" type="number" step="1" min="0" value="90">
+      <div class="hint" id="o-years-hint">0.247 years</div>
+    </div>
+
+    <div class="field"><label for="o-vol">Volatility (annualised)</label>
+      <div class="suffixed"><input class="inp" id="o-vol" type="number" step="any" value="25"><span class="sfx">%</span></div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label for="o-rate">Risk-free rate</label>
+        <div class="suffixed"><input class="inp" id="o-rate" type="number" step="any" value="4.25"><span class="sfx">%</span></div>
+      </div>
+      <div class="field"><label for="o-div">Dividend yield</label>
+        <div class="suffixed"><input class="inp" id="o-div" type="number" step="any" value="0"><span class="sfx">%</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="o-atm">Reset to at-the-money</button>
+    </div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Implied volatility</h2>
+      <p>Back out the vol a quote implies</p></div>
+    <div class="row2">
+      <div class="field"><label for="o-mkt">Market price</label>
+        <div class="suffixed"><input class="inp" id="o-mkt" type="number" step="any" value="6.00"><span class="sfx">$</span></div>
+      </div>
+      <div class="field"><label for="o-mkt-type">Contract</label>
+        <select class="inp" id="o-mkt-type"><option value="call">Call</option><option value="put">Put</option></select>
+      </div>
+    </div>
+    <div id="o-iv-out"></div>
+    <div class="btn-row"><button class="btn btn-primary" id="o-iv-use">Use as volatility</button></div>
+   </div>
+  </div>
+
+  <div>
+   <div class="card">
+    <div class="card-h"><h2>Price &amp; greeks</h2><div class="sp"></div>
+      <p id="o-moneyness"></p></div>
+    <div id="o-alert"></div>
+    <div class="stats" id="o-prices"></div>
+    <div class="tbl-scroll" style="margin-top:14px"><table id="o-greeks"></table></div>
+    <details class="expl"><summary>How to read the greeks</summary>
+      <div class="expl-body">
+        <p><b>Delta</b> — change in option value per $1 move in the underlying. Also a rough
+        probability the option finishes in the money.</p>
+        <p><b>Gamma</b> — how fast delta itself moves. High gamma means your hedge goes stale quickly.</p>
+        <p><b>Vega</b> — value change per <b>1 percentage point</b> of implied volatility.</p>
+        <p><b>Theta</b> — value lost per calendar day, holding everything else fixed.</p>
+        <p><b>Rho</b> — value change per 1 percentage point move in the risk-free rate.</p>
+        <p><b>Vanna</b> — how delta shifts when volatility moves. <b>Volga</b> — how vega shifts
+        when volatility moves; both matter when you are short volatility.</p>
+      </div>
+    </details>
+   </div>
+
+   <div class="grid2">
+    <div class="card">
+      <div class="card-h"><h2>Value vs spot</h2><div class="sp"></div>
+        <select class="inp" id="o-value-pick" style="width:auto;padding:5px 8px;font-size:12px">
+          <option value="call">Call</option><option value="put">Put</option>
+        </select></div>
+      <div id="o-chart-value"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h2>Greek profile</h2><div class="sp"></div>
+        <select class="inp" id="o-greek-pick" style="width:auto;padding:5px 8px;font-size:12px">
+          <option value="delta">Delta</option><option value="gamma">Gamma</option>
+          <option value="vega">Vega</option><option value="theta">Theta</option>
+          <option value="rho">Rho</option>
+        </select></div>
+      <div id="o-chart-greek"></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ STRATEGY ============================ -->
+<section class="panel" id="p-strategy" role="tabpanel" aria-label="Strategy builder" hidden>
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Market</h2></div>
+    <div class="row2">
+      <div class="field"><label for="s-spot">Spot price</label>
+        <div class="suffixed"><input class="inp" id="s-spot" type="number" step="any" value="100"><span class="sfx">$</span></div></div>
+      <div class="field"><label for="s-days">Days to expiry</label>
+        <input class="inp" id="s-days" type="number" step="1" min="0" value="45"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="s-vol">Volatility</label>
+        <div class="suffixed"><input class="inp" id="s-vol" type="number" step="any" value="28"><span class="sfx">%</span></div></div>
+      <div class="field"><label for="s-rate">Risk-free</label>
+        <div class="suffixed"><input class="inp" id="s-rate" type="number" step="any" value="4.25"><span class="sfx">%</span></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="s-div">Dividend yield</label>
+        <div class="suffixed"><input class="inp" id="s-div" type="number" step="any" value="0"><span class="sfx">%</span></div></div>
+      <div class="field"><label for="s-mult">Contract size</label>
+        <input class="inp" id="s-mult" type="number" step="1" min="1" value="100">
+      </div>
+    </div>
+    <div class="hint" style="margin-top:6px">Premiums are theoretical Black-Scholes values at
+      the parameters above, so the payoff reflects fair value rather than a live quote.</div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Presets</h2></div>
+    <div class="chips" id="s-presets"></div>
+   </div>
+  </div>
+
+  <div>
+   <div class="card">
+    <div class="card-h"><h2 id="s-title">Legs</h2><div class="sp"></div>
+      <button class="btn" id="s-add">Add leg</button></div>
+    <div class="tbl-scroll"><table class="legs" id="s-legs"></table></div>
+    <div id="s-alert" style="margin-top:12px"></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Position summary</h2></div>
+    <div class="stats" id="s-stats"></div>
+    <div class="tbl-scroll" style="margin-top:14px"><table id="s-greeks"></table></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Profit &amp; loss vs spot at expiry</h2>
+      <p>Whole position, including premium paid or received</p></div>
+    <div id="s-chart"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ PORTFOLIO ============================ -->
+<section class="panel" id="p-portfolio" role="tabpanel" aria-label="Portfolio optimiser" hidden>
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Settings</h2></div>
+    <div class="field"><label for="pf-rf">Risk-free rate</label>
+      <div class="suffixed"><input class="inp" id="pf-rf" type="number" step="any" value="4.25"><span class="sfx">%</span></div>
+      <div class="hint">Used for Sharpe ratios and the tangency portfolio.</div>
+    </div>
+    <div class="field"><label>Constraint</label>
+      <div class="seg" id="pf-constraint">
+        <button data-v="long" aria-pressed="true">Long only</button>
+        <button data-v="short" aria-pressed="false">Allow shorting</button>
+      </div>
+      <div class="hint" id="pf-constraint-hint">Weights are held between 0% and 100%.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="pf-example">Load example</button>
+      <button class="btn" id="pf-equal">Equal weight</button>
+    </div>
+   </div>
+  </div>
+
+  <div>
+   <div class="card">
+    <div class="card-h"><h2>Assets</h2><div class="sp"></div>
+      <button class="btn" id="pf-add">Add asset</button></div>
+    <div class="tbl-scroll"><table class="matrix" id="pf-assets"></table></div>
+    <div id="pf-weight-alert" style="margin-top:10px"></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Correlations</h2>
+      <p>How strongly each pair moves together, from −1 to 1</p></div>
+    <div class="tbl-scroll"><table class="matrix" id="pf-corr"></table></div>
+    <div id="pf-corr-alert" style="margin-top:10px"></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Your portfolio</h2><p>At the weights above</p></div>
+    <div class="stats" id="pf-stats"></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Efficient frontier</h2>
+      <p>Every portfolio that gives the most return for its risk</p></div>
+    <div id="pf-chart"></div>
+   </div>
+
+   <div class="card">
+    <div class="card-h"><h2>Optimal portfolios</h2></div>
+    <div class="tbl-scroll"><table id="pf-optimal"></table></div>
+    <details class="expl"><summary>What these two portfolios are</summary>
+      <div class="expl-body">
+        <p><b>Minimum variance</b> is the least volatile mix available, regardless of return.
+        It is the leftmost point of the frontier.</p>
+        <p><b>Maximum Sharpe</b> (the tangency portfolio) gives the most excess return per unit
+        of risk. Combining it with cash traces the straight capital allocation line, which sits
+        above the curve everywhere except where it touches.</p>
+        <p>Both are solved from your expected returns, volatilities and correlations — the answers
+        are only as good as those three inputs, and expected returns are notoriously hard to
+        estimate.</p>
+      </div>
+    </details>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ MONTE CARLO ============================ -->
+<section class="panel" id="p-mc" role="tabpanel" aria-label="Monte Carlo simulation" hidden>
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Simulation</h2></div>
+    <div class="field"><label for="mc-start">Starting value</label>
+      <div class="suffixed"><input class="inp" id="mc-start" type="number" step="any" value="10000"><span class="sfx">$</span></div></div>
+    <div class="row2">
+      <div class="field"><label for="mc-drift">Expected return</label>
+        <div class="suffixed"><input class="inp" id="mc-drift" type="number" step="any" value="8"><span class="sfx">%</span></div></div>
+      <div class="field"><label for="mc-vol">Volatility</label>
+        <div class="suffixed"><input class="inp" id="mc-vol" type="number" step="any" value="16"><span class="sfx">%</span></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="mc-years">Years</label>
+        <input class="inp" id="mc-years" type="number" step="any" min="0.1" value="20"></div>
+      <div class="field"><label for="mc-freq">Steps per year</label>
+        <select class="inp" id="mc-freq">
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="52">Weekly</option>
+          <option value="252">Daily</option>
+        </select></div>
+    </div>
+    <div class="field"><label for="mc-contrib">Contribution per step</label>
+      <div class="suffixed"><input class="inp" id="mc-contrib" type="number" step="any" value="0"><span class="sfx">$</span></div>
+      <div class="hint">Added at the end of each step. Leave at 0 to model a single lump sum.</div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="mc-paths">Paths</label>
+        <select class="inp" id="mc-paths">
+          <option value="1000">1,000</option>
+          <option value="5000" selected>5,000</option>
+          <option value="20000">20,000</option>
+          <option value="50000">50,000</option>
+        </select></div>
+      <div class="field"><label for="mc-seed">Seed</label>
+        <input class="inp" id="mc-seed" type="number" step="1" value="42">
+      </div>
+    </div>
+    <div class="hint">The seed makes a run reproducible — same seed, same paths.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="mc-run">Run simulation</button>
+      <button class="btn" id="mc-reseed">New seed</button>
+    </div>
+   </div>
+  </div>
+
+  <div>
+   <div class="card">
+    <div class="card-h"><h2>Outcomes after <span id="mc-horizon">20</span> years</h2><div class="sp"></div>
+      <p id="mc-meta"></p></div>
+    <div class="stats" id="mc-stats"></div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Range of outcomes over time</h2>
+      <p>Percentile bands across all simulated paths</p></div>
+    <div id="mc-chart-fan"></div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Distribution of final values</h2></div>
+    <div id="mc-chart-hist"></div>
+    <details class="expl"><summary>What this model assumes</summary>
+      <div class="expl-body">
+        <p>Returns follow geometric Brownian motion: continuously compounded returns are normally
+        distributed and independent from step to step. Volatility is constant.</p>
+        <p>Real markets are fatter-tailed than this, and crashes cluster rather than arriving
+        independently, so treat the low percentiles as optimistic rather than conservative.</p>
+        <p>Because growth is multiplicative, the <b>median</b> ends up below the mean — a few very
+        good paths drag the average up. The median is the more honest "typical" outcome.</p>
+      </div>
+    </details>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ PERFORMANCE ============================ -->
+<section class="panel" id="p-perf" role="tabpanel" aria-label="Performance and risk" hidden>
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Your data</h2></div>
+    <div class="field"><label for="pe-data">Series</label>
+      <textarea class="inp" id="pe-data" spellcheck="false"
+        placeholder="One value per line, or comma separated"></textarea>
+      <div class="hint" id="pe-count">—</div>
+    </div>
+    <div class="field"><label>These numbers are</label>
+      <div class="seg" id="pe-kind">
+        <button data-v="price" aria-pressed="true">Prices</button>
+        <button data-v="return" aria-pressed="false">Returns %</button>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="pe-freq">Frequency</label>
+        <select class="inp" id="pe-freq">
+          <option value="252">Daily</option>
+          <option value="52">Weekly</option>
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="1">Annual</option>
+        </select></div>
+      <div class="field"><label for="pe-rf">Risk-free</label>
+        <div class="suffixed"><input class="inp" id="pe-rf" type="number" step="any" value="4.25"><span class="sfx">%</span></div></div>
+    </div>
+    <div class="field"><label for="pe-bench">Benchmark (optional)</label>
+      <textarea class="inp" id="pe-bench" spellcheck="false" style="min-height:88px"
+        placeholder="Same length, same units"></textarea>
+      <div class="hint" id="pe-bench-count">Add a benchmark for beta, alpha and tracking error.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="pe-example">Load example</button>
+      <button class="btn" id="pe-clear">Clear</button>
+    </div>
+   </div>
+  </div>
+
+  <div>
+   <div id="pe-alert"></div>
+   <div class="card">
+    <div class="card-h"><h2>Return &amp; risk</h2><div class="sp"></div><p id="pe-meta"></p></div>
+    <div class="stats" id="pe-stats"></div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Growth of 100</h2><p>Cumulative, rebased to 100 at the start</p></div>
+    <div id="pe-chart-curve"></div>
+   </div>
+   <div class="grid2">
+    <div class="card">
+      <div class="card-h"><h2>Drawdown</h2><p>Distance below the previous peak</p></div>
+      <div id="pe-chart-dd"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h2>Distribution of returns</h2><p>With value-at-risk cutoffs</p></div>
+      <div id="pe-chart-hist"></div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Tail risk</h2>
+      <p>How bad a single period gets</p></div>
+    <div class="tbl-scroll"><table id="pe-var"></table></div>
+    <details class="expl"><summary>Reading value-at-risk</summary>
+      <div class="expl-body">
+        <p><b>VaR 95%</b> is the loss that a bad period exceeds only 5% of the time. It says
+        nothing about how bad things get beyond that point.</p>
+        <p><b>CVaR</b> (expected shortfall) is the average loss <i>given</i> that you are in that
+        worst 5% — the number that matters when the tail actually arrives.</p>
+        <p><b>Historical</b> reads the cutoff straight off your data. <b>Parametric</b> assumes
+        returns are normal. When the parametric figure is materially smaller, your data has
+        fatter tails than a normal distribution, and the historical number is the one to trust.</p>
+      </div>
+    </details>
+   </div>
+   <div class="card" id="pe-capm-card" hidden>
+    <div class="card-h"><h2>Versus benchmark</h2></div>
+    <div class="stats" id="pe-capm"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ BONDS ============================ -->
+<section class="panel" id="p-bonds" role="tabpanel" aria-label="Bond analytics" hidden>
+ <div class="layout">
+  <div class="side">
+   <div class="card">
+    <div class="card-h"><h2>Bond</h2></div>
+    <div class="row2">
+      <div class="field"><label for="b-face">Face value</label>
+        <div class="suffixed"><input class="inp" id="b-face" type="number" step="any" value="1000"><span class="sfx">$</span></div></div>
+      <div class="field"><label for="b-coupon">Coupon rate</label>
+        <div class="suffixed"><input class="inp" id="b-coupon" type="number" step="any" value="5"><span class="sfx">%</span></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="b-years">Years to maturity</label>
+        <input class="inp" id="b-years" type="number" step="any" min="0.01" value="10"></div>
+      <div class="field"><label for="b-freq">Coupons per year</label>
+        <select class="inp" id="b-freq">
+          <option value="1">Annual</option>
+          <option value="2" selected>Semiannual</option>
+          <option value="4">Quarterly</option>
+          <option value="12">Monthly</option>
+        </select></div>
+    </div>
+    <div class="field"><label>Solve for</label>
+      <div class="seg" id="b-mode">
+        <button data-v="price" aria-pressed="true">Price from yield</button>
+        <button data-v="yield" aria-pressed="false">Yield from price</button>
+      </div>
+    </div>
+    <div class="field" id="b-ytm-field"><label for="b-ytm">Yield to maturity</label>
+      <div class="suffixed"><input class="inp" id="b-ytm" type="number" step="any" value="6"><span class="sfx">%</span></div></div>
+    <div class="field" id="b-price-field" hidden><label for="b-price">Market price</label>
+      <div class="suffixed"><input class="inp" id="b-price" type="number" step="any" value="925.61"><span class="sfx">$</span></div></div>
+    <div class="field"><label for="b-shift">Yield shock for scenarios</label>
+      <div class="suffixed"><input class="inp" id="b-shift" type="number" step="any" value="100"><span class="sfx">bp</span></div></div>
+   </div>
+  </div>
+
+  <div>
+   <div id="b-alert"></div>
+   <div class="card">
+    <div class="card-h"><h2>Valuation</h2><div class="sp"></div><p id="b-meta"></p></div>
+    <div class="stats" id="b-stats"></div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Interest-rate sensitivity</h2>
+      <p>What a move in yields does to the price</p></div>
+    <div class="tbl-scroll"><table id="b-scen"></table></div>
+    <details class="expl"><summary>Duration, convexity and DV01</summary>
+      <div class="expl-body">
+        <p><b>Modified duration</b> is the percentage price fall for a 1 percentage point rise in
+        yield — the first-order estimate of interest-rate risk.</p>
+        <p><b>Convexity</b> is the curvature duration misses. Because it is positive for an
+        ordinary bond, duration alone overstates losses when yields rise and understates gains
+        when they fall.</p>
+        <p><b>DV01</b> is the dollar change in price for a 1 basis point move — the number a desk
+        hedges against.</p>
+        <p>The table below compares the duration-only estimate with the full repricing, so you can
+        see exactly where the straight-line approximation breaks down.</p>
+      </div>
+    </details>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Price versus yield</h2><p>The curve duration approximates</p></div>
+    <div id="b-chart"></div>
+   </div>
+   <div class="card">
+    <div class="card-h"><h2>Cash flows</h2><div class="sp"></div><p id="b-cf-meta"></p></div>
+    <div class="tbl-scroll" style="max-height:320px"><table id="b-cf"></table></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p><b>QuantDesk</b> — a single self-contained HTML file. Nothing is uploaded; every number is
+  computed in your browser, and it works offline.</p>
+  <p style="margin-top:6px">For education and analysis. Model output is not investment advice, and
+  every figure here depends entirely on the assumptions you feed it.</p>
+</footer>
+<script>
+/* ============================================================================
+   QuantDesk - math core
+   Pure functions, no DOM. Everything annualised unless stated otherwise.
+   Rates and vols are passed as decimals (0.05 = 5%).
+   ========================================================================== */
+var Q = (function () {
+  'use strict';
+
+  /* ---------- statistics primitives ---------------------------------- */
+
+  var SQRT2PI = Math.sqrt(2 * Math.PI);
+
+  function npdf(x) { return Math.exp(-0.5 * x * x) / SQRT2PI; }
+
+  // Hart's algorithm: |error| < 1e-15 across the useful range.
+  function ncdf(x) {
+    var z = Math.abs(x), c;
+    if (z > 37) {
+      c = 0;
+    } else {
+      var e = Math.exp(-z * z / 2), b, d;
+      if (z < 7.07106781186547) {
+        b = 0.0352624965998911 * z + 0.700383064443688;
+        b = b * z + 6.37396220353165;
+        b = b * z + 33.912866078383;
+        b = b * z + 112.079291497871;
+        b = b * z + 221.213596169931;
+        b = b * z + 220.206867912376;
+        d = 0.0883883476483184 * z + 1.75566716318264;
+        d = d * z + 16.064177579207;
+        d = d * z + 86.7807322029461;
+        d = d * z + 296.564248779674;
+        d = d * z + 637.333633378831;
+        d = d * z + 793.826512519948;
+        d = d * z + 440.413735824752;
+        c = e * b / d;
+      } else {
+        b = z + 0.65;
+        b = z + 4 / b; b = z + 3 / b; b = z + 2 / b; b = z + 1 / b;
+        c = e / (b * 2.506628274631);
+      }
+    }
+    return x > 0 ? 1 - c : c;
+  }
+
+  // Acklam's inverse normal CDF, refined by one Halley step (~1e-15).
+  function ninv(p) {
+    if (!(p > 0 && p < 1)) return p <= 0 ? -Infinity : Infinity;
+    var a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02,
+             1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00],
+        b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02,
+             6.680131188771972e+01, -1.328068155288572e+01],
+        c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00,
+             -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00],
+        d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
+             3.754408661907416e+00];
+    var pl = 0.02425, x;
+    if (p < pl) {
+      var q = Math.sqrt(-2 * Math.log(p));
+      x = (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) /
+          ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+    } else if (p <= 1 - pl) {
+      var q2 = p - 0.5, r = q2 * q2;
+      x = (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5]) * q2 /
+          (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+    } else {
+      var q3 = Math.sqrt(-2 * Math.log(1 - p));
+      x = -(((((c[0]*q3+c[1])*q3+c[2])*q3+c[3])*q3+c[4])*q3+c[5]) /
+           ((((d[0]*q3+d[1])*q3+d[2])*q3+d[3])*q3+1);
+    }
+    var e = ncdf(x) - p, u = e * SQRT2PI * Math.exp(x * x / 2);
+    return x - u / (1 + x * u / 2);
+  }
+
+  function mean(a) {
+    if (!a.length) return NaN;
+    var s = 0; for (var i = 0; i < a.length; i++) s += a[i];
+    return s / a.length;
+  }
+
+  // Sample (n-1) standard deviation.
+  function stdev(a) {
+    var n = a.length; if (n < 2) return NaN;
+    var m = mean(a), s = 0;
+    for (var i = 0; i < n; i++) { var d = a[i] - m; s += d * d; }
+    return Math.sqrt(s / (n - 1));
+  }
+
+  function skewness(a) {
+    var n = a.length; if (n < 3) return NaN;
+    var m = mean(a), s = stdev(a), t = 0;
+    for (var i = 0; i < n; i++) t += Math.pow((a[i] - m) / s, 3);
+    return n / ((n - 1) * (n - 2)) * t;
+  }
+
+  // Excess kurtosis (0 = normal).
+  function kurtosis(a) {
+    var n = a.length; if (n < 4) return NaN;
+    var m = mean(a), s = stdev(a), t = 0;
+    for (var i = 0; i < n; i++) t += Math.pow((a[i] - m) / s, 4);
+    return n * (n + 1) / ((n - 1) * (n - 2) * (n - 3)) * t -
+           3 * (n - 1) * (n - 1) / ((n - 2) * (n - 3));
+  }
+
+  function correlation(x, y) {
+    var n = Math.min(x.length, y.length); if (n < 2) return NaN;
+    var mx = mean(x.slice(0, n)), my = mean(y.slice(0, n)), sxy = 0, sxx = 0, syy = 0;
+    for (var i = 0; i < n; i++) {
+      var dx = x[i] - mx, dy = y[i] - my;
+      sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+    }
+    return sxy / Math.sqrt(sxx * syy);
+  }
+
+  // Linear interpolation percentile (same convention as numpy's default).
+  function quantile(sorted, p) {
+    var n = sorted.length; if (!n) return NaN;
+    if (n === 1) return sorted[0];
+    var h = (n - 1) * p, lo = Math.floor(h), hi = Math.ceil(h);
+    return sorted[lo] + (h - lo) * (sorted[hi] - sorted[lo]);
+  }
+
+  /* ---------- random numbers (seeded, so runs are reproducible) -------- */
+
+  function rng(seed) {
+    var s = seed >>> 0 || 1;
+    return function () {
+      s |= 0; s = s + 0x6D2B79F5 | 0;
+      var t = Math.imul(s ^ s >>> 15, 1 | s);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // Box-Muller, cached second draw.
+  function gaussian(u) {
+    var spare = null;
+    return function () {
+      if (spare !== null) { var v = spare; spare = null; return v; }
+      var a, b, s;
+      do { a = 2 * u() - 1; b = 2 * u() - 1; s = a * a + b * b; }
+      while (s >= 1 || s === 0);
+      var m = Math.sqrt(-2 * Math.log(s) / s);
+      spare = b * m;
+      return a * m;
+    };
+  }
+
+  /* ---------- Black-Scholes-Merton ------------------------------------ */
+
+  // S spot, K strike, T years, r risk-free, q dividend yield, v vol.
+  // type: 'call' | 'put'. Returns price plus the full greek set.
+  // vega/rho/vanna/volga are quoted per 1 percentage point of vol/rate,
+  // theta per calendar day - the units traders actually use.
+  function bsm(S, K, T, r, q, v, type) {
+    var call = type !== 'put';
+
+    // Expiry (or a zero-vol degenerate) collapses to discounted intrinsic.
+    if (!(T > 0) || !(v > 0)) {
+      var fwd = S * Math.exp(-q * T), kd = K * Math.exp(-r * T);
+      var intr = call ? Math.max(fwd - kd, 0) : Math.max(kd - fwd, 0);
+      var itm = call ? (S > K) : (S < K);
+      return {
+        price: intr, delta: itm ? (call ? 1 : -1) : 0, gamma: 0, vega: 0,
+        theta: 0, rho: 0, vanna: 0, volga: 0, d1: NaN, d2: NaN
+      };
+    }
+
+    var sq = v * Math.sqrt(T),
+        d1 = (Math.log(S / K) + (r - q + v * v / 2) * T) / sq,
+        d2 = d1 - sq,
+        dq = Math.exp(-q * T),
+        dr = Math.exp(-r * T),
+        nd1 = npdf(d1),
+        price, delta, theta, rho;
+
+    if (call) {
+      price = S * dq * ncdf(d1) - K * dr * ncdf(d2);
+      delta = dq * ncdf(d1);
+      theta = -S * dq * nd1 * v / (2 * Math.sqrt(T))
+              - r * K * dr * ncdf(d2) + q * S * dq * ncdf(d1);
+      rho = K * T * dr * ncdf(d2);
+    } else {
+      price = K * dr * ncdf(-d2) - S * dq * ncdf(-d1);
+      delta = dq * (ncdf(d1) - 1);
+      theta = -S * dq * nd1 * v / (2 * Math.sqrt(T))
+              + r * K * dr * ncdf(-d2) - q * S * dq * ncdf(-d1);
+      rho = -K * T * dr * ncdf(-d2);
+    }
+
+    var vega = S * dq * nd1 * Math.sqrt(T);
+    return {
+      price: price,
+      delta: delta,
+      gamma: dq * nd1 / (S * sq),
+      vega: vega / 100,
+      theta: theta / 365,
+      rho: rho / 100,
+      vanna: (-dq * nd1 * d2 / v) / 100,
+      volga: (vega * d1 * d2 / v) / 100,
+      d1: d1, d2: d2
+    };
+  }
+
+  /* ---------- Cox-Ross-Rubinstein binomial (handles early exercise) ---- */
+
+  function crr(S, K, T, r, q, v, type, american, steps) {
+    steps = steps || 400;
+    var call = type !== 'put';
+    if (!(T > 0) || !(v > 0)) return Math.max(call ? S - K : K - S, 0);
+
+    var dt = T / steps,
+        u = Math.exp(v * Math.sqrt(dt)),
+        d = 1 / u,
+        disc = Math.exp(-r * dt),
+        p = (Math.exp((r - q) * dt) - d) / (u - d);
+
+    // A vol too small for the step size pushes p outside [0,1]; fall back.
+    if (!(p >= 0 && p <= 1)) return bsm(S, K, T, r, q, v, type).price;
+
+    // Broadie-Detemple smoothing: seed the layer one step before expiry with
+    // closed-form European values instead of the kinked payoff. The kink at
+    // the strike is what makes a raw tree converge slowly and oscillate, and
+    // an American call could otherwise print below its European floor.
+    var val = new Float64Array(steps + 1), i, j, last = steps - 1;
+    if (last < 0) return Math.max(call ? S - K : K - S, 0);
+    for (i = 0; i <= last; i++) {
+      var sN = S * Math.pow(u, 2 * i - last);
+      val[i] = bsm(sN, K, dt, r, q, v, type).price;
+      if (american) {
+        var exN = call ? sN - K : K - sN;
+        if (exN > val[i]) val[i] = exN;
+      }
+    }
+    for (j = last - 1; j >= 0; j--) {
+      for (i = 0; i <= j; i++) {
+        val[i] = disc * (p * val[i + 1] + (1 - p) * val[i]);
+        if (american) {
+          var s = S * Math.pow(u, 2 * i - j);
+          var ex = call ? s - K : K - s;
+          if (ex > val[i]) val[i] = ex;
+        }
+      }
+    }
+    // Holding an American option to expiry is always available, so its
+    // European twin is a hard lower bound. Enforcing it removes the last of
+    // the tree's grid noise, which would otherwise let the American price
+    // print a hair under the European one.
+    if (american) {
+      var euro = bsm(S, K, T, r, q, v, type).price;
+      if (euro > val[0]) return euro;
+    }
+    return val[0];
+  }
+
+  // Greeks for the binomial tree by central difference - the tree has no
+  // closed form, and bumping keeps American and European on one interface.
+  function crrGreeks(S, K, T, r, q, v, type, american, steps) {
+    var hS = Math.max(S * 1e-3, 1e-6), hv = 1e-4, hT = Math.min(1 / 365, T / 2), hr = 1e-4;
+    var f = function (s, t, vv, rr) { return crr(s, K, t, rr, q, vv, type, american, steps); };
+    var base = f(S, T, v, r),
+        up = f(S + hS, T, v, r),
+        dn = f(S - hS, T, v, r);
+    return {
+      price: base,
+      delta: (up - dn) / (2 * hS),
+      gamma: (up - 2 * base + dn) / (hS * hS),
+      vega: (f(S, T, v + hv, r) - f(S, T, v - hv, r)) / (2 * hv) / 100,
+      theta: (f(S, T - hT, v, r) - base) / (hT * 365),
+      rho: (f(S, T, v, r + hr) - f(S, T, v, r - hr)) / (2 * hr) / 100,
+      vanna: NaN, volga: NaN, d1: NaN, d2: NaN
+    };
+  }
+
+  /* ---------- implied volatility -------------------------------------- */
+
+  // Newton on vega with a bisection safety net. Returns null when the quote
+  // sits outside the no-arbitrage band (no vol can reproduce it).
+  function impliedVol(price, S, K, T, r, q, type) {
+    if (!(T > 0) || !(price > 0)) return null;
+    var call = type !== 'put',
+        dq = Math.exp(-q * T), dr = Math.exp(-r * T),
+        lo = call ? Math.max(S * dq - K * dr, 0) : Math.max(K * dr - S * dq, 0),
+        hi = call ? S * dq : K * dr;
+    if (price < lo - 1e-10 || price > hi + 1e-10) return null;
+
+    var v = Math.sqrt(2 * Math.abs(Math.log(S / K) + (r - q) * T) / T) || 0.3;
+    v = Math.min(Math.max(v, 0.02), 3);
+    for (var i = 0; i < 60; i++) {
+      var o = bsm(S, K, T, r, q, v, type),
+          diff = o.price - price,
+          vega = o.vega * 100;
+      if (Math.abs(diff) < 1e-9) return v;
+      if (!(vega > 1e-10)) break;
+      var step = diff / vega;
+      if (Math.abs(step) > 1) step = Math.sign(step);
+      var next = v - step;
+      if (!(next > 1e-6 && next < 10)) break;
+      v = next;
+    }
+    var a = 1e-6, b = 10;
+    if (bsm(S, K, T, r, q, b, type).price < price) return null;
+    for (var k = 0; k < 200; k++) {
+      var m = (a + b) / 2;
+      if (bsm(S, K, T, r, q, m, type).price > price) b = m; else a = m;
+    }
+    return (a + b) / 2;
+  }
+
+  /* ---------- linear algebra (small dense matrices) -------------------- */
+
+  function matInv(A) {
+    var n = A.length, i, j, k,
+        M = A.map(function (row, ri) {
+          return row.concat(row.map(function (_, ci) { return ri === ci ? 1 : 0; }));
+        });
+    for (i = 0; i < n; i++) {
+      var piv = i;
+      for (k = i + 1; k < n; k++) if (Math.abs(M[k][i]) > Math.abs(M[piv][i])) piv = k;
+      if (Math.abs(M[piv][i]) < 1e-12) return null;   // singular
+      var t = M[i]; M[i] = M[piv]; M[piv] = t;
+      var pv = M[i][i];
+      for (j = 0; j < 2 * n; j++) M[i][j] /= pv;
+      for (k = 0; k < n; k++) {
+        if (k === i) continue;
+        var f = M[k][i];
+        if (f === 0) continue;
+        for (j = 0; j < 2 * n; j++) M[k][j] -= f * M[i][j];
+      }
+    }
+    return M.map(function (row) { return row.slice(n); });
+  }
+
+  function matVec(A, x) {
+    return A.map(function (row) {
+      var s = 0; for (var i = 0; i < x.length; i++) s += row[i] * x[i];
+      return s;
+    });
+  }
+
+  function dot(a, b) {
+    var s = 0; for (var i = 0; i < a.length; i++) s += a[i] * b[i];
+    return s;
+  }
+
+  // Positive-definiteness check: a correlation matrix that fails this one
+  // describes a world that cannot exist, so the UI must say so.
+  function isPositiveDefinite(A) {
+    var n = A.length, L = [], i, j, k;
+    for (i = 0; i < n; i++) L.push(new Array(n).fill(0));
+    for (i = 0; i < n; i++) {
+      for (j = 0; j <= i; j++) {
+        var s = A[i][j];
+        for (k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+        if (i === j) {
+          if (s <= 1e-12) return false;
+          L[i][i] = Math.sqrt(s);
+        } else {
+          L[i][j] = s / L[j][j];
+        }
+      }
+    }
+    return true;
+  }
+
+  function covariance(vols, corr) {
+    return vols.map(function (vi, i) {
+      return vols.map(function (vj, j) { return corr[i][j] * vi * vj; });
+    });
+  }
+
+  /* ---------- portfolio theory ---------------------------------------- */
+
+  function portfolioStats(w, mu, cov, rf) {
+    var ret = dot(w, mu),
+        varc = dot(w, matVec(cov, w)),
+        vol = Math.sqrt(Math.max(varc, 0));
+    return {
+      weights: w.slice(), ret: ret, vol: vol,
+      sharpe: vol > 0 ? (ret - rf) / vol : NaN
+    };
+  }
+
+  // Closed-form unconstrained frontier (shorting allowed).
+  // sigma^2(m) = (A m^2 - 2B m + C) / D, w(m) = g + h*m.
+  function frontierCoefficients(mu, cov) {
+    var inv = matInv(cov);
+    if (!inv) return null;
+    var n = mu.length,
+        ones = new Array(n).fill(1),
+        i1 = matVec(inv, ones),
+        im = matVec(inv, mu),
+        A = dot(ones, i1), B = dot(ones, im), C = dot(mu, im),
+        D = A * C - B * B;
+    if (Math.abs(D) < 1e-14) return null;
+    var g = [], h = [];
+    for (var i = 0; i < n; i++) {
+      g.push((C * i1[i] - B * im[i]) / D);
+      h.push((A * im[i] - B * i1[i]) / D);
+    }
+    return { A: A, B: B, C: C, D: D, g: g, h: h, inv: inv };
+  }
+
+  function minVariance(mu, cov) {
+    var inv = matInv(cov);
+    if (!inv) return null;
+    var ones = new Array(mu.length).fill(1),
+        i1 = matVec(inv, ones),
+        s = i1.reduce(function (a, b) { return a + b; }, 0);
+    if (Math.abs(s) < 1e-14) return null;
+    return i1.map(function (x) { return x / s; });
+  }
+
+  function tangency(mu, cov, rf) {
+    var inv = matInv(cov);
+    if (!inv) return null;
+    var ex = mu.map(function (m) { return m - rf; }),
+        z = matVec(inv, ex),
+        s = z.reduce(function (a, b) { return a + b; }, 0);
+    if (Math.abs(s) < 1e-14) return null;
+    return z.map(function (x) { return x / s; });
+  }
+
+  // Euclidean projection onto the probability simplex (Duchi et al. 2008) -
+  // the workhorse behind the long-only variants below.
+  function projectSimplex(v) {
+    var n = v.length,
+        u = v.slice().sort(function (a, b) { return b - a; }),
+        css = 0, theta = 0, i;
+    for (i = 0; i < n; i++) {
+      css += u[i];
+      var t = (css - 1) / (i + 1);
+      if (u[i] - t > 0) theta = t;
+    }
+    return v.map(function (x) { return Math.max(x - theta, 0); });
+  }
+
+  // Long-only optimisation by projected gradient with restarts. Used when
+  // the closed form would hand back leveraged short positions the user
+  // said they don't want.
+  function longOnly(mu, cov, rf, objective) {
+    var n = mu.length,
+        best = null,
+        starts = [new Array(n).fill(1 / n)],
+        rand = rng(20260828), s, k, i;
+
+    for (s = 0; s < 8; s++) {
+      var st = [];
+      for (i = 0; i < n; i++) st.push(rand());
+      var tot = st.reduce(function (a, b) { return a + b; }, 0);
+      starts.push(st.map(function (x) { return x / tot; }));
+    }
+
+    var mvStep = Math.min(1 / Math.max(2 * gershgorin(cov), 1e-12), 1e6);
+    for (s = 0; s < starts.length; s++) {
+      var w = starts[s].slice(), step = objective === 'minvol' ? mvStep : 0.5;
+      for (k = 0; k < 4000; k++) {
+        var cw = matVec(cov, w),
+            varc = Math.max(dot(w, cw), 1e-18),
+            vol = Math.sqrt(varc),
+            grad;
+        if (objective === 'minvol') {
+          grad = cw.map(function (x) { return -2 * x; });          // descend variance
+        } else {
+          var ex = dot(w, mu) - rf;
+          // d/dw [(w.mu - rf)/vol]
+          grad = mu.map(function (m, i2) {
+            return (m * vol - ex * cw[i2] / vol) / varc;
+          });
+        }
+        var nw = projectSimplex(w.map(function (x, i2) { return x + step * grad[i2]; })),
+            move = 0;
+        for (i = 0; i < n; i++) move += Math.abs(nw[i] - w[i]);
+        w = nw;
+        if (move < 1e-12) break;
+        if (objective !== 'minvol' && k % 500 === 499) step *= 0.5;
+      }
+      var st2 = portfolioStats(w, mu, cov, rf),
+          score = objective === 'minvol' ? -st2.vol : st2.sharpe;
+      if (!best || score > best.score) best = { score: score, w: w };
+    }
+    return best ? best.w : null;
+  }
+
+  // Long-only mean-variance for one risk-aversion level: maximise
+  // w.mu - lambda * w'Sw over the simplex. Sweeping lambda traces the whole
+  // constrained frontier, which has no closed form once shorting is banned.
+  function longOnlyMV(mu, cov, lambda) {
+    var n = mu.length, w = new Array(n).fill(1 / n), k, i;
+    // Step from the curvature, not a constant: the gradient scales with
+    // lambda, so a fixed step overshoots to a vertex once lambda is large.
+    var step = Math.min(1 / Math.max(2 * lambda * gershgorin(cov), 1e-12), 1e6);
+    for (k = 0; k < 6000; k++) {
+      var cw = matVec(cov, w),
+          grad = mu.map(function (m, i2) { return m - 2 * lambda * cw[i2]; }),
+          nw = projectSimplex(w.map(function (x, i2) { return x + step * grad[i2]; })),
+          move = 0;
+      for (i = 0; i < n; i++) move += Math.abs(nw[i] - w[i]);
+      w = nw;
+      if (move < 1e-14) break;
+    }
+    return w;
+  }
+
+  // Gershgorin bound on the largest eigenvalue - the Lipschitz constant the
+  // projected-gradient step size needs, without running an eigensolver.
+  function gershgorin(A) {
+    var m = 0;
+    for (var i = 0; i < A.length; i++) {
+      var rs = 0;
+      for (var j = 0; j < A.length; j++) rs += Math.abs(A[i][j]);
+      if (rs > m) m = rs;
+    }
+    return m;
+  }
+
+  /* ---------- Monte Carlo (geometric Brownian motion) ------------------ */
+
+  // Simulates paths of dS/S = mu dt + sigma dW with optional per-step cash
+  // flow. Returns percentile bands rather than every path - the chart needs
+  // bands, and holding 10k full paths in memory buys nothing.
+  function simulateGBM(opts) {
+    var S0 = opts.start,
+        mu = opts.drift,
+        v = opts.vol,
+        years = opts.years,
+        steps = opts.steps,
+        paths = opts.paths,
+        contrib = opts.contribution || 0,
+        seed = opts.seed || 12345,
+        dt = years / steps,
+        drift = (mu - v * v / 2) * dt,
+        vs = v * Math.sqrt(dt),
+        gauss = gaussian(rng(seed)),
+        levels = [0.05, 0.25, 0.5, 0.75, 0.95],
+        bands = levels.map(function () { return new Array(steps + 1).fill(0); }),
+        mean_ = new Array(steps + 1).fill(0),
+        step = new Float64Array(paths),
+        scratch = new Float64Array(paths),   // reused sort buffer
+        i, t, k;
+
+    for (i = 0; i < paths; i++) step[i] = S0;
+    for (k = 0; k < levels.length; k++) bands[k][0] = S0;
+    mean_[0] = S0;
+
+    for (t = 1; t <= steps; t++) {
+      var sum = 0;
+      for (i = 0; i < paths; i++) {
+        var s = step[i] * Math.exp(drift + vs * gauss()) + contrib;
+        if (s < 0) s = 0;
+        step[i] = s; sum += s;
+      }
+      // A typed-array sort is numeric by default and needs no comparator
+      // callback - roughly an order of magnitude quicker per step.
+      scratch.set(step);
+      scratch.sort();
+      for (k = 0; k < levels.length; k++) bands[k][t] = quantile(scratch, levels[k]);
+      mean_[t] = sum / paths;
+    }
+
+    var term = new Float64Array(step);
+    term.sort();
+    var invested = S0 + contrib * steps,
+        losses = 0;
+    for (i = 0; i < term.length; i++) if (term[i] < invested) losses++;
+
+    return {
+      bands: bands, levels: levels, mean: mean_,
+      terminal: term, invested: invested,
+      stats: {
+        mean: mean(term),
+        median: quantile(term, 0.5),
+        p5: quantile(term, 0.05),
+        p25: quantile(term, 0.25),
+        p75: quantile(term, 0.75),
+        p95: quantile(term, 0.95),
+        min: term[0],
+        max: term[term.length - 1],
+        probLoss: losses / term.length,
+        cvar5: mean(term.subarray(0, Math.max(1, Math.round(term.length * 0.05))))
+      }
+    };
+  }
+
+  /* ---------- performance & risk analytics ----------------------------- */
+
+  function pricesToReturns(prices) {
+    var r = [];
+    for (var i = 1; i < prices.length; i++) {
+      if (prices[i - 1] === 0) { r.push(0); continue; }
+      r.push(prices[i] / prices[i - 1] - 1);
+    }
+    return r;
+  }
+
+  function equityCurve(returns, start) {
+    var v = start === undefined ? 100 : start, out = [v];
+    for (var i = 0; i < returns.length; i++) { v *= (1 + returns[i]); out.push(v); }
+    return out;
+  }
+
+  function drawdownSeries(curve) {
+    var peak = -Infinity, dd = [];
+    for (var i = 0; i < curve.length; i++) {
+      if (curve[i] > peak) peak = curve[i];
+      dd.push(peak > 0 ? curve[i] / peak - 1 : 0);
+    }
+    return dd;
+  }
+
+  // ppy = periods per year (252 daily, 52 weekly, 12 monthly).
+  function performance(returns, ppy, rf) {
+    var n = returns.length;
+    if (n < 2) return null;
+    rf = rf || 0;
+    var curve = equityCurve(returns, 1),
+        total = curve[curve.length - 1] - 1,
+        years = n / ppy,
+        cagr = Math.pow(curve[curve.length - 1], 1 / years) - 1,
+        vol = stdev(returns) * Math.sqrt(ppy),
+        avg = mean(returns),
+        rfp = Math.pow(1 + rf, 1 / ppy) - 1,
+        dd = drawdownSeries(curve),
+        maxDD = Math.min.apply(null, dd),
+        down = [], i, wins = 0;
+
+    for (i = 0; i < n; i++) {
+      var e = returns[i] - rfp;
+      if (e < 0) down.push(e);
+      if (returns[i] > 0) wins++;
+    }
+    // Downside deviation uses the full sample in the denominator, so periods
+    // above target correctly count as zero downside rather than dropping out.
+    var dsum = 0;
+    for (i = 0; i < down.length; i++) dsum += down[i] * down[i];
+    var downDev = Math.sqrt(dsum / n) * Math.sqrt(ppy);
+
+    var sorted = returns.slice().sort(function (a, b) { return a - b; }),
+        histVar = function (c) { return -quantile(sorted, 1 - c); },
+        cvarAt = function (c) {
+          var cut = Math.max(1, Math.round(sorted.length * (1 - c)));
+          return -mean(sorted.slice(0, cut));
+        },
+        sd = stdev(returns),
+        paramVar = function (c) { return -(avg + ninv(1 - c) * sd); };
+
+    // Longest stretch below a prior peak, in periods.
+    var ddLen = 0, run = 0;
+    for (i = 0; i < dd.length; i++) {
+      if (dd[i] < -1e-12) { run++; if (run > ddLen) ddLen = run; } else run = 0;
+    }
+
+    return {
+      n: n, years: years, curve: curve, drawdown: dd, returns: returns,
+      totalReturn: total, cagr: cagr, vol: vol,
+      sharpe: vol > 0 ? (cagr - rf) / vol : NaN,
+      sortino: downDev > 0 ? (cagr - rf) / downDev : NaN,
+      downsideDev: downDev,
+      maxDrawdown: maxDD,
+      maxDrawdownLength: ddLen,
+      calmar: maxDD < 0 ? cagr / -maxDD : NaN,
+      hitRate: wins / n,
+      best: Math.max.apply(null, returns),
+      worst: Math.min.apply(null, returns),
+      skew: skewness(returns),
+      kurtosis: kurtosis(returns),
+      var95: histVar(0.95), var99: histVar(0.99),
+      cvar95: cvarAt(0.95), cvar99: cvarAt(0.99),
+      pvar95: paramVar(0.95), pvar99: paramVar(0.99)
+    };
+  }
+
+  // CAPM regression of asset excess return on benchmark excess return.
+  function capm(assetR, benchR, ppy, rf) {
+    var n = Math.min(assetR.length, benchR.length);
+    if (n < 3) return null;
+    var rfp = Math.pow(1 + (rf || 0), 1 / ppy) - 1,
+        a = assetR.slice(0, n).map(function (x) { return x - rfp; }),
+        b = benchR.slice(0, n).map(function (x) { return x - rfp; }),
+        mb = mean(b), ma = mean(a),
+        cov = 0, varb = 0, i;
+    for (i = 0; i < n; i++) { cov += (a[i] - ma) * (b[i] - mb); varb += (b[i] - mb) * (b[i] - mb); }
+    if (varb === 0) return null;
+    var beta = cov / varb,
+        alphaP = ma - beta * mb,
+        diff = [];
+    for (i = 0; i < n; i++) diff.push(assetR[i] - benchR[i]);
+    var te = stdev(diff) * Math.sqrt(ppy),
+        active = (mean(diff)) * ppy;
+    return {
+      beta: beta,
+      alpha: alphaP * ppy,
+      r2: Math.pow(correlation(a, b), 2),
+      correlation: correlation(assetR.slice(0, n), benchR.slice(0, n)),
+      trackingError: te,
+      informationRatio: te > 0 ? active / te : NaN
+    };
+  }
+
+  /* ---------- fixed income --------------------------------------------- */
+
+  // Fractional periods are supported: a bond 2.3 periods from maturity
+  // discounts its next coupon at t = 0.3.
+  function bondCashflows(face, couponRate, freq, years) {
+    var nExact = years * freq,
+        n = Math.ceil(nExact - 1e-9),
+        cpn = face * couponRate / freq,
+        flows = [];
+    if (n <= 0) return [{ t: Math.max(years, 0), amount: face + cpn }];
+    // Time to the next coupon, in periods: 1 for a whole number of periods,
+    // otherwise the stub. Coupon i then lands at (i - 1 + stub) periods.
+    var stub = nExact - (n - 1);
+    for (var i = 1; i <= n; i++) {
+      flows.push({ t: (i - 1 + stub) / freq, amount: cpn + (i === n ? face : 0) });
+    }
+    return flows;
+  }
+
+  function bondPrice(face, couponRate, freq, years, ytm) {
+    var flows = bondCashflows(face, couponRate, freq, years), p = 0;
+    for (var i = 0; i < flows.length; i++) {
+      p += flows[i].amount / Math.pow(1 + ytm / freq, flows[i].t * freq);
+    }
+    return p;
+  }
+
+  function bondYield(face, couponRate, freq, years, price) {
+    var lo = -0.9, hi = 5;
+    if (bondPrice(face, couponRate, freq, years, lo) < price) return null;
+    for (var i = 0; i < 300; i++) {
+      var m = (lo + hi) / 2;
+      if (bondPrice(face, couponRate, freq, years, m) > price) lo = m; else hi = m;
+    }
+    return (lo + hi) / 2;
+  }
+
+  function bondAnalytics(face, couponRate, freq, years, ytm) {
+    var flows = bondCashflows(face, couponRate, freq, years),
+        price = bondPrice(face, couponRate, freq, years, ytm),
+        wT = 0, conv = 0, i;
+    for (i = 0; i < flows.length; i++) {
+      var t = flows[i].t,
+          pv = flows[i].amount / Math.pow(1 + ytm / freq, t * freq);
+      wT += t * pv;
+      conv += pv * t * (t + 1 / freq) / Math.pow(1 + ytm / freq, 2);
+    }
+    var macaulay = price > 0 ? wT / price : NaN,
+        modified = macaulay / (1 + ytm / freq);
+    return {
+      price: price,
+      macaulay: macaulay,
+      modified: modified,
+      convexity: price > 0 ? conv / price : NaN,
+      dv01: price * modified * 0.0001,
+      currentYield: price > 0 ? face * couponRate / price : NaN
+    };
+  }
+
+  return {
+    npdf: npdf, ncdf: ncdf, ninv: ninv,
+    mean: mean, stdev: stdev, skewness: skewness, kurtosis: kurtosis,
+    correlation: correlation, quantile: quantile, rng: rng, gaussian: gaussian,
+    bsm: bsm, crr: crr, crrGreeks: crrGreeks, impliedVol: impliedVol,
+    matInv: matInv, matVec: matVec, dot: dot, covariance: covariance,
+    isPositiveDefinite: isPositiveDefinite,
+    portfolioStats: portfolioStats, frontierCoefficients: frontierCoefficients,
+    minVariance: minVariance, tangency: tangency, longOnly: longOnly,
+    longOnlyMV: longOnlyMV,
+    projectSimplex: projectSimplex,
+    simulateGBM: simulateGBM, pricesToReturns: pricesToReturns,
+    equityCurve: equityCurve, drawdownSeries: drawdownSeries,
+    performance: performance, capm: capm,
+    bondPrice: bondPrice, bondYield: bondYield, bondAnalytics: bondAnalytics,
+    bondCashflows: bondCashflows
+  };
+})();
+</script>
+<script>
+/* ============================================================================
+   Chart engine - inline SVG, no dependencies.
+   Every chart ships a hover layer and a data-table view; colours come from
+   CSS custom properties so light/dark swap in one place.
+   ========================================================================== */
+var Chart = (function () {
+  'use strict';
+
+  var registry = [];               // charts to redraw on resize / theme change
+
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ---------- number formatting --------------------------------------- */
+
+  function fmt(v, kind, dp) {
+    if (v === null || v === undefined || !isFinite(v)) return '--';
+    switch (kind) {
+      case 'pct':   return (v * 100).toFixed(dp === undefined ? 1 : dp) + '%';
+      case 'pct2':  return (v * 100).toFixed(2) + '%';
+      case 'money': return (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString('en-US',
+                      { minimumFractionDigits: dp === undefined ? 2 : dp,
+                        maximumFractionDigits: dp === undefined ? 2 : dp });
+      case 'money0':return (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString('en-US',
+                      { maximumFractionDigits: 0 });
+      case 'int':   return Math.round(v).toLocaleString('en-US');
+      default:
+        var a = Math.abs(v);
+        if (a !== 0 && a < 0.0001) return v.toExponential(2);
+        return v.toLocaleString('en-US', { minimumFractionDigits: dp === undefined ? 2 : dp,
+                                           maximumFractionDigits: dp === undefined ? 2 : dp });
+    }
+  }
+
+  // Axis ticks on 1/2/5 x 10^n steps.
+  function niceTicks(lo, hi, target) {
+    if (!isFinite(lo) || !isFinite(hi)) return [0];
+    if (lo === hi) { lo -= 0.5; hi += 0.5; }
+    var span = hi - lo,
+        raw = span / Math.max(1, target),
+        mag = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)),
+        norm = raw / mag,
+        step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag,
+        start = Math.ceil(lo / step) * step,
+        out = [];
+    for (var v = start; v <= hi + step * 1e-6; v += step) {
+      out.push(Math.abs(v) < step * 1e-9 ? 0 : v);
+    }
+    return out;
+  }
+
+  /* ---------- main renderer -------------------------------------------- */
+
+  // spec: { series, bands, bars, hlines, vlines, points, xLabel, yLabel,
+  //         xFmt, yFmt, yDp, height, zeroLine, table, legendNote }
+  function render(container, spec) {
+    if (typeof container === 'string') container = document.getElementById(container);
+    if (!container) return;
+    container.__spec = spec;
+    if (registry.indexOf(container) === -1) registry.push(container);
+    draw(container, spec);
+  }
+
+  function draw(container, spec) {
+    var W = container.clientWidth || 640,
+        H = spec.height || 300;
+    if (W < 80) return;
+
+    var ink = css('--ink'), ink2 = css('--ink-2'), muted = css('--ink-muted'),
+        grid = css('--grid'), axis = css('--axis'), surface = css('--surface');
+
+    var series = (spec.series || []).filter(function (s) { return s.points && s.points.length; }),
+        bands = spec.bands || [],
+        bars = spec.bars || null,
+        pts = spec.points || [],
+        xs = [], ys = [], i, j, s;
+
+    for (i = 0; i < series.length; i++)
+      for (j = 0; j < series[i].points.length; j++) {
+        xs.push(series[i].points[j].x); ys.push(series[i].points[j].y);
+      }
+    for (i = 0; i < bands.length; i++)
+      for (j = 0; j < bands[i].x.length; j++) {
+        xs.push(bands[i].x[j]); ys.push(bands[i].lo[j]); ys.push(bands[i].hi[j]);
+      }
+    for (i = 0; i < pts.length; i++) { xs.push(pts[i].x); ys.push(pts[i].y); }
+    if (bars) {
+      for (i = 0; i < bars.values.length; i++) { ys.push(bars.values[i]); ys.push(0); }
+      xs.push(0); xs.push(Math.max(1, bars.values.length - 1));
+    }
+    for (i = 0; i < (spec.hlines || []).length; i++) ys.push(spec.hlines[i].y);
+    for (i = 0; i < (spec.vlines || []).length; i++) xs.push(spec.vlines[i].x);
+    if (spec.zeroLine) ys.push(0);
+
+    if (!xs.length || !ys.length) { container.innerHTML = ''; return; }
+
+    var xMin = Math.min.apply(null, xs), xMax = Math.max.apply(null, xs),
+        yMin = Math.min.apply(null, ys), yMax = Math.max.apply(null, ys);
+    if (spec.yMin !== undefined) yMin = Math.min(yMin, spec.yMin);
+    if (spec.yMax !== undefined) yMax = Math.max(yMax, spec.yMax);
+    var pad = (yMax - yMin) * 0.08 || Math.abs(yMax) * 0.1 || 1;
+    yMin -= pad; yMax += pad;
+    if (spec.yFloorZero && yMin < 0) yMin = 0;
+
+    var yTicks = niceTicks(yMin, yMax, H < 220 ? 4 : 5),
+        yLabels = yTicks.map(function (t) { return fmt(t, spec.yFmt, spec.yDp); }),
+        maxLabel = yLabels.reduce(function (a, b) { return b.length > a.length ? b : a; }, ''),
+        // Reserve room for the rotated axis title, or it sits on the ticks.
+        mL = Math.max(38, maxLabel.length * 7 + 12) + (spec.yLabel ? 15 : 0),
+        mR = 14, mT = 14,
+        mB = spec.xLabel ? 44 : 30,
+        plotW = Math.max(10, W - mL - mR),
+        plotH = Math.max(10, H - mT - mB);
+
+    function X(v) { return mL + (xMax === xMin ? plotW / 2 : (v - xMin) / (xMax - xMin) * plotW); }
+    function Y(v) { return mT + (yMax === yMin ? plotH / 2 : plotH - (v - yMin) / (yMax - yMin) * plotH); }
+
+    var o = [];
+    o.push('<svg class="cv" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H +
+           '" role="img" aria-label="' + esc(spec.aria || spec.title || 'chart') + '">');
+
+    // --- gridlines: solid hairlines, one shade off the surface
+    for (i = 0; i < yTicks.length; i++) {
+      var gy = Y(yTicks[i]);
+      o.push('<line x1="' + mL + '" y1="' + gy.toFixed(1) + '" x2="' + (mL + plotW) +
+             '" y2="' + gy.toFixed(1) + '" stroke="' + grid + '" stroke-width="1"/>');
+      o.push('<text x="' + (mL - 8) + '" y="' + (gy + 3.5).toFixed(1) +
+             '" text-anchor="end" font-size="11" fill="' + muted +
+             '" style="font-variant-numeric:tabular-nums">' + esc(yLabels[i]) + '</text>');
+    }
+
+    // --- x axis ticks
+    var xTicks, xFormat = spec.xTickFormat || function (v) { return fmt(v, spec.xFmt, spec.xDp); };
+    if (bars && bars.labels) {
+      xTicks = [];
+      var stride = Math.ceil(bars.labels.length / Math.max(2, Math.floor(plotW / 64)));
+      for (i = 0; i < bars.labels.length; i += stride) xTicks.push({ v: i, t: bars.labels[i] });
+    } else {
+      xTicks = niceTicks(xMin, xMax, Math.max(2, Math.floor(plotW / 78))).map(function (v) {
+        return { v: v, t: xFormat(v) };
+      });
+    }
+    for (i = 0; i < xTicks.length; i++) {
+      var tx = X(xTicks[i].v);
+      if (tx < mL - 1 || tx > mL + plotW + 1) continue;
+      o.push('<text x="' + tx.toFixed(1) + '" y="' + (mT + plotH + 16) +
+             '" text-anchor="middle" font-size="11" fill="' + muted +
+             '" style="font-variant-numeric:tabular-nums">' + esc(xTicks[i].t) + '</text>');
+    }
+
+    // --- baseline
+    o.push('<line x1="' + mL + '" y1="' + (mT + plotH) + '" x2="' + (mL + plotW) +
+           '" y2="' + (mT + plotH) + '" stroke="' + axis + '" stroke-width="1"/>');
+
+    // --- percentile bands (sequential, ordered light->dark)
+    for (i = 0; i < bands.length; i++) {
+      var b = bands[i], up = [], dn = [];
+      for (j = 0; j < b.x.length; j++) up.push(X(b.x[j]).toFixed(1) + ',' + Y(b.hi[j]).toFixed(1));
+      for (j = b.x.length - 1; j >= 0; j--) dn.push(X(b.x[j]).toFixed(1) + ',' + Y(b.lo[j]).toFixed(1));
+      o.push('<polygon points="' + up.concat(dn).join(' ') + '" fill="' + b.color +
+             '" fill-opacity="' + (b.opacity === undefined ? 1 : b.opacity) + '"/>');
+    }
+
+    // --- profit/loss split fill (payoff charts): one clip per sign
+    if (spec.splitFill) {
+      var sf = spec.splitFill, zeroY = Y(0), area = [], id = 'clip' + Math.random().toString(36).slice(2, 8);
+      for (j = 0; j < sf.points.length; j++) area.push(X(sf.points[j].x).toFixed(1) + ',' + Y(sf.points[j].y).toFixed(1));
+      var closed = area.join(' ') + ' ' + X(sf.points[sf.points.length - 1].x).toFixed(1) + ',' + zeroY.toFixed(1) +
+                   ' ' + X(sf.points[0].x).toFixed(1) + ',' + zeroY.toFixed(1);
+      o.push('<defs><clipPath id="' + id + 'a"><rect x="' + mL + '" y="' + mT + '" width="' + plotW +
+             '" height="' + Math.max(0, zeroY - mT) + '"/></clipPath>' +
+             '<clipPath id="' + id + 'b"><rect x="' + mL + '" y="' + zeroY + '" width="' + plotW +
+             '" height="' + Math.max(0, mT + plotH - zeroY) + '"/></clipPath></defs>');
+      o.push('<polygon points="' + closed + '" fill="' + css('--good') + '" fill-opacity="0.16" clip-path="url(#' + id + 'a)"/>');
+      o.push('<polygon points="' + closed + '" fill="' + css('--critical') + '" fill-opacity="0.16" clip-path="url(#' + id + 'b)"/>');
+    }
+
+    // --- zero / reference lines
+    if (spec.zeroLine && yMin < 0 && yMax > 0) {
+      o.push('<line x1="' + mL + '" y1="' + Y(0).toFixed(1) + '" x2="' + (mL + plotW) +
+             '" y2="' + Y(0).toFixed(1) + '" stroke="' + axis + '" stroke-width="1.5"/>');
+    }
+    for (i = 0; i < (spec.hlines || []).length; i++) {
+      var hl = spec.hlines[i], hy = Y(hl.y);
+      o.push('<line x1="' + mL + '" y1="' + hy.toFixed(1) + '" x2="' + (mL + plotW) + '" y2="' + hy.toFixed(1) +
+             '" stroke="' + (hl.color || axis) + '" stroke-width="1.5"/>');
+      if (hl.label) o.push('<text x="' + (mL + plotW - 4) + '" y="' + (hy - 5).toFixed(1) +
+             '" text-anchor="end" font-size="10.5" fill="' + ink2 + '">' + esc(hl.label) + '</text>');
+    }
+    var vlUsed = [];   // label x positions already taken, to avoid overprinting
+    for (i = 0; i < (spec.vlines || []).length; i++) {
+      var vl = spec.vlines[i], vx = X(vl.x);
+      if (vx < mL || vx > mL + plotW) continue;
+      o.push('<line x1="' + vx.toFixed(1) + '" y1="' + mT + '" x2="' + vx.toFixed(1) + '" y2="' + (mT + plotH) +
+             '" stroke="' + (vl.color || axis) + '" stroke-width="1.5"/>');
+      if (vl.label) {
+        // Two reference lines can land on the same spot (spot == strike);
+        // drop the second label to its own row rather than overprinting.
+        var row = 0;
+        while (vlUsed.some(function (u) { return u.row === row && Math.abs(u.x - vx) < 52; })) row++;
+        vlUsed.push({ x: vx, row: row });
+        var flip = vx > mL + plotW - 54;
+        o.push('<text x="' + (flip ? vx - 5 : vx + 5).toFixed(1) + '" y="' + (mT + 11 + row * 13) +
+               '" text-anchor="' + (flip ? 'end' : 'start') + '" font-size="10.5" fill="' +
+               (vl.color || ink2) + '">' + esc(vl.label) + '</text>');
+      }
+    }
+
+    // --- bars: 4px rounded data-end anchored to the baseline, 2px gap
+    if (bars) {
+      var n = bars.values.length,
+          slot = plotW / n,
+          bw = Math.max(1, slot - 2),
+          base = Y(0);
+      for (i = 0; i < n; i++) {
+        var v = bars.values[i], by = Y(v), bx = mL + i * slot + 1,
+            hgt = Math.abs(by - base), top = Math.min(by, base),
+            col = bars.colors ? bars.colors[i] : bars.color;
+        var r = Math.min(4, bw / 2, hgt);
+        o.push('<path class="bar" data-i="' + i + '" d="' + roundedBar(bx, top, bw, hgt, r, v >= 0) +
+               '" fill="' + col + '"/>');
+      }
+    }
+
+    // --- lines: 2px, round joins
+    for (i = 0; i < series.length; i++) {
+      s = series[i];
+      if (s.hidden) continue;
+      var d = '';
+      for (j = 0; j < s.points.length; j++) {
+        d += (j ? 'L' : 'M') + X(s.points[j].x).toFixed(1) + ' ' + Y(s.points[j].y).toFixed(1);
+      }
+      if (s.fill) {
+        o.push('<path d="' + d + 'L' + X(s.points[s.points.length - 1].x).toFixed(1) + ' ' + Y(0).toFixed(1) +
+               'L' + X(s.points[0].x).toFixed(1) + ' ' + Y(0).toFixed(1) + 'Z" fill="' + s.color +
+               '" fill-opacity="' + (s.fillOpacity || 0.15) + '"/>');
+      }
+      o.push('<path d="' + d + '" fill="none" stroke="' + s.color + '" stroke-width="' + (s.width || 2) +
+             '" stroke-linejoin="round" stroke-linecap="round"' +
+             (s.opacity ? ' opacity="' + s.opacity + '"' : '') + '/>');
+    }
+
+    // --- scatter points: >=8px, 2px surface ring so overlaps stay readable
+    var placed = [];                 // label rects already on the chart
+    function overlaps(r) {
+      for (var z = 0; z < placed.length; z++) {
+        var q = placed[z];
+        if (!(r.x2 <= q.x1 || q.x2 <= r.x1 || r.y2 <= q.y1 || q.y2 <= r.y1)) return true;
+      }
+      return r.x1 < mL - 2 || r.x2 > mL + plotW + 2 || r.y1 < mT - 2 || r.y2 > mT + plotH + 2;
+    }
+    for (i = 0; i < pts.length; i++) {
+      var pt = pts[i];
+      o.push('<circle cx="' + X(pt.x).toFixed(1) + '" cy="' + Y(pt.y).toFixed(1) + '" r="' + (pt.r || 5) +
+             '" fill="' + pt.color + '" stroke="' + surface + '" stroke-width="2"/>');
+      if (!pt.label) continue;
+
+      // Direct labels are the accessibility channel here, so they must not
+      // collide: try each side in turn and take the first clear slot.
+      var lx = X(pt.x), ly = Y(pt.y),
+          w = pt.label.length * 6.2, gap = (pt.r || 5) + 5,
+          cands = [
+            { x: lx + gap, y: ly + 4, a: 'start',  x1: lx + gap, x2: lx + gap + w },
+            { x: lx - gap, y: ly + 4, a: 'end',    x1: lx - gap - w, x2: lx - gap },
+            { x: lx, y: ly - gap - 4, a: 'middle', x1: lx - w / 2, x2: lx + w / 2 },
+            { x: lx, y: ly + gap + 11, a: 'middle', x1: lx - w / 2, x2: lx + w / 2 }
+          ],
+          chosen = null;
+      for (var ci = 0; ci < cands.length; ci++) {
+        var cd = cands[ci], rect = { x1: cd.x1, x2: cd.x2, y1: cd.y - 9, y2: cd.y + 3 };
+        if (!overlaps(rect)) { chosen = cd; placed.push(rect); break; }
+      }
+      if (!chosen) continue;         // nowhere clear - the tooltip still names it
+      o.push('<text x="' + chosen.x.toFixed(1) + '" y="' + chosen.y.toFixed(1) +
+             '" text-anchor="' + chosen.a + '" font-size="11" font-weight="600" fill="' + ink +
+             '">' + esc(pt.label) + '</text>');
+    }
+
+    // --- axis titles
+    if (spec.xLabel) {
+      o.push('<text x="' + (mL + plotW / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" fill="' +
+             ink2 + '">' + esc(spec.xLabel) + '</text>');
+    }
+    if (spec.yLabel) {
+      o.push('<text transform="translate(11,' + (mT + plotH / 2) + ') rotate(-90)" text-anchor="middle" font-size="11" fill="' +
+             ink2 + '">' + esc(spec.yLabel) + '</text>');
+    }
+
+    // --- hover layer
+    o.push('<g class="hoverg" style="display:none"><line class="cross" y1="' + mT + '" y2="' + (mT + plotH) +
+           '" stroke="' + axis + '" stroke-width="1"/></g>');
+    o.push('<rect class="hit" x="' + mL + '" y="' + mT + '" width="' + plotW + '" height="' + plotH +
+           '" fill="transparent"/>');
+    o.push('</svg>');
+
+    var legend = buildLegend(spec, series, bands);
+    container.innerHTML = '<div class="chart-wrap">' + o.join('') +
+      '<div class="tip" hidden></div></div>' + legend + buildTable(spec);
+
+    attachHover(container, spec, series, bars, { mL: mL, mT: mT, plotW: plotW, plotH: plotH,
+      xMin: xMin, xMax: xMax, X: X, Y: Y });
+  }
+
+  function roundedBar(x, y, w, h, r, up) {
+    if (h < 0.5) return 'M' + x + ' ' + y + 'h' + w + 'v0.5h' + (-w) + 'Z';
+    if (up) {
+      return 'M' + x + ' ' + (y + h) + 'V' + (y + r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + (-r) +
+             'h' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r + 'V' + (y + h) + 'Z';
+    }
+    return 'M' + x + ' ' + y + 'V' + (y + h - r) + 'a' + r + ' ' + r + ' 0 0 0 ' + r + ' ' + r +
+           'h' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 0 ' + r + ' ' + (-r) + 'V' + y + 'Z';
+  }
+
+  function buildLegend(spec, series, bands) {
+    var items = [];
+    for (var i = 0; i < series.length; i++) {
+      if (series[i].noLegend) continue;
+      items.push('<span class="lg"><i style="background:' + series[i].color + '"></i>' + esc(series[i].name) + '</span>');
+    }
+    for (i = 0; i < bands.length; i++) {
+      if (!bands[i].label) continue;
+      items.push('<span class="lg"><i style="background:' + bands[i].color + ';opacity:' +
+                 (bands[i].opacity === undefined ? 1 : bands[i].opacity) + '"></i>' + esc(bands[i].label) + '</span>');
+    }
+    for (i = 0; i < (spec.legendExtra || []).length; i++) {
+      var e = spec.legendExtra[i];
+      items.push('<span class="lg"><i style="background:' + e.color + '"></i>' + esc(e.name) + '</span>');
+    }
+    // One series needs no legend box - the title names it.
+    if (items.length < 2) return spec.legendNote ? '<div class="legend"><span class="lg-note">' +
+      esc(spec.legendNote) + '</span></div>' : '';
+    return '<div class="legend">' + items.join('') +
+      (spec.legendNote ? '<span class="lg-note">' + esc(spec.legendNote) + '</span>' : '') + '</div>';
+  }
+
+  // Identity must never rest on colour alone, so every chart carries a table.
+  function buildTable(spec) {
+    if (!spec.table) return '';
+    var t = spec.table, h = '', i, j;
+    h += '<details class="tbl"><summary>Data table</summary><div class="tbl-scroll"><table><thead><tr>';
+    for (i = 0; i < t.columns.length; i++) h += '<th>' + esc(t.columns[i]) + '</th>';
+    h += '</tr></thead><tbody>';
+    for (i = 0; i < t.rows.length; i++) {
+      h += '<tr>';
+      for (j = 0; j < t.rows[i].length; j++) h += '<td>' + esc(t.rows[i][j]) + '</td>';
+      h += '</tr>';
+    }
+    return h + '</tbody></table></div></details>';
+  }
+
+  function attachHover(container, spec, series, bars, geo) {
+    var svg = container.querySelector('svg'),
+        hit = container.querySelector('.hit'),
+        hg = container.querySelector('.hoverg'),
+        cross = container.querySelector('.cross'),
+        tip = container.querySelector('.tip');
+    if (!svg || !hit) return;
+
+    var visible = series.filter(function (s) { return !s.hidden && !s.noHover; });
+
+    function hide() { hg.style.display = 'none'; tip.hidden = true; clearDots(); }
+    function clearDots() {
+      var ds = svg.querySelectorAll('.hdot');
+      for (var i = 0; i < ds.length; i++) ds[i].remove();
+    }
+
+    function move(ev) {
+      var r = svg.getBoundingClientRect(),
+          scale = r.width / svg.viewBox.baseVal.width || 1,
+          px = (ev.clientX - r.left) / scale,
+          py = (ev.clientY - r.top) / scale;
+      if (px < geo.mL || px > geo.mL + geo.plotW) { hide(); return; }
+
+      var rows = [], label = '';
+
+      if (bars) {
+        var n = bars.values.length,
+            idx = Math.max(0, Math.min(n - 1, Math.floor((px - geo.mL) / (geo.plotW / n))));
+        label = bars.labels ? bars.labels[idx] : String(idx);
+        rows.push({ color: bars.colors ? bars.colors[idx] : bars.color,
+                    name: bars.name || 'Value',
+                    value: fmt(bars.values[idx], spec.yFmt, spec.yDp) });
+        hg.style.display = 'none';
+      } else if (visible.length) {
+        var xv = geo.xMin + (px - geo.mL) / geo.plotW * (geo.xMax - geo.xMin),
+            ref = visible[0].points, best = 0, bd = Infinity;
+        for (var k = 0; k < ref.length; k++) {
+          var dd = Math.abs(ref[k].x - xv);
+          if (dd < bd) { bd = dd; best = k; }
+        }
+        var snapX = ref[best].x;
+        label = (spec.xTickFormat || function (v) { return fmt(v, spec.xFmt, spec.xDp); })(snapX);
+        cross.setAttribute('x1', geo.X(snapX).toFixed(1));
+        cross.setAttribute('x2', geo.X(snapX).toFixed(1));
+        hg.style.display = '';
+        clearDots();
+        for (var si = 0; si < visible.length; si++) {
+          var sp = visible[si].points,
+              p = sp[Math.min(best, sp.length - 1)];
+          if (Math.abs(p.x - snapX) > (geo.xMax - geo.xMin) / 2) continue;
+          var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('class', 'hdot');
+          c.setAttribute('cx', geo.X(p.x).toFixed(1));
+          c.setAttribute('cy', geo.Y(p.y).toFixed(1));
+          c.setAttribute('r', '4.5');
+          c.setAttribute('fill', visible[si].color);
+          c.setAttribute('stroke', css('--surface'));
+          c.setAttribute('stroke-width', '2');
+          svg.appendChild(c);
+          rows.push({ color: visible[si].color, name: visible[si].name,
+                      value: fmt(p.y, spec.yFmt, spec.yDp) });
+        }
+      }
+      if (!rows.length) { hide(); return; }
+
+      var html = '<div class="tip-h">' + esc((spec.xLabel ? spec.xLabel + ' ' : '') + label) + '</div>';
+      for (var ri = 0; ri < rows.length; ri++) {
+        html += '<div class="tip-r"><i style="background:' + rows[ri].color + '"></i>' +
+                '<span>' + esc(rows[ri].name) + '</span><b>' + esc(rows[ri].value) + '</b></div>';
+      }
+      tip.innerHTML = html;
+      tip.hidden = false;
+      var tw = tip.offsetWidth, th = tip.offsetHeight,
+          left = px * (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width) + 14,
+          maxL = container.clientWidth - tw - 6;
+      tip.style.left = Math.max(4, Math.min(left, maxL)) + 'px';
+      tip.style.top = Math.max(4, py - th - 12) + 'px';
+    }
+
+    hit.addEventListener('mousemove', move);
+    hit.addEventListener('mouseleave', hide);
+    if (bars) {
+      var bs = svg.querySelectorAll('.bar');
+      for (var i = 0; i < bs.length; i++) {
+        bs[i].addEventListener('mousemove', move);
+        bs[i].addEventListener('mouseleave', hide);
+      }
+    }
+  }
+
+  function redrawAll() {
+    for (var i = 0; i < registry.length; i++) {
+      if (registry[i].__spec && registry[i].isConnected && registry[i].clientWidth) {
+        draw(registry[i], registry[i].__spec);
+      }
+    }
+  }
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt); rt = setTimeout(redrawAll, 120);
+  });
+
+  return { render: render, redrawAll: redrawAll, fmt: fmt, niceTicks: niceTicks, css: css };
+})();
+</script>
+<script>
+/* ============================================================================
+   QuantDesk - application layer
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); },
+      fmt = Chart.fmt,
+      C = Chart.css;
+
+  function num(id, dflt) {
+    var el = $(id); if (!el) return dflt || 0;
+    var v = parseFloat(el.value);
+    return isFinite(v) ? v : (dflt === undefined ? 0 : dflt);
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function signClass(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : ''; }
+
+  function tile(k, v, sub, cls, hero) {
+    return '<div class="stat' + (hero ? ' hero' : '') + '"><div class="k">' + esc(k) +
+      '</div><div class="v ' + (cls || '') + '">' + v + '</div>' +
+      (sub ? '<div class="s">' + sub + '</div>' : '') + '</div>';
+  }
+  function alertBox(kind, msg) {
+    var icon = kind === 'err'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.2v.2"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3.5 22 20H2L12 3.5Z"/><path d="M12 10v4M12 17.2v.2"/></svg>';
+    return '<div class="alert alert-' + (kind === 'err' ? 'err' : 'warn') + '">' + icon +
+           '<div>' + msg + '</div></div>';
+  }
+  function debounce(fn, ms) {
+    var t; return function () { clearTimeout(t); t = setTimeout(fn, ms || 120); };
+  }
+  function seg(id, onChange) {
+    var box = $(id);
+    if (!box) return;
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      var all = box.querySelectorAll('button');
+      for (var i = 0; i < all.length; i++) all[i].setAttribute('aria-pressed', String(all[i] === b));
+      onChange(b.dataset.v);
+    });
+  }
+  function segValue(id) {
+    var b = $(id) && $(id).querySelector('[aria-pressed="true"]');
+    return b ? b.dataset.v : null;
+  }
+
+  /* ---------- theme ---------------------------------------------------- */
+
+  var THEME_KEY = 'quantdesk.theme';
+  function applyTheme(t) {
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    else document.documentElement.removeAttribute('data-theme');
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+    setTimeout(Chart.redrawAll, 20);
+  }
+  function currentTheme() {
+    var set = document.documentElement.getAttribute('data-theme');
+    if (set) return set;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+  $('themeBtn').addEventListener('click', function () {
+    applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+    setTimeout(Chart.redrawAll, 20);
+  });
+
+  /* ---------- tabs ------------------------------------------------------ */
+
+  var tabs = document.querySelectorAll('.tab'), refreshers = {};
+  function showTab(name) {
+    for (var i = 0; i < tabs.length; i++) {
+      var on = tabs[i].dataset.tab === name;
+      tabs[i].setAttribute('aria-selected', String(on));
+      $('p-' + tabs[i].dataset.tab).hidden = !on;
+    }
+    try { localStorage.setItem('quantdesk.tab', name); } catch (e) {}
+    if (refreshers[name]) refreshers[name]();
+  }
+  for (var ti = 0; ti < tabs.length; ti++) {
+    tabs[ti].addEventListener('click', function () { showTab(this.dataset.tab); });
+  }
+
+  /* ---------- input persistence ---------------------------------------- */
+
+  var STORE = 'quantdesk.inputs';
+  function saveInputs() {
+    try {
+      var out = {}, els = document.querySelectorAll('.inp[id]');
+      for (var i = 0; i < els.length; i++) out[els[i].id] = els[i].value;
+      out.__segs = {};
+      var segs = ['pf-constraint', 'pe-kind', 'b-mode'];
+      for (i = 0; i < segs.length; i++) out.__segs[segs[i]] = segValue(segs[i]);
+      out.__legs = strategy.legs;
+      out.__assets = pf.assets;
+      out.__corr = pf.corr;
+      localStorage.setItem(STORE, JSON.stringify(out));
+    } catch (e) {}
+  }
+  var saveSoon = debounce(saveInputs, 400);
+
+  function restoreInputs() {
+    var raw;
+    try { raw = localStorage.getItem(STORE); } catch (e) { return; }
+    if (!raw) return;
+    var d;
+    try { d = JSON.parse(raw); } catch (e) { return; }
+    for (var k in d) {
+      if (k.indexOf('__') === 0) continue;
+      var el = $(k);
+      if (el) el.value = d[k];
+    }
+    if (d.__segs) {
+      for (var sid in d.__segs) {
+        var box = $(sid); if (!box || !d.__segs[sid]) continue;
+        var bs = box.querySelectorAll('button');
+        for (var i = 0; i < bs.length; i++) {
+          bs[i].setAttribute('aria-pressed', String(bs[i].dataset.v === d.__segs[sid]));
+        }
+      }
+    }
+    if (d.__legs && d.__legs.length) strategy.legs = d.__legs;
+    if (d.__assets && d.__assets.length && d.__corr) { pf.assets = d.__assets; pf.corr = d.__corr; }
+  }
+
+  /* ======================================================================
+     1. OPTIONS
+     ====================================================================== */
+
+  var options = (function () {
+    function state() {
+      var days = Math.max(0, num('o-days', 0));
+      return {
+        S: Math.max(1e-6, num('o-spot', 100)),
+        K: Math.max(1e-6, num('o-strike', 100)),
+        T: days / 365,
+        days: days,
+        v: Math.max(0, num('o-vol', 25) / 100),
+        r: num('o-rate', 0) / 100,
+        q: num('o-div', 0) / 100,
+        american: $('o-model').value === 'us'
+      };
+    }
+
+    function greeks(st, S, type, steps) {
+      if (st.american) return Q.crrGreeks(S, st.K, st.T, st.r, st.q, st.v, type, true, steps || 300);
+      return Q.bsm(S, st.K, st.T, st.r, st.q, st.v, type);
+    }
+    function price(st, S, type, steps) {
+      if (st.american) return Q.crr(S, st.K, st.T, st.r, st.q, st.v, type, true, steps || 300);
+      return Q.bsm(S, st.K, st.T, st.r, st.q, st.v, type).price;
+    }
+
+    // Plot window: wide enough to show the strike and roughly two standard
+    // deviations of drift, so the interesting part of the curve is on screen.
+    function spotRange(st) {
+      var sd = st.v * Math.sqrt(Math.max(st.T, 1 / 365)),
+          spread = Math.max(0.25, 2.2 * sd),
+          lo = Math.max(0.01, Math.min(st.S, st.K) * (1 - spread)),
+          hi = Math.max(st.S, st.K) * (1 + spread);
+      return { lo: lo, hi: hi };
+    }
+
+    function render() {
+      var st = state();
+      $('o-years-hint').textContent = (st.T).toFixed(3) + ' years';
+      $('o-model-hint').textContent = st.american
+        ? 'Binomial tree, 300 steps. Early exercise allowed at any time.'
+        : 'Closed form. Exercise only at expiry.';
+
+      var warn = '';
+      if (st.days === 0) warn = alertBox('warn', 'At zero days to expiry an option is worth its intrinsic value, and the greeks collapse to zero.');
+      else if (st.v === 0) warn = alertBox('warn', 'With zero volatility the model has no uncertainty left to price — value is just discounted intrinsic.');
+      $('o-alert').innerHTML = warn;
+
+      var c = greeks(st, st.S, 'call'), p = greeks(st, st.S, 'put');
+      var mny = st.S / st.K,
+          label = Math.abs(mny - 1) < 0.005 ? 'At the money'
+                : mny > 1 ? 'Call ' + ((mny - 1) * 100).toFixed(1) + '% in the money'
+                          : 'Put ' + ((1 / mny - 1) * 100).toFixed(1) + '% in the money';
+      $('o-moneyness').textContent = label;
+
+      // Risk-neutral chance of finishing in the money = N(d2) for a call.
+      var ref = Q.bsm(st.S, st.K, st.T, st.r, st.q, st.v, 'call'),
+          pc = isFinite(ref.d2) ? Q.ncdf(ref.d2) : (st.S > st.K ? 1 : 0),
+          intrinsicC = Math.max(st.S - st.K, 0), intrinsicP = Math.max(st.K - st.S, 0);
+
+      $('o-prices').innerHTML =
+        tile('Call price', fmt(c.price, 'money'), 'Intrinsic ' + fmt(intrinsicC, 'money') +
+             ' · time ' + fmt(Math.max(c.price - intrinsicC, 0), 'money'), '', true) +
+        tile('Put price', fmt(p.price, 'money'), 'Intrinsic ' + fmt(intrinsicP, 'money') +
+             ' · time ' + fmt(Math.max(p.price - intrinsicP, 0), 'money'), '', true) +
+        tile('Chance call ends ITM', fmt(pc, 'pct'), 'Risk-neutral, at expiry') +
+        tile('Chance put ends ITM', fmt(1 - pc, 'pct'), 'Risk-neutral, at expiry');
+
+      var rows = [
+        ['Delta', c.delta, p.delta, 'per $1 move in spot', 4],
+        ['Gamma', c.gamma, p.gamma, 'delta change per $1 move', 5],
+        ['Vega', c.vega, p.vega, 'per +1% volatility', 4],
+        ['Theta', c.theta, p.theta, 'per calendar day', 4],
+        ['Rho', c.rho, p.rho, 'per +1% rates', 4],
+        ['Vanna', c.vanna, p.vanna, 'delta change per +1% vol', 5],
+        ['Volga', c.volga, p.volga, 'vega change per +1% vol', 5]
+      ];
+      var h = '<thead><tr><th>Greek</th><th>Call</th><th>Put</th><th>Meaning</th></tr></thead><tbody>';
+      for (var i = 0; i < rows.length; i++) {
+        var R = rows[i];
+        h += '<tr><td><b>' + R[0] + '</b></td><td class="' + signClass(R[1]) + '">' +
+             (isFinite(R[1]) ? fmt(R[1], 'num', R[4]) : '&mdash;') + '</td><td class="' + signClass(R[2]) + '">' +
+             (isFinite(R[2]) ? fmt(R[2], 'num', R[4]) : '&mdash;') +
+             '</td><td style="text-align:left;color:var(--ink-muted);font-size:11.5px;white-space:normal">' +
+             R[3] + '</td></tr>';
+      }
+      $('o-greeks').innerHTML = h + '</tbody>';
+
+      renderValueChart(st);
+      renderGreekChart(st);
+      renderIV(st);
+    }
+
+    function renderValueChart(st) {
+      var type = $('o-value-pick').value,
+          rg = spotRange(st),
+          n = st.american ? 44 : 90,
+          today = [], expiry = [], tbl = [], i;
+      for (i = 0; i <= n; i++) {
+        var S = rg.lo + (rg.hi - rg.lo) * i / n,
+            pv = price(st, S, type, 160),
+            ev = Math.max(type === 'call' ? S - st.K : st.K - S, 0);
+        today.push({ x: S, y: pv });
+        expiry.push({ x: S, y: ev });
+        if (i % Math.ceil(n / 14) === 0) tbl.push([fmt(S, 'money'), fmt(pv, 'money'), fmt(ev, 'money')]);
+      }
+      Chart.render('o-chart-value', {
+        height: 288,
+        series: [
+          { name: 'Value today', color: C('--s1'), points: today },
+          { name: 'Value at expiry', color: C('--s2'), points: expiry }
+        ],
+        vlines: [{ x: st.K, label: 'Strike', color: C('--axis') },
+                 { x: st.S, label: 'Spot', color: C('--ink-muted') }],
+        xLabel: 'Spot price', yLabel: 'Option value', xFmt: 'money0', yFmt: 'money',
+        yFloorZero: true,
+        legendNote: 'The gap between the lines is time value.',
+        table: { columns: ['Spot', 'Today', 'At expiry'], rows: tbl },
+        aria: 'Option value against spot price, today versus at expiry'
+      });
+    }
+
+    function renderGreekChart(st) {
+      var g = $('o-greek-pick').value,
+          rg = spotRange(st),
+          n = st.american ? 34 : 80,
+          cs = [], ps = [], tbl = [], same = true, i;
+      for (i = 0; i <= n; i++) {
+        var S = rg.lo + (rg.hi - rg.lo) * i / n,
+            gc = greeks(st, S, 'call', 120)[g],
+            gp = greeks(st, S, 'put', 120)[g];
+        cs.push({ x: S, y: gc });
+        ps.push({ x: S, y: gp });
+        if (Math.abs(gc - gp) > Math.max(1e-9, Math.abs(gc) * 1e-6)) same = false;
+        if (i % Math.ceil(n / 14) === 0) tbl.push([fmt(S, 'money'), fmt(gc, 'num', 5), fmt(gp, 'num', 5)]);
+      }
+      var series = same
+        ? [{ name: 'Call & put (identical)', color: C('--s1'), points: cs }]
+        : [{ name: 'Call', color: C('--s1'), points: cs },
+           { name: 'Put', color: C('--s2'), points: ps }];
+      var names = { delta: 'Delta', gamma: 'Gamma', vega: 'Vega (per 1% vol)',
+                    theta: 'Theta (per day)', rho: 'Rho (per 1% rates)' };
+      Chart.render('o-chart-greek', {
+        height: 288, series: series, zeroLine: true,
+        vlines: [{ x: st.K, label: 'Strike', color: C('--axis') }],
+        xLabel: 'Spot price', yLabel: names[g], xFmt: 'money0', yFmt: 'num', yDp: 4,
+        table: { columns: ['Spot', 'Call', 'Put'], rows: tbl },
+        aria: names[g] + ' against spot price'
+      });
+    }
+
+    function renderIV(st) {
+      var mkt = num('o-mkt', 0), type = $('o-mkt-type').value,
+          out = $('o-iv-out');
+      if (!(mkt > 0)) { out.innerHTML = '<div class="note">Enter a market price to solve for implied volatility.</div>'; return; }
+      if (!(st.T > 0)) { out.innerHTML = alertBox('warn', 'Implied volatility needs time left on the contract.'); return; }
+      var iv = Q.impliedVol(mkt, st.S, st.K, st.T, st.r, st.q, type);
+      if (iv === null) {
+        var dq = Math.exp(-st.q * st.T), dr = Math.exp(-st.r * st.T),
+            lo = type === 'call' ? Math.max(st.S * dq - st.K * dr, 0) : Math.max(st.K * dr - st.S * dq, 0),
+            hi = type === 'call' ? st.S * dq : st.K * dr;
+        out.innerHTML = alertBox('err', 'No volatility reproduces that price. A ' + type +
+          ' here must trade between <b>' + fmt(lo, 'money') + '</b> and <b>' + fmt(hi, 'money') +
+          '</b> — outside that band the quote would be an arbitrage.');
+        out.dataset.iv = '';
+        return;
+      }
+      var model = Q.bsm(st.S, st.K, st.T, st.r, st.q, iv, type);
+      out.innerHTML = '<div class="stats stats-2">' +
+        tile('Implied volatility', fmt(iv, 'pct', 2), 'vs ' + fmt(st.v, 'pct', 2) + ' entered', '', true) +
+        tile('Vega at that vol', fmt(model.vega, 'money'), 'per +1% vol') + '</div>';
+      out.dataset.iv = String(iv);
+    }
+
+    function bind() {
+      var ids = ['o-spot', 'o-strike', 'o-days', 'o-vol', 'o-rate', 'o-div', 'o-model',
+                 'o-greek-pick', 'o-value-pick', 'o-mkt', 'o-mkt-type'];
+      var go = debounce(function () { render(); saveSoon(); }, 90);
+      for (var i = 0; i < ids.length; i++) {
+        $(ids[i]).addEventListener('input', go);
+        $(ids[i]).addEventListener('change', go);
+      }
+      $('o-atm').addEventListener('click', function () {
+        $('o-strike').value = $('o-spot').value; render(); saveSoon();
+      });
+      $('o-iv-use').addEventListener('click', function () {
+        var iv = parseFloat($('o-iv-out').dataset.iv || '');
+        if (isFinite(iv)) { $('o-vol').value = (iv * 100).toFixed(2); render(); saveSoon(); }
+      });
+    }
+
+    return { render: render, bind: bind };
+  })();
+
+  /* ======================================================================
+     2. STRATEGY BUILDER
+     ====================================================================== */
+
+  var strategy = (function () {
+    var self = {};
+    self.legs = [{ type: 'call', qty: 1, strike: 100 }];
+
+    var PRESETS = {
+      'Long call':        function (s) { return [{ type: 'call', qty: 1, strike: r(s) }]; },
+      'Long put':         function (s) { return [{ type: 'put', qty: 1, strike: r(s) }]; },
+      'Covered call':     function (s) { return [{ type: 'stock', qty: 1, strike: 0 },
+                                                 { type: 'call', qty: -1, strike: r(s * 1.05) }]; },
+      'Protective put':   function (s) { return [{ type: 'stock', qty: 1, strike: 0 },
+                                                 { type: 'put', qty: 1, strike: r(s * 0.95) }]; },
+      'Cash-secured put': function (s) { return [{ type: 'put', qty: -1, strike: r(s * 0.95) }]; },
+      'Bull call spread': function (s) { return [{ type: 'call', qty: 1, strike: r(s) },
+                                                 { type: 'call', qty: -1, strike: r(s * 1.1) }]; },
+      'Bear put spread':  function (s) { return [{ type: 'put', qty: 1, strike: r(s) },
+                                                 { type: 'put', qty: -1, strike: r(s * 0.9) }]; },
+      'Straddle':         function (s) { return [{ type: 'call', qty: 1, strike: r(s) },
+                                                 { type: 'put', qty: 1, strike: r(s) }]; },
+      'Strangle':         function (s) { return [{ type: 'call', qty: 1, strike: r(s * 1.1) },
+                                                 { type: 'put', qty: 1, strike: r(s * 0.9) }]; },
+      'Iron condor':      function (s) { return [{ type: 'put', qty: 1, strike: r(s * 0.85) },
+                                                 { type: 'put', qty: -1, strike: r(s * 0.95) },
+                                                 { type: 'call', qty: -1, strike: r(s * 1.05) },
+                                                 { type: 'call', qty: 1, strike: r(s * 1.15) }]; },
+      'Butterfly':        function (s) { return [{ type: 'call', qty: 1, strike: r(s * 0.9) },
+                                                 { type: 'call', qty: -2, strike: r(s) },
+                                                 { type: 'call', qty: 1, strike: r(s * 1.1) }]; },
+      'Collar':           function (s) { return [{ type: 'stock', qty: 1, strike: 0 },
+                                                 { type: 'put', qty: 1, strike: r(s * 0.92) },
+                                                 { type: 'call', qty: -1, strike: r(s * 1.08) }]; }
+    };
+    function r(x) { return Math.round(x * 2) / 2; }
+
+    function state() {
+      var days = Math.max(0, num('s-days', 45));
+      return {
+        S: Math.max(1e-6, num('s-spot', 100)), T: days / 365, days: days,
+        v: Math.max(0, num('s-vol', 28) / 100), r: num('s-rate', 0) / 100,
+        q: num('s-div', 0) / 100, mult: Math.max(1, num('s-mult', 100))
+      };
+    }
+
+    function premium(st, leg) {
+      if (leg.type === 'stock') return st.S;
+      return Q.bsm(st.S, leg.strike, st.T, st.r, st.q, st.v, leg.type).price;
+    }
+
+    // Total position P&L if the underlying finishes at ST.
+    function payoff(st, prem, ST) {
+      var t = 0;
+      for (var i = 0; i < self.legs.length; i++) {
+        var L = self.legs[i], v;
+        if (L.type === 'stock') v = ST;
+        else if (L.type === 'call') v = Math.max(ST - L.strike, 0);
+        else v = Math.max(L.strike - ST, 0);
+        t += L.qty * st.mult * (v - prem[i]);
+      }
+      return t;
+    }
+
+    // Mark-to-model P&L right now, with the spot moved to S.
+    function valueNow(st, prem, S) {
+      var t = 0;
+      for (var i = 0; i < self.legs.length; i++) {
+        var L = self.legs[i],
+            v = L.type === 'stock' ? S : Q.bsm(S, L.strike, st.T, st.r, st.q, st.v, L.type).price;
+        t += L.qty * st.mult * (v - prem[i]);
+      }
+      return t;
+    }
+
+    function renderLegs() {
+      var st = state(),
+          h = '<thead><tr><th>Instrument</th><th>Strike</th><th>Qty</th><th>Premium</th><th>Cost</th><th></th></tr></thead><tbody>';
+      for (var i = 0; i < self.legs.length; i++) {
+        var L = self.legs[i], pr = premium(st, L), cost = L.qty * st.mult * pr;
+        h += '<tr>' +
+          '<td style="min-width:104px"><select data-i="' + i + '" data-f="type">' +
+            '<option value="call"' + (L.type === 'call' ? ' selected' : '') + '>Call</option>' +
+            '<option value="put"' + (L.type === 'put' ? ' selected' : '') + '>Put</option>' +
+            '<option value="stock"' + (L.type === 'stock' ? ' selected' : '') + '>Stock</option>' +
+          '</select></td>' +
+          '<td><input type="number" step="any" data-i="' + i + '" data-f="strike" value="' +
+            (L.type === 'stock' ? '' : L.strike) + '"' + (L.type === 'stock' ? ' disabled' : '') + '></td>' +
+          '<td><input type="number" step="1" data-i="' + i + '" data-f="qty" value="' + L.qty + '"></td>' +
+          '<td>' + fmt(pr, 'money') + '</td>' +
+          '<td class="' + signClass(-cost) + '">' + fmt(cost, 'money') + '</td>' +
+          '<td style="width:30px"><button class="del-btn" data-del="' + i + '" aria-label="Remove leg">×</button></td>' +
+        '</tr>';
+      }
+      h += '</tbody>';
+      $('s-legs').innerHTML = h;
+    }
+
+    function render() {
+      var st = state();
+      renderLegs();
+
+      if (!self.legs.length) {
+        $('s-alert').innerHTML = alertBox('warn', 'Add a leg, or pick a preset, to see the position.');
+        $('s-stats').innerHTML = ''; $('s-greeks').innerHTML = '';
+        Chart.render('s-chart', { series: [], height: 300 });
+        return;
+      }
+      $('s-alert').innerHTML = st.days === 0
+        ? alertBox('warn', 'At expiry the position is worth its payoff, so "today" and "at expiry" coincide.') : '';
+
+      var prem = self.legs.map(function (L) { return premium(st, L); }),
+          netCost = 0, i;
+      for (i = 0; i < self.legs.length; i++) netCost += self.legs[i].qty * st.mult * prem[i];
+
+      // Critical points: the payoff is piecewise linear with kinks only at
+      // strikes, so evaluating there plus the ends captures every extreme.
+      var strikes = self.legs.filter(function (L) { return L.type !== 'stock'; })
+                             .map(function (L) { return L.strike; }),
+          allK = strikes.concat([st.S]),
+          maxK = Math.max.apply(null, allK), minK = Math.min.apply(null, allK),
+          far = maxK * 3 + 100,
+          crit = [0].concat(strikes.slice().sort(function (a, b) { return a - b; })).concat([far]),
+          vals = crit.map(function (x) { return payoff(st, prem, x); });
+
+      // Slope far out: positive means profit is unbounded to the upside.
+      var slopeUp = 0;
+      for (i = 0; i < self.legs.length; i++) {
+        var L = self.legs[i];
+        if (L.type === 'call' || L.type === 'stock') slopeUp += L.qty * st.mult;
+      }
+
+      var maxP = -Infinity, maxL = Infinity;
+      for (i = 0; i < vals.length - 1; i++) {           // exclude the synthetic far point
+        if (vals[i] > maxP) maxP = vals[i];
+        if (vals[i] < maxL) maxL = vals[i];
+      }
+      var maxProfit = slopeUp > 1e-9 ? null : Math.max(maxP, vals[vals.length - 1]),
+          maxLoss = slopeUp < -1e-9 ? null : Math.min(maxL, vals[vals.length - 1]);
+
+      // Break-evens: exact, by linear interpolation inside each segment.
+      var bes = [];
+      for (i = 0; i < crit.length - 1; i++) {
+        var y0 = vals[i], y1 = vals[i + 1];
+        if (y0 === 0) { bes.push(crit[i]); continue; }
+        if ((y0 < 0 && y1 > 0) || (y0 > 0 && y1 < 0)) {
+          bes.push(crit[i] + (crit[i + 1] - crit[i]) * (-y0) / (y1 - y0));
+        }
+      }
+      bes = bes.filter(function (b, ix) { return b >= 0 && bes.indexOf(b) === ix; });
+
+      $('s-stats').innerHTML =
+        tile(netCost >= 0 ? 'Net debit' : 'Net credit', fmt(Math.abs(netCost), 'money'),
+             netCost >= 0 ? 'Paid up front' : 'Received up front', '', true) +
+        tile('Max profit', maxProfit === null ? 'Unlimited' : fmt(maxProfit, 'money'),
+             maxProfit === null ? 'Rises with the underlying' : 'At expiry', 'pos') +
+        tile('Max loss', maxLoss === null ? 'Unlimited' : fmt(maxLoss, 'money'),
+             maxLoss === null ? 'Falls with the underlying' : 'At expiry', 'neg') +
+        tile('Break-even' + (bes.length > 1 ? 's' : ''),
+             bes.length ? bes.map(function (b) { return fmt(b, 'money0'); }).join(' · ') : 'None',
+             bes.length ? 'Spot at expiry' : 'Position never crosses zero');
+
+      // Net greeks: position-weighted, in contract terms.
+      var g = { delta: 0, gamma: 0, vega: 0, theta: 0, rho: 0 };
+      for (i = 0; i < self.legs.length; i++) {
+        var Lg = self.legs[i], k = Lg.qty * st.mult;
+        if (Lg.type === 'stock') { g.delta += k; continue; }
+        var gg = Q.bsm(st.S, Lg.strike, st.T, st.r, st.q, st.v, Lg.type);
+        g.delta += k * gg.delta; g.gamma += k * gg.gamma; g.vega += k * gg.vega;
+        g.theta += k * gg.theta; g.rho += k * gg.rho;
+      }
+      $('s-greeks').innerHTML =
+        '<thead><tr><th>Position greek</th><th>Value</th><th>Reads as</th></tr></thead><tbody>' +
+        gRow('Delta', g.delta, 'Position gains ' + fmt(g.delta, 'money') + ' per $1 rise in spot') +
+        gRow('Gamma', g.gamma, 'Delta changes by ' + fmt(g.gamma, 'num', 2) + ' per $1 rise') +
+        gRow('Vega', g.vega, fmt(g.vega, 'money') + ' per +1% implied volatility') +
+        gRow('Theta', g.theta, fmt(g.theta, 'money') + ' per calendar day') +
+        gRow('Rho', g.rho, fmt(g.rho, 'money') + ' per +1% in rates') +
+        '</tbody>';
+
+      // Chart
+      var sd = st.v * Math.sqrt(Math.max(st.T, 1 / 365)),
+          spread = Math.max(0.3, 2.4 * sd),
+          lo = Math.max(0.01, minK * (1 - spread)),
+          hi = maxK * (1 + spread),
+          n = 120, expiry = [], now = [], tbl = [];
+      for (i = 0; i <= n; i++) {
+        var S = lo + (hi - lo) * i / n,
+            pe = payoff(st, prem, S),
+            pn = valueNow(st, prem, S);
+        expiry.push({ x: S, y: pe });
+        now.push({ x: S, y: pn });
+        if (i % 8 === 0) tbl.push([fmt(S, 'money0'), fmt(pe, 'money'), fmt(pn, 'money')]);
+      }
+      var vlines = [{ x: st.S, label: 'Spot', color: C('--ink-muted') }];
+      for (i = 0; i < bes.length && i < 4; i++) {
+        if (bes[i] >= lo && bes[i] <= hi) vlines.push({ x: bes[i], label: 'B/E', color: C('--axis') });
+      }
+      Chart.render('s-chart', {
+        height: 340,
+        splitFill: { points: expiry },
+        series: [
+          { name: 'At expiry', color: C('--s1'), points: expiry },
+          { name: 'Today (mark to model)', color: C('--s2'), points: now }
+        ],
+        zeroLine: true, vlines: vlines,
+        xLabel: 'Spot at expiry', yLabel: 'Profit / loss', xFmt: 'money0', yFmt: 'money0',
+        legendNote: 'Green area = profit, red = loss.',
+        table: { columns: ['Spot', 'P&L at expiry', 'P&L today'], rows: tbl },
+        aria: 'Profit and loss against spot price'
+      });
+    }
+
+    function gRow(name, v, reads) {
+      return '<tr><td><b>' + name + '</b></td><td class="' + signClass(v) + '">' +
+        fmt(v, 'num', 2) + '</td><td style="text-align:left;color:var(--ink-muted);font-size:11.5px;white-space:normal">' +
+        esc(reads) + '</td></tr>';
+    }
+
+    function bind() {
+      var go = debounce(function () { render(); saveSoon(); }, 90);
+      var ids = ['s-spot', 's-days', 's-vol', 's-rate', 's-div', 's-mult'];
+      for (var i = 0; i < ids.length; i++) $(ids[i]).addEventListener('input', go);
+
+      $('s-legs').addEventListener('input', function (e) {
+        var t = e.target, i = +t.dataset.i;
+        if (isNaN(i) || !self.legs[i]) return;
+        if (t.dataset.f === 'strike') self.legs[i].strike = parseFloat(t.value) || 0;
+        if (t.dataset.f === 'qty') self.legs[i].qty = Math.round(parseFloat(t.value) || 0);
+        go();
+      });
+      $('s-legs').addEventListener('change', function (e) {
+        var t = e.target, i = +t.dataset.i;
+        if (isNaN(i) || !self.legs[i] || t.dataset.f !== 'type') return;
+        self.legs[i].type = t.value;
+        if (t.value !== 'stock' && !self.legs[i].strike) self.legs[i].strike = num('s-spot', 100);
+        render(); saveSoon();
+      });
+      $('s-legs').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-del]');
+        if (!b) return;
+        self.legs.splice(+b.dataset.del, 1);
+        render(); saveSoon();
+      });
+      $('s-add').addEventListener('click', function () {
+        self.legs.push({ type: 'call', qty: 1, strike: r(num('s-spot', 100)) });
+        render(); saveSoon();
+      });
+
+      var chips = Object.keys(PRESETS).map(function (k) {
+        return '<button class="chip" data-p="' + esc(k) + '">' + esc(k) + '</button>';
+      }).join('');
+      $('s-presets').innerHTML = chips;
+      $('s-presets').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-p]');
+        if (!b) return;
+        self.legs = PRESETS[b.dataset.p](num('s-spot', 100));
+        $('s-title').textContent = b.dataset.p;
+        render(); saveSoon();
+      });
+    }
+
+    self.render = render; self.bind = bind;
+    return self;
+  })();
+
+  /* ======================================================================
+     3. PORTFOLIO
+     ====================================================================== */
+
+  var pf = (function () {
+    var self = {};
+    self.assets = [
+      { name: 'US equities',    mu: 8.0, vol: 16.0, w: 45 },
+      { name: 'Intl equities',  mu: 7.0, vol: 18.0, w: 20 },
+      { name: 'Bonds',          mu: 4.0, vol: 6.0,  w: 25 },
+      { name: 'Real estate',    mu: 6.5, vol: 14.0, w: 10 }
+    ];
+    self.corr = [
+      [1, 0.80, 0.10, 0.60],
+      [0.80, 1, 0.05, 0.55],
+      [0.10, 0.05, 1, 0.15],
+      [0.60, 0.55, 0.15, 1]
+    ];
+
+    function renderAssets() {
+      var h = '<thead><tr><th>Asset</th><th>Expected return</th><th>Volatility</th><th>Weight</th><th></th></tr></thead><tbody>';
+      for (var i = 0; i < self.assets.length; i++) {
+        var a = self.assets[i];
+        h += '<tr>' +
+          '<td style="min-width:130px"><input type="text" data-i="' + i + '" data-f="name" value="' +
+            esc(a.name) + '" style="text-align:left"></td>' +
+          '<td><input type="number" step="any" data-i="' + i + '" data-f="mu" value="' + a.mu + '"></td>' +
+          '<td><input type="number" step="any" data-i="' + i + '" data-f="vol" value="' + a.vol + '"></td>' +
+          '<td><input type="number" step="any" data-i="' + i + '" data-f="w" value="' + a.w + '"></td>' +
+          '<td style="width:30px">' + (self.assets.length > 2 ?
+            '<button class="del-btn" data-del="' + i + '" aria-label="Remove asset">×</button>' : '') + '</td>' +
+        '</tr>';
+      }
+      h += '</tbody>';
+      $('pf-assets').innerHTML = h;
+    }
+
+    function renderCorr() {
+      var n = self.assets.length,
+          h = '<thead><tr><th></th>';
+      for (var j = 0; j < n; j++) h += '<th style="text-align:center">' + esc(short(self.assets[j].name)) + '</th>';
+      h += '</tr></thead><tbody>';
+      for (var i = 0; i < n; i++) {
+        h += '<tr><th style="text-align:left">' + esc(short(self.assets[i].name)) + '</th>';
+        for (j = 0; j < n; j++) {
+          var v = self.corr[i][j];
+          h += '<td><input type="number" step="0.05" min="-1" max="1" value="' + (+v).toFixed(2) +
+               '" data-r="' + i + '" data-c="' + j + '"' + (j >= i ? '' : ' disabled') + '></td>';
+        }
+        h += '</tr>';
+      }
+      $('pf-corr').innerHTML = h + '</tbody>';
+    }
+    function short(s) { return s.length > 9 ? s.slice(0, 8) + '…' : s; }
+    function chartLabel(s) { return s.length > 16 ? s.slice(0, 15) + '…' : s; }
+
+    function render() {
+      renderAssets(); renderCorr();
+      var n = self.assets.length,
+          rf = num('pf-rf', 4.25) / 100,
+          longOnly = segValue('pf-constraint') === 'long',
+          mu = self.assets.map(function (a) { return a.mu / 100; }),
+          vols = self.assets.map(function (a) { return Math.max(a.vol / 100, 1e-6); }),
+          w = self.assets.map(function (a) { return a.w / 100; }),
+          cov = Q.covariance(vols, self.corr);
+
+      $('pf-constraint-hint').textContent = longOnly
+        ? 'Weights are held between 0% and 100%.'
+        : 'Negative weights allowed — short positions fund larger longs.';
+
+      if (!Q.isPositiveDefinite(cov)) {
+        $('pf-corr-alert').innerHTML = alertBox('err',
+          'These correlations are mutually impossible — no set of real assets can have them all at once. ' +
+          'Nudge the strongest pairs toward zero.');
+        $('pf-stats').innerHTML = ''; $('pf-optimal').innerHTML = '';
+        Chart.render('pf-chart', { series: [], height: 340 });
+        return;
+      }
+      $('pf-corr-alert').innerHTML = '';
+
+      var sumW = w.reduce(function (a, b) { return a + b; }, 0);
+      $('pf-weight-alert').innerHTML = Math.abs(sumW - 1) > 0.001
+        ? alertBox('warn', 'Weights total <b>' + fmt(sumW, 'pct') + '</b>. ' +
+            (sumW > 1 ? 'Above 100% means borrowing to invest.' : 'Below 100% leaves the rest in cash earning nothing in this model.') +
+            ' Figures below use the weights exactly as entered.')
+        : '';
+
+      var mine = Q.portfolioStats(w, mu, cov, rf);
+      $('pf-stats').innerHTML =
+        tile('Expected return', fmt(mine.ret, 'pct2'), 'Per year', '', true) +
+        tile('Volatility', fmt(mine.vol, 'pct2'), 'Annualised standard deviation', '', true) +
+        tile('Sharpe ratio', fmt(mine.sharpe, 'num', 3), 'Excess return per unit of risk') +
+        tile('Diversification', fmt(1 - mine.vol / dot(w.map(Math.abs), vols), 'pct'),
+             'Risk saved vs the weighted average');
+
+      // Optimal portfolios
+      var mv = longOnly ? Q.longOnly(mu, cov, rf, 'minvol') : Q.minVariance(mu, cov),
+          tg = longOnly ? Q.longOnly(mu, cov, rf, 'sharpe') : Q.tangency(mu, cov, rf);
+
+      var rows = '';
+      if (mv && tg) {
+        var mvS = Q.portfolioStats(mv, mu, cov, rf), tgS = Q.portfolioStats(tg, mu, cov, rf);
+        var head = '<thead><tr><th>Portfolio</th><th>Return</th><th>Volatility</th><th>Sharpe</th>';
+        for (var i = 0; i < n; i++) head += '<th>' + esc(short(self.assets[i].name)) + '</th>';
+        head += '</tr></thead><tbody>';
+        rows = head +
+          wRow('Yours', mine, w) +
+          wRow('Minimum variance', mvS, mv) +
+          wRow('Maximum Sharpe', tgS, tg) + '</tbody>';
+      } else {
+        rows = '<tbody><tr><td>Could not solve — check the inputs.</td></tr></tbody>';
+      }
+      $('pf-optimal').innerHTML = rows;
+
+      renderChart(mu, vols, cov, rf, w, mv, tg, longOnly, mine);
+    }
+
+    function dot(a, b) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+
+    function wRow(label, st, w) {
+      var h = '<tr><td><b>' + esc(label) + '</b></td><td>' + fmt(st.ret, 'pct2') + '</td><td>' +
+              fmt(st.vol, 'pct2') + '</td><td>' + fmt(st.sharpe, 'num', 3) + '</td>';
+      for (var i = 0; i < w.length; i++) {
+        h += '<td class="' + (w[i] < -1e-6 ? 'neg' : '') + '">' + fmt(w[i], 'pct') + '</td>';
+      }
+      return h + '</tr>';
+    }
+
+    function renderChart(mu, vols, cov, rf, w, mv, tg, longOnly, mine) {
+      var pts = [], curve = [], i, tbl = [];
+
+      for (i = 0; i < mu.length; i++) {
+        pts.push({ x: vols[i], y: mu[i], color: C('--s2'), label: chartLabel(self.assets[i].name), r: 5 });
+      }
+
+      if (longOnly) {
+        // Sweep risk aversion to trace the constrained frontier.
+        var lams = [];
+        for (i = 0; i <= 60; i++) lams.push(Math.pow(10, -2 + 5 * i / 60));
+        var seen = {};
+        for (i = 0; i < lams.length; i++) {
+          var wl = Q.longOnlyMV(mu, cov, lams[i]), s = Q.portfolioStats(wl, mu, cov, rf),
+              key = s.vol.toFixed(6);
+          if (seen[key]) continue;
+          seen[key] = 1;
+          curve.push({ x: s.vol, y: s.ret });
+        }
+        curve.sort(function (a, b) { return a.x - b.x; });
+      } else {
+        var fc = Q.frontierCoefficients(mu, cov);
+        if (fc) {
+          var loR = Math.min.apply(null, mu) - 0.02, hiR = Math.max.apply(null, mu) + 0.02;
+          for (i = 0; i <= 90; i++) {
+            var m = loR + (hiR - loR) * i / 90,
+                sig = Math.sqrt(Math.max((fc.A * m * m - 2 * fc.B * m + fc.C) / fc.D, 0));
+            curve.push({ x: sig, y: m });
+          }
+        }
+      }
+
+      var series = [];
+      if (curve.length) series.push({ name: 'Efficient frontier', color: C('--s1'), points: curve });
+
+      // Capital allocation line: cash blended with the tangency portfolio.
+      if (tg) {
+        var tgS = Q.portfolioStats(tg, mu, cov, rf), maxV = 0;
+        for (i = 0; i < curve.length; i++) maxV = Math.max(maxV, curve[i].x);
+        maxV = Math.max(maxV, tgS.vol * 1.25, mine.vol * 1.1);
+        if (tgS.vol > 1e-9) {
+          series.push({
+            name: 'Capital allocation line', color: C('--s3'), width: 2,
+            points: [{ x: 0, y: rf }, { x: maxV, y: rf + tgS.sharpe * maxV }]
+          });
+        }
+        pts.push({ x: tgS.vol, y: tgS.ret, color: C('--s3'), label: 'Max Sharpe', r: 6 });
+        tbl.push(['Maximum Sharpe', fmt(tgS.vol, 'pct2'), fmt(tgS.ret, 'pct2'), fmt(tgS.sharpe, 'num', 3)]);
+      }
+      if (mv) {
+        var mvS = Q.portfolioStats(mv, mu, cov, rf);
+        pts.push({ x: mvS.vol, y: mvS.ret, color: C('--s1'), label: 'Min variance', r: 6 });
+        tbl.unshift(['Minimum variance', fmt(mvS.vol, 'pct2'), fmt(mvS.ret, 'pct2'), fmt(mvS.sharpe, 'num', 3)]);
+      }
+      pts.push({ x: mine.vol, y: mine.ret, color: C('--ink'), label: 'Yours', r: 6 });
+      tbl.unshift(['Your portfolio', fmt(mine.vol, 'pct2'), fmt(mine.ret, 'pct2'), fmt(mine.sharpe, 'num', 3)]);
+      for (var k = 0; k < self.assets.length; k++) {
+        tbl.push([self.assets[k].name, fmt(vols[k], 'pct2'), fmt(mu[k], 'pct2'),
+                  fmt((mu[k] - rf) / vols[k], 'num', 3)]);
+      }
+
+      Chart.render('pf-chart', {
+        height: 360, series: series, points: pts,
+        xLabel: 'Volatility (risk)', yLabel: 'Expected return',
+        xFmt: 'pct', yFmt: 'pct', yFloorZero: false,
+        legendExtra: [{ name: 'Individual assets', color: C('--s2') },
+                      { name: 'Your portfolio', color: C('--ink') }],
+        legendNote: longOnly ? 'Long-only frontier.' : 'Shorting allowed.',
+        table: { columns: ['Portfolio', 'Volatility', 'Return', 'Sharpe'], rows: tbl },
+        aria: 'Efficient frontier of return against volatility'
+      });
+    }
+
+    function bind() {
+      var go = debounce(function () { render(); saveSoon(); }, 140);
+
+      $('pf-assets').addEventListener('input', function (e) {
+        var t = e.target, i = +t.dataset.i;
+        if (isNaN(i) || !self.assets[i]) return;
+        var f = t.dataset.f;
+        self.assets[i][f] = f === 'name' ? t.value : (parseFloat(t.value) || 0);
+        if (f === 'name') { renderCorr(); saveSoon(); return; }   // keep focus in the name box
+        go();
+      });
+      $('pf-assets').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-del]');
+        if (!b) return;
+        var i = +b.dataset.del;
+        self.assets.splice(i, 1);
+        self.corr.splice(i, 1);
+        for (var j = 0; j < self.corr.length; j++) self.corr[j].splice(i, 1);
+        render(); saveSoon();
+      });
+      $('pf-add').addEventListener('click', function () {
+        var n = self.assets.length;
+        self.assets.push({ name: 'Asset ' + (n + 1), mu: 6, vol: 12, w: 0 });
+        for (var i = 0; i < self.corr.length; i++) self.corr[i].push(0.2);
+        var row = new Array(n + 1).fill(0.2); row[n] = 1;
+        self.corr.push(row);
+        render(); saveSoon();
+      });
+      $('pf-corr').addEventListener('input', function (e) {
+        var t = e.target, i = +t.dataset.r, j = +t.dataset.c;
+        if (isNaN(i) || isNaN(j)) return;
+        var v = parseFloat(t.value);
+        if (!isFinite(v)) return;
+        v = Math.max(-1, Math.min(1, v));
+        self.corr[i][j] = v; self.corr[j][i] = v;      // keep the matrix symmetric
+        var mirror = $('pf-corr').querySelector('[data-r="' + j + '"][data-c="' + i + '"]');
+        if (mirror && mirror !== t) mirror.value = v.toFixed(2);
+        go();
+      });
+      seg('pf-constraint', function () { render(); saveSoon(); });
+      $('pf-rf').addEventListener('input', go);
+      $('pf-equal').addEventListener('click', function () {
+        var eq = 100 / self.assets.length;
+        for (var i = 0; i < self.assets.length; i++) self.assets[i].w = Math.round(eq * 10) / 10;
+        render(); saveSoon();
+      });
+      $('pf-example').addEventListener('click', function () {
+        self.assets = [
+          { name: 'US equities',   mu: 8.0, vol: 16.0, w: 45 },
+          { name: 'Intl equities', mu: 7.0, vol: 18.0, w: 20 },
+          { name: 'Bonds',         mu: 4.0, vol: 6.0,  w: 25 },
+          { name: 'Real estate',   mu: 6.5, vol: 14.0, w: 10 }
+        ];
+        self.corr = [[1, 0.80, 0.10, 0.60], [0.80, 1, 0.05, 0.55],
+                     [0.10, 0.05, 1, 0.15], [0.60, 0.55, 0.15, 1]];
+        render(); saveSoon();
+      });
+    }
+
+    self.render = render; self.bind = bind;
+    return self;
+  })();
+
+  /* ======================================================================
+     4. MONTE CARLO
+     ====================================================================== */
+
+  var mc = (function () {
+    function run() {
+      var years = Math.max(0.1, num('mc-years', 20)),
+          perYear = +$('mc-freq').value,
+          steps = Math.max(1, Math.min(3000, Math.round(years * perYear))),
+          paths = +$('mc-paths').value,
+          start = num('mc-start', 10000),
+          contrib = num('mc-contrib', 0);
+
+      $('mc-horizon').textContent = years % 1 === 0 ? years : years.toFixed(1);
+
+      var t0 = performance.now(),
+          res = Q.simulateGBM({
+            start: start, drift: num('mc-drift', 8) / 100, vol: Math.max(0, num('mc-vol', 16) / 100),
+            years: years, steps: steps, paths: paths, contribution: contrib,
+            seed: Math.round(num('mc-seed', 42)) || 1
+          }),
+          ms = Math.round(performance.now() - t0);
+
+      $('mc-meta').textContent = paths.toLocaleString('en-US') + ' paths · ' + steps +
+        ' steps · ' + ms + ' ms';
+
+      var s = res.stats, invested = res.invested;
+      $('mc-stats').innerHTML =
+        tile('Median outcome', fmt(s.median, 'money0'), 'Half of paths land above this', '', true) +
+        tile('Mean outcome', fmt(s.mean, 'money0'), 'Pulled up by the best paths', '', true) +
+        tile('Poor case (5th pct)', fmt(s.p5, 'money0'), '1 path in 20 does worse') +
+        tile('Good case (95th pct)', fmt(s.p95, 'money0'), '1 path in 20 does better') +
+        tile('Chance of a loss', fmt(s.probLoss, 'pct'), 'Ends below the ' + fmt(invested, 'money0') + ' put in',
+             s.probLoss > 0.25 ? 'neg' : '') +
+        tile('Average worst 5%', fmt(s.cvar5, 'money0'), 'Mean of the bottom tail') +
+        tile('Total put in', fmt(invested, 'money0'),
+             contrib ? fmt(start, 'money0') + ' + ' + fmt(contrib, 'money0') + ' × ' + steps : 'Single lump sum') +
+        tile('Median multiple', fmt(s.median / invested, 'num', 2) + '×', 'Median ÷ total put in');
+
+      // Fan chart: ordered percentile bands, light to dark toward the middle.
+      var xs = [];
+      for (var i = 0; i <= steps; i++) xs.push(i / perYear);
+      var b = res.bands,
+          median = xs.map(function (x, k) { return { x: x, y: b[2][k] }; }),
+          meanS = xs.map(function (x, k) { return { x: x, y: res.mean[k] }; });
+
+      var tbl = [], stride = Math.max(1, Math.round(steps / 12));
+      for (i = 0; i <= steps; i += stride) {
+        tbl.push([xs[i].toFixed(1), fmt(b[0][i], 'money0'), fmt(b[1][i], 'money0'),
+                  fmt(b[2][i], 'money0'), fmt(b[3][i], 'money0'), fmt(b[4][i], 'money0')]);
+      }
+
+      Chart.render('mc-chart-fan', {
+        height: 330,
+        bands: [
+          { x: xs, lo: b[0], hi: b[4], color: C('--band-outer'), label: '5th–95th percentile' },
+          { x: xs, lo: b[1], hi: b[3], color: C('--band-inner'), label: '25th–75th percentile' }
+        ],
+        series: [
+          { name: 'Median path', color: C('--s1'), points: median },
+          { name: 'Mean', color: C('--s2'), points: meanS, width: 1.5 }
+        ],
+        hlines: contrib ? [] : [{ y: invested, label: 'Starting value', color: C('--axis') }],
+        xLabel: 'Years', yLabel: 'Portfolio value', xFmt: 'num', xDp: 1, yFmt: 'money0',
+        yFloorZero: true,
+        table: { columns: ['Year', '5th', '25th', 'Median', '75th', '95th'], rows: tbl },
+        aria: 'Simulated portfolio value over time with percentile bands'
+      });
+
+      // Terminal distribution
+      var term = res.terminal, lo = term[0], hi = term[term.length - 1],
+          bins = 44, counts = new Array(bins).fill(0), width = (hi - lo) / bins || 1;
+      for (i = 0; i < term.length; i++) {
+        var ix = Math.min(bins - 1, Math.floor((term[i] - lo) / width));
+        counts[ix]++;
+      }
+      var labels = counts.map(function (_, k) { return fmt(lo + (k + 0.5) * width, 'money0'); }),
+          pctOf = counts.map(function (c2) { return c2 / term.length; }),
+          hrows = [];
+      for (i = 0; i < bins; i += 4) {
+        hrows.push([labels[i], counts[i].toLocaleString('en-US'), fmt(pctOf[i], 'pct2')]);
+      }
+      Chart.render('mc-chart-hist', {
+        height: 268,
+        bars: { values: pctOf, labels: labels, color: C('--s1'), name: 'Share of paths' },
+        xLabel: 'Final value', yLabel: 'Share of paths', yFmt: 'pct', yDp: 1,
+        legendNote: 'Median ' + fmt(s.median, 'money0') + ' · mean ' + fmt(s.mean, 'money0') +
+                    ' — the long right tail is what separates them.',
+        table: { columns: ['Final value', 'Paths', 'Share'], rows: hrows },
+        aria: 'Distribution of final portfolio values'
+      });
+    }
+
+    function bind() {
+      $('mc-run').addEventListener('click', function () { run(); saveSoon(); });
+      $('mc-reseed').addEventListener('click', function () {
+        $('mc-seed').value = Math.floor(Math.random() * 100000);
+        run(); saveSoon();
+      });
+      var ids = ['mc-start', 'mc-drift', 'mc-vol', 'mc-years', 'mc-freq', 'mc-contrib', 'mc-paths'];
+      var go = debounce(function () { run(); saveSoon(); }, 260);
+      for (var i = 0; i < ids.length; i++) {
+        $(ids[i]).addEventListener('input', go);
+        $(ids[i]).addEventListener('change', go);
+      }
+    }
+    return { render: run, bind: bind };
+  })();
+
+  /* ======================================================================
+     5. PERFORMANCE & RISK
+     ====================================================================== */
+
+  var perf = (function () {
+    function parse(text) {
+      if (!text) return [];
+      return text.split(/[\s,;]+/).map(function (t) { return parseFloat(t); })
+                 .filter(function (v) { return isFinite(v); });
+    }
+
+    function toReturns(vals, kind) {
+      if (kind === 'return') return vals.map(function (v) { return v / 100; });
+      return Q.pricesToReturns(vals);
+    }
+
+    function render() {
+      var kind = segValue('pe-kind'),
+          ppy = +$('pe-freq').value,
+          rf = num('pe-rf', 0) / 100,
+          raw = parse($('pe-data').value),
+          rawB = parse($('pe-bench').value);
+
+      $('pe-count').textContent = raw.length ? raw.length + ' values read' : '—';
+      $('pe-bench-count').textContent = rawB.length
+        ? rawB.length + ' values read'
+        : 'Add a benchmark for beta, alpha and tracking error.';
+
+      var need = kind === 'price' ? 3 : 2;
+      if (raw.length < need) {
+        $('pe-alert').innerHTML = alertBox('warn',
+          'Paste at least ' + need + ' values to analyse — one per line, or comma separated. ' +
+          'The <b>Load example</b> button fills in a sample series.');
+        clear();
+        return;
+      }
+      if (kind === 'price' && raw.some(function (v) { return v <= 0; })) {
+        $('pe-alert').innerHTML = alertBox('err', 'Prices must all be positive. Switch to <b>Returns %</b> if these are percentage changes.');
+        clear();
+        return;
+      }
+
+      var rets = toReturns(raw, kind);
+      if (rets.some(function (v) { return v <= -1; })) {
+        $('pe-alert').innerHTML = alertBox('err', 'A return of −100% or worse wipes the position out entirely, so the compounded series cannot continue.');
+        clear();
+        return;
+      }
+      $('pe-alert').innerHTML = '';
+
+      var P = Q.performance(rets, ppy, rf);
+      if (!P) { clear(); return; }
+
+      var unit = { 252: 'day', 52: 'week', 12: 'month', 4: 'quarter', 1: 'year' }[ppy];
+      $('pe-meta').textContent = P.n + ' ' + unit + 's · ' + P.years.toFixed(1) + ' years';
+
+      $('pe-stats').innerHTML =
+        tile('Total return', fmt(P.totalReturn, 'pct2'), 'Over the whole period', signClass(P.totalReturn), true) +
+        tile('Annualised', fmt(P.cagr, 'pct2'), 'Compound growth rate', signClass(P.cagr), true) +
+        tile('Volatility', fmt(P.vol, 'pct2'), 'Annualised') +
+        tile('Sharpe ratio', fmt(P.sharpe, 'num', 2), 'vs ' + fmt(rf, 'pct') + ' risk-free', signClass(P.sharpe)) +
+        tile('Sortino ratio', fmt(P.sortino, 'num', 2), 'Penalises downside only') +
+        tile('Max drawdown', fmt(P.maxDrawdown, 'pct2'), P.maxDrawdownLength + ' ' + unit + 's underwater', 'neg') +
+        tile('Calmar ratio', fmt(P.calmar, 'num', 2), 'Return per unit of drawdown') +
+        tile('Hit rate', fmt(P.hitRate, 'pct'), 'Share of positive ' + unit + 's') +
+        tile('Best ' + unit, fmt(P.best, 'pct2'), '', 'pos') +
+        tile('Worst ' + unit, fmt(P.worst, 'pct2'), '', 'neg') +
+        tile('Skew', fmt(P.skew, 'num', 2), P.skew < 0 ? 'Left tail is longer' : 'Right tail is longer') +
+        tile('Excess kurtosis', fmt(P.kurtosis, 'num', 2),
+             P.kurtosis > 1 ? 'Fatter tails than normal' : 'Near-normal tails');
+
+      // Growth of 100
+      var curve = P.curve.map(function (v, i) { return { x: i, y: v * 100 }; }),
+          series = [{ name: 'Portfolio', color: C('--s1'), points: curve }],
+          benchP = null;
+
+      if (rawB.length >= need) {
+        var bRets = toReturns(rawB, kind);
+        if (bRets.length >= 2) {
+          var bCurve = Q.equityCurve(bRets, 1).map(function (v, i) { return { x: i, y: v * 100 }; });
+          series.push({ name: 'Benchmark', color: C('--s2'), points: bCurve });
+          benchP = bRets;
+        }
+      }
+
+      var ctbl = [], cstride = Math.max(1, Math.round(curve.length / 15));
+      for (var i = 0; i < curve.length; i += cstride) {
+        ctbl.push([String(i), fmt(curve[i].y, 'num', 2),
+                   fmt(P.drawdown[i], 'pct2')]);
+      }
+      Chart.render('pe-chart-curve', {
+        height: 300, series: series,
+        hlines: [{ y: 100, label: 'Start', color: C('--axis') }],
+        xLabel: unit.charAt(0).toUpperCase() + unit.slice(1) + ' number',
+        yLabel: 'Value of 100', xFmt: 'int', yFmt: 'num',
+        table: { columns: ['Period', 'Value of 100', 'Drawdown'], rows: ctbl },
+        aria: 'Cumulative growth of 100 units'
+      });
+
+      // Drawdown
+      Chart.render('pe-chart-dd', {
+        height: 250,
+        series: [{ name: 'Drawdown', color: C('--critical'), fill: true, fillOpacity: 0.18,
+                   points: P.drawdown.map(function (v, k) { return { x: k, y: v }; }) }],
+        hlines: [{ y: P.maxDrawdown, label: 'Worst ' + fmt(P.maxDrawdown, 'pct2'), color: C('--axis') }],
+        xLabel: unit.charAt(0).toUpperCase() + unit.slice(1) + ' number', yLabel: 'Below peak',
+        xFmt: 'int', yFmt: 'pct',
+        table: { columns: ['Period', 'Drawdown'],
+                 rows: P.drawdown.filter(function (_, k) { return k % cstride === 0; })
+                                 .map(function (v, k) { return [String(k * cstride), fmt(v, 'pct2')]; }) },
+        aria: 'Drawdown below the previous peak'
+      });
+
+      // Return distribution with VaR cutoffs
+      var lo = P.worst, hi = P.best, bins = 30, width = (hi - lo) / bins || 1,
+          counts = new Array(bins).fill(0);
+      for (i = 0; i < rets.length; i++) {
+        counts[Math.min(bins - 1, Math.floor((rets[i] - lo) / width))]++;
+      }
+      var labels = counts.map(function (_, k) { return fmt(lo + (k + 0.5) * width, 'pct', 1); }),
+          shares = counts.map(function (c2) { return c2 / rets.length; }),
+          colors = counts.map(function (_, k) {
+            return (lo + (k + 0.5) * width) < 0 ? C('--s2') : C('--s1');
+          });
+      Chart.render('pe-chart-hist', {
+        height: 250,
+        bars: { values: shares, labels: labels, colors: colors, name: 'Share of periods' },
+        yLabel: 'Share of ' + unit + 's', yFmt: 'pct', yDp: 0,
+        xLabel: 'Return',
+        legendExtra: [{ name: 'Negative ' + unit + 's', color: C('--s2') },
+                      { name: 'Positive ' + unit + 's', color: C('--s1') }],
+        legendNote: 'VaR 95% = ' + fmt(P.var95, 'pct2') + ' loss in a bad ' + unit + '.',
+        table: { columns: ['Return bucket', 'Periods', 'Share'],
+                 rows: counts.map(function (c2, k) { return [labels[k], String(c2), fmt(shares[k], 'pct2')]; })
+                             .filter(function (_, k) { return k % 2 === 0; }) },
+        aria: 'Distribution of periodic returns'
+      });
+
+      // Tail risk table
+      $('pe-var').innerHTML =
+        '<thead><tr><th>Measure</th><th>Historical</th><th>Parametric (normal)</th><th>What it means</th></tr></thead><tbody>' +
+        varRow('VaR 95%', P.var95, P.pvar95, 'Exceeded in 1 ' + unit + ' out of 20') +
+        varRow('VaR 99%', P.var99, P.pvar99, 'Exceeded in 1 ' + unit + ' out of 100') +
+        varRow('CVaR 95%', P.cvar95, null, 'Average loss across the worst 5%') +
+        varRow('CVaR 99%', P.cvar99, null, 'Average loss across the worst 1%') +
+        '</tbody>';
+
+      // Benchmark comparison
+      if (benchP) {
+        var cap = Q.capm(rets, benchP, ppy, rf);
+        if (cap) {
+          $('pe-capm-card').hidden = false;
+          var bp = Q.performance(benchP, ppy, rf);
+          $('pe-capm').innerHTML =
+            tile('Beta', fmt(cap.beta, 'num', 2),
+                 cap.beta > 1 ? 'Moves more than the benchmark' : 'Moves less than the benchmark', '', true) +
+            tile('Alpha', fmt(cap.alpha, 'pct2'), 'Annualised, risk-adjusted', signClass(cap.alpha), true) +
+            tile('Correlation', fmt(cap.correlation, 'num', 2), 'R² = ' + fmt(cap.r2, 'num', 2)) +
+            tile('Tracking error', fmt(cap.trackingError, 'pct2'), 'Annualised') +
+            tile('Information ratio', fmt(cap.informationRatio, 'num', 2), 'Active return per unit of tracking error') +
+            tile('Benchmark return', bp ? fmt(bp.cagr, 'pct2') : '—', 'Annualised, same period') +
+            tile('Active return', bp ? fmt(P.cagr - bp.cagr, 'pct2') : '—', 'Your return minus benchmark',
+                 bp ? signClass(P.cagr - bp.cagr) : '') +
+            tile('Benchmark volatility', bp ? fmt(bp.vol, 'pct2') : '—', 'Annualised');
+        } else {
+          $('pe-capm-card').hidden = true;
+        }
+      } else {
+        $('pe-capm-card').hidden = true;
+      }
+    }
+
+    function varRow(name, hist, para, note) {
+      return '<tr><td><b>' + name + '</b></td><td class="neg">' + fmt(hist, 'pct2') +
+        '</td><td>' + (para === null ? '&mdash;' : fmt(para, 'pct2')) +
+        '</td><td style="text-align:left;color:var(--ink-muted);font-size:11.5px;white-space:normal">' +
+        esc(note) + '</td></tr>';
+    }
+
+    function clear() {
+      $('pe-stats').innerHTML = ''; $('pe-var').innerHTML = '';
+      $('pe-meta').textContent = ''; $('pe-capm-card').hidden = true;
+      ['pe-chart-curve', 'pe-chart-dd', 'pe-chart-hist'].forEach(function (id) {
+        Chart.render(id, { series: [], height: 240 });
+      });
+    }
+
+    // A plausible monthly track record: positive drift, one bad stretch,
+    // and a benchmark it mostly tracks - enough to make every stat non-trivial.
+    function example() {
+      var rand = Q.rng(7), g = Q.gaussian(rand), port = [], bench = [];
+      for (var i = 0; i < 72; i++) {
+        var market = 0.007 + 0.035 * g();
+        if (i >= 30 && i < 36) market -= 0.045;                 // a drawdown period
+        bench.push(market);
+        port.push(0.0015 + 1.12 * market + 0.018 * g());
+      }
+      $('pe-data').value = port.map(function (v) { return (v * 100).toFixed(2); }).join('\n');
+      $('pe-bench').value = bench.map(function (v) { return (v * 100).toFixed(2); }).join('\n');
+      var bs = $('pe-kind').querySelectorAll('button');
+      for (i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', String(bs[i].dataset.v === 'return'));
+      $('pe-freq').value = '12';
+    }
+
+    function bind() {
+      var go = debounce(function () { render(); saveSoon(); }, 200);
+      ['pe-data', 'pe-bench', 'pe-rf'].forEach(function (id) { $(id).addEventListener('input', go); });
+      $('pe-freq').addEventListener('change', go);
+      seg('pe-kind', function () { render(); saveSoon(); });
+      $('pe-example').addEventListener('click', function () { example(); render(); saveSoon(); });
+      $('pe-clear').addEventListener('click', function () {
+        $('pe-data').value = ''; $('pe-bench').value = ''; render(); saveSoon();
+      });
+    }
+
+    return { render: render, bind: bind, example: example };
+  })();
+
+  /* ======================================================================
+     6. BONDS
+     ====================================================================== */
+
+  var bonds = (function () {
+    function render() {
+      var face = Math.max(0.01, num('b-face', 1000)),
+          cpn = num('b-coupon', 5) / 100,
+          years = Math.max(0.01, num('b-years', 10)),
+          freq = +$('b-freq').value,
+          mode = segValue('b-mode'),
+          shift = Math.abs(num('b-shift', 100)) / 10000;
+
+      $('b-ytm-field').hidden = mode !== 'price';
+      $('b-price-field').hidden = mode === 'price';
+
+      var ytm, price;
+      if (mode === 'price') {
+        ytm = num('b-ytm', 6) / 100;
+        price = Q.bondPrice(face, cpn, freq, years, ytm);
+        $('b-price').value = price.toFixed(2);
+        $('b-alert').innerHTML = '';
+      } else {
+        price = num('b-price', 0);
+        if (!(price > 0)) {
+          $('b-alert').innerHTML = alertBox('err', 'Enter a positive market price to solve for yield.');
+          return;
+        }
+        ytm = Q.bondYield(face, cpn, freq, years, price);
+        if (ytm === null) {
+          $('b-alert').innerHTML = alertBox('err',
+            'No yield reproduces that price — it exceeds the undiscounted value of every remaining cash flow.');
+          return;
+        }
+        $('b-ytm').value = (ytm * 100).toFixed(4);
+        $('b-alert').innerHTML = '';
+      }
+
+      var a = Q.bondAnalytics(face, cpn, freq, years, ytm),
+          flows = Q.bondCashflows(face, cpn, freq, years),
+          annualCoupon = face * cpn;
+
+      $('b-meta').textContent = flows.length + ' remaining cash flows · ' +
+        (cpn === 0 ? 'zero coupon' : fmt(annualCoupon / freq, 'money') + ' every ' +
+          (12 / freq) + ' months');
+
+      var prem = a.price - face;
+      $('b-stats').innerHTML =
+        tile('Price', fmt(a.price, 'money'),
+             Math.abs(prem) < 0.005 ? 'At par' : prem > 0 ? 'Premium of ' + fmt(prem, 'money')
+                                                          : 'Discount of ' + fmt(-prem, 'money'), '', true) +
+        tile('Yield to maturity', fmt(ytm, 'pct2'), 'Annual, compounded ' + freq + '× a year', '', true) +
+        tile('Current yield', fmt(a.currentYield, 'pct2'), 'Coupon ÷ price') +
+        tile('Modified duration', fmt(a.modified, 'num', 2), '% price fall per +1% yield') +
+        tile('Macaulay duration', fmt(a.macaulay, 'num', 2), 'Years, cash-flow weighted') +
+        tile('Convexity', fmt(a.convexity, 'num', 1), 'Curvature duration misses') +
+        tile('DV01', fmt(a.dv01, 'money'), 'Price change per 1bp') +
+        tile('Price of 1% shock', fmt(-a.modified * a.price * 0.01, 'money'), 'Duration estimate', 'neg');
+
+      // Scenario ladder around the user's shock size
+      var mults = [-2, -1, -0.5, 0, 0.5, 1, 2],
+          h = '<thead><tr><th>Yield change</th><th>New yield</th><th>Full repricing</th>' +
+              '<th>% change</th><th>Duration only</th><th>+ convexity</th></tr></thead><tbody>';
+      for (var i = 0; i < mults.length; i++) {
+        var dy = mults[i] * shift,
+            ny = ytm + dy;
+        if (ny < -0.5) continue;
+        var np = Q.bondPrice(face, cpn, freq, years, ny),
+            actual = np - a.price,
+            dur = -a.modified * a.price * dy,
+            durCon = dur + 0.5 * a.convexity * a.price * dy * dy;
+        h += '<tr><td><b>' + (dy >= 0 ? '+' : '') + Math.round(dy * 10000) + ' bp</b></td>' +
+             '<td>' + fmt(ny, 'pct2') + '</td>' +
+             '<td>' + fmt(np, 'money') + '</td>' +
+             '<td class="' + signClass(actual) + '">' + fmt(actual / a.price, 'pct2') + '</td>' +
+             '<td>' + fmt(dur, 'money') + '</td>' +
+             '<td>' + fmt(durCon, 'money') + '</td></tr>';
+      }
+      $('b-scen').innerHTML = h + '</tbody>';
+
+      // Price-yield curve
+      var lo = Math.max(-0.02, ytm - 0.05), hi = ytm + 0.05, pts = [], tbl = [];
+      for (i = 0; i <= 80; i++) {
+        var y = lo + (hi - lo) * i / 80;
+        pts.push({ x: y, y: Q.bondPrice(face, cpn, freq, years, y) });
+        if (i % 8 === 0) tbl.push([fmt(y, 'pct2'), fmt(pts[pts.length - 1].y, 'money')]);
+      }
+      var tangent = [
+        { x: lo, y: a.price - a.modified * a.price * (lo - ytm) },
+        { x: hi, y: a.price - a.modified * a.price * (hi - ytm) }
+      ];
+      Chart.render('b-chart', {
+        height: 300,
+        series: [
+          { name: 'Actual price', color: C('--s1'), points: pts },
+          { name: 'Duration estimate', color: C('--s2'), points: tangent, width: 1.5 }
+        ],
+        points: [{ x: ytm, y: a.price, color: C('--s1'), label: 'Today', r: 5 }],
+        xLabel: 'Yield to maturity', yLabel: 'Price', xFmt: 'pct', yFmt: 'money0',
+        legendNote: 'The gap between the two is convexity.',
+        table: { columns: ['Yield', 'Price'], rows: tbl },
+        aria: 'Bond price against yield to maturity'
+      });
+
+      // Cash flows
+      var cf = '<thead><tr><th>#</th><th>Years</th><th>Cash flow</th><th>Discount factor</th>' +
+               '<th>Present value</th><th>% of price</th></tr></thead><tbody>',
+          totalPV = 0;
+      for (i = 0; i < flows.length; i++) {
+        var df = 1 / Math.pow(1 + ytm / freq, flows[i].t * freq),
+            pv = flows[i].amount * df;
+        totalPV += pv;
+        cf += '<tr><td>' + (i + 1) + '</td><td>' + flows[i].t.toFixed(2) + '</td><td>' +
+              fmt(flows[i].amount, 'money') + '</td><td>' + df.toFixed(4) + '</td><td>' +
+              fmt(pv, 'money') + '</td><td>' + fmt(pv / a.price, 'pct') + '</td></tr>';
+      }
+      cf += '<tr><td colspan="4"><b>Total</b></td><td><b>' + fmt(totalPV, 'money') +
+            '</b></td><td><b>100.0%</b></td></tr>';
+      $('b-cf').innerHTML = cf + '</tbody>';
+      $('b-cf-meta').textContent = 'Discounted at ' + fmt(ytm, 'pct2');
+    }
+
+    function bind() {
+      var go = debounce(function () { render(); saveSoon(); }, 120);
+      ['b-face', 'b-coupon', 'b-years', 'b-ytm', 'b-price', 'b-shift'].forEach(function (id) {
+        $(id).addEventListener('input', go);
+      });
+      $('b-freq').addEventListener('change', go);
+      seg('b-mode', function () { render(); saveSoon(); });
+    }
+    return { render: render, bind: bind };
+  })();
+
+  /* ---------- boot ------------------------------------------------------ */
+
+  restoreInputs();
+
+  options.bind(); strategy.bind(); pf.bind(); mc.bind(); perf.bind(); bonds.bind();
+
+  refreshers = {
+    options: options.render, strategy: strategy.render, portfolio: pf.render,
+    mc: mc.render, perf: perf.render, bonds: bonds.render
+  };
+
+  if (!$('pe-data').value.trim()) perf.example();
+
+  options.render(); strategy.render(); pf.render(); mc.render(); perf.render(); bonds.render();
+
+  var startTab = 'options';
+  try { startTab = localStorage.getItem('quantdesk.tab') || 'options'; } catch (e) {}
+  if (!$('p-' + startTab)) startTab = 'options';
+  showTab(startTab);
+
+  document.addEventListener('change', saveSoon);
+})();
+</script>
+</body>
+</html>
