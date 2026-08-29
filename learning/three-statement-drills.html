@@ -1,0 +1,942 @@
+<title>Three-Statement Drills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root {
+    --paper:      #f5f7fa;
+    --surface:    #ffffff;
+    --surface-2:  #eef1f6;
+    --ink:        #101420;
+    --ink-soft:   #565f70;
+    --ink-faint:  #7d8697;
+    --rule:       #dbe1ea;
+    --rule-hard:  #b9c2d0;
+    --input:      #1546c9;
+    --link:       #0d6f4c;
+    --link-bg:    #e6f4ed;
+    --break:      #ab252c;
+    --break-bg:   #fbeaea;
+    --warn:       #8a5806;
+    --shadow:     0 1px 2px rgba(16,20,32,.05), 0 8px 24px -16px rgba(16,20,32,.28);
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:    "Newsreader", Georgia, "Times New Roman", serif;
+    --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --measure: 66ch;
+    --pad: clamp(20px, 5vw, 64px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0d1016;
+      --surface:   #151a23;
+      --surface-2: #1c222d;
+      --ink:       #e7eaf1;
+      --ink-soft:  #a3adbe;
+      --ink-faint: #7c8698;
+      --rule:      #262e3b;
+      --rule-hard: #3a4454;
+      --input:     #7ea5ff;
+      --link:      #4ec394;
+      --link-bg:   #122c22;
+      --break:     #ff8079;
+      --break-bg:  #2d1618;
+      --warn:      #e0a641;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:     #0d1016;
+    --surface:   #151a23;
+    --surface-2: #1c222d;
+    --ink:       #e7eaf1;
+    --ink-soft:  #a3adbe;
+    --ink-faint: #7c8698;
+    --rule:      #262e3b;
+    --rule-hard: #3a4454;
+    --input:     #7ea5ff;
+    --link:      #4ec394;
+    --link-bg:   #122c22;
+    --break:     #ff8079;
+    --break-bg:  #2d1618;
+    --warn:      #e0a641;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 940px; margin: 0 auto; padding: 0 var(--pad) 96px; }
+
+  h1, h2, h3 { font-family: var(--display); margin: 0; }
+  h1 {
+    font-size: clamp(34px, 5.6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+  h2 {
+    font-size: clamp(21px, 2.6vw, 26px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+  }
+  h3 { font-size: 16px; font-weight: 600; }
+  p { margin: 0; max-width: var(--measure); }
+  strong { font-weight: 600; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  a { color: var(--input); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--input); outline-offset: 2px; border-radius: 3px; }
+
+  header.mast {
+    padding: clamp(48px, 9vw, 88px) 0 clamp(28px, 5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .lede { font-size: clamp(18px, 2.1vw, 21px); line-height: 1.5; color: var(--ink-soft); max-width: 60ch; }
+
+  /* ---------- drill picker ---------- */
+  .picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .pick {
+    appearance: none;
+    border: 0;
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: var(--display);
+    font-size: 13.5px;
+    font-weight: 600;
+    text-align: left;
+    padding: 14px 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: background .12s, color .12s;
+  }
+  .pick:hover { background: var(--surface-2); color: var(--ink); }
+  .pick .n {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+  .pick[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+  .pick[aria-selected="true"] .n { color: var(--paper); opacity: .6; }
+
+  /* ---------- stage ---------- */
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .stage-top {
+    padding: 12px 22px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .drill-name { font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: -.01em; }
+  .scores { display: flex; gap: 18px; }
+  .score { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .score b { color: var(--ink); font-weight: 700; }
+  .score.hot b { color: var(--link); }
+
+  .stage-body { padding: clamp(22px, 4vw, 34px); display: flex; flex-direction: column; gap: 22px; }
+
+  .prompt {
+    font-family: var(--display);
+    font-size: clamp(19px, 2.5vw, 24px);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.32;
+    text-wrap: balance;
+    max-width: 46ch;
+  }
+  .givens {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.9;
+    background: var(--surface-2);
+    border-left: 2px solid var(--rule-hard);
+    border-radius: 0 3px 3px 0;
+    padding: 12px 16px;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--ink);
+  }
+  .ask { font-size: 16px; color: var(--ink-soft); }
+
+  /* choice options */
+  .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+  .opt {
+    appearance: none;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    padding: 13px 15px;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 10px;
+    align-items: center;
+    transition: border-color .12s, background .12s, transform .06s;
+  }
+  .opt .kbd {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .opt:hover:not(:disabled) { border-color: var(--input); background: var(--surface-2); }
+  .opt:active:not(:disabled) { transform: translateY(1px); }
+  .opt:disabled { cursor: default; opacity: .55; }
+  .opt.right { border-color: var(--link); background: var(--link-bg); opacity: 1; }
+  .opt.right .kbd { color: var(--link); }
+  .opt.wrong { border-color: var(--break); background: var(--break-bg); opacity: 1; }
+  .opt.wrong .kbd { color: var(--break); }
+
+  /* numeric fields */
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .field input {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    padding: 11px 13px;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--ink);
+    width: 100%;
+  }
+  .field input:focus { border-color: var(--input); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--input) 18%, transparent); }
+  .field input.right { border-color: var(--link); background: var(--link-bg); }
+  .field input.wrong { border-color: var(--break); background: var(--break-bg); }
+  .field .truth { font-family: var(--mono); font-size: 11.5px; color: var(--break); min-height: 15px; }
+
+  /* actions */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .btn {
+    appearance: none;
+    font-family: var(--display);
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: 4px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    transition: opacity .12s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule-hard); }
+  .btn[hidden] { display: none; }
+  .hint { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+
+  /* feedback */
+  .fb {
+    border-left: 2px solid var(--rule-hard);
+    padding: 14px 18px;
+    border-radius: 0 4px 4px 0;
+    background: var(--surface-2);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fb[hidden] { display: none; }
+  .fb.ok { border-left-color: var(--link); background: var(--link-bg); }
+  .fb.no { border-left-color: var(--break); background: var(--break-bg); }
+  .fb-v { font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: .01em; }
+  .fb.ok .fb-v { color: var(--link); }
+  .fb.no .fb-v { color: var(--break); }
+  .fb-w { font-size: 16px; line-height: 1.55; color: var(--ink); max-width: 72ch; }
+  .fb-w code { font-family: var(--mono); font-size: .84em; }
+
+  /* ---------- paper drills ---------- */
+  section { padding-top: clamp(52px, 8vw, 80px); }
+  .sec-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+  .paper { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 14px; }
+  .pcard {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow);
+  }
+  .pcard .time {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--input);
+    font-weight: 700;
+  }
+  .pcard p { font-size: 15.5px; line-height: 1.5; color: var(--ink-soft); }
+
+  .note {
+    border-left: 2px solid var(--warn);
+    padding: 4px 0 4px 18px;
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: var(--measure);
+  }
+  .note b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: clamp(48px, 8vw, 72px);
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <span class="eyebrow">Companion to the practice program</span>
+    <h1>Three-Statement Drills</h1>
+    <p class="lede">Six quick-fire drills on the decisions that actually slow people down. Every question is generated fresh, so you can run the same drill every morning without memorising the answers. Five minutes each.</p>
+  </header>
+
+  <div class="picker" role="tablist" aria-label="Choose a drill"></div>
+
+  <div class="stage">
+    <div class="stage-top">
+      <span class="drill-name" id="dname">—</span>
+      <div class="scores">
+        <span class="score">seen <b id="s-seen">0</b></span>
+        <span class="score">right <b id="s-right">0</b></span>
+        <span class="score hot">streak <b id="s-streak">0</b></span>
+        <span class="score">best <b id="s-best">0</b></span>
+      </div>
+    </div>
+    <div class="stage-body">
+      <div>
+        <div class="prompt" id="prompt">Loading…</div>
+      </div>
+      <div class="givens" id="givens" hidden></div>
+      <div class="ask" id="ask" hidden></div>
+      <div class="opts" id="opts" hidden></div>
+      <div class="fields" id="fields" hidden></div>
+      <div class="actions">
+        <button class="btn" id="check" type="button">Check</button>
+        <button class="btn" id="next" type="button" hidden>Next question</button>
+        <button class="btn ghost" id="skip" type="button">Skip</button>
+        <span class="hint" id="hint">Enter to check · 1-9 to pick</span>
+      </div>
+      <div class="fb" id="fb" hidden>
+        <span class="fb-v" id="fb-v"></span>
+        <div class="fb-w" id="fb-w"></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Off-screen</span>
+      <h2>Four drills a page can't run for you</h2>
+    </div>
+    <div class="paper">
+      <div class="pcard">
+        <span class="time">5 minutes · daily</span>
+        <h3>The blank skeleton</h3>
+        <p>Open an empty workbook and type the row labels — all three statements plus the four schedules — from memory. No numbers, no formulas, no filing open. Stop when you can do it without a gap. This is what makes the first fifteen minutes of a real build automatic.</p>
+      </div>
+      <div class="pcard">
+        <span class="time">10 minutes · daily</span>
+        <h3>Sabotage</h3>
+        <p>Take a finished model, break exactly one link — flip a sign, delete a cash flow line, hardcode an opening balance — save it, and walk away. Come back and time yourself finding it. This is the single highest-yield exercise in the whole program, because debugging is the skill that decays first.</p>
+      </div>
+      <div class="pcard">
+        <span class="time">3 minutes · daily</span>
+        <h3>Out loud</h3>
+        <p>Say a full three-statement ripple aloud, end to end, including the balance check at the finish. Speaking it uses different retrieval than typing it, and it is exactly the form the question takes when somebody asks you across a desk.</p>
+      </div>
+      <div class="pcard">
+        <span class="time">1 hour · daily</span>
+        <h3>Mouse out of reach</h3>
+        <p>Physically move it. Navigate, select, and format with the keyboard only. The goal isn't raw speed — it's that moving around the grid stops consuming attention you need for the accounting.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:22px"><b>How to sequence them:</b> warm up with two on-screen drills (about five minutes), then the blank skeleton, then your build for the day. Save sabotage for after the build, while a finished model is in front of you. The <a href="https://claude.ai/code/artifact/d950b64f-65af-4df5-aa8e-3de5af6f4213">eight-week program</a> has the full schedule.</p>
+  </section>
+
+  <footer>
+    Scores are per session; your best streak is remembered in this browser only. Nothing is uploaded.
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------- helpers ---------------- */
+  var pick = function (a) { return a[Math.floor(Math.random() * a.length)]; };
+  var fmt = function (n) {
+    var r = Math.round(n * 100) / 100;
+    if (Object.is(r, -0)) r = 0;
+    return String(r);
+  };
+  var money = function (n) { return (n < 0 ? "−" : "") + fmt(Math.abs(n)); };
+
+  function shuffle(a) {
+    var c = a.slice();
+    for (var i = c.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = c[i]; c[i] = c[j]; c[j] = t;
+    }
+    return c;
+  }
+
+  /* A queue that shuffles a bank and never repeats until exhausted. */
+  function makeQueue(bank) {
+    var q = [];
+    return function () {
+      if (!q.length) q = shuffle(bank);
+      return q.pop();
+    };
+  }
+
+  /* ---------------- drill 1: schedule or row ---------------- */
+  var SCHEDULE_OPTS = ["Driver row", "Needs a schedule"];
+  var scheduleBank = [
+    ["Revenue", 0, "A flow, not a balance. It is driven off last year, but nothing accumulates and no other statement needs to see the pieces. One row."],
+    ["Gross PP&E", 1, "A balance whose change splits into capex (investing cash flow) and depreciation (income statement). Two flows, two destinations."],
+    ["Term loan balance", 1, "A balance. Draws and repayments hit financing cash flow, and the balance itself drives interest expense."],
+    ["Cost of goods sold", 0, "A flow. One formula off revenue and you are done."],
+    ["Retained earnings", 1, "A balance. The change splits into net income and dividends, which come from different places."],
+    ["SG&A", 0, "A flow. Nothing accumulates and nothing needs explaining."],
+    ["Depreciation expense", 0, "A flow, and an <em>output</em> of the PP&amp;E schedule. Being produced by a schedule does not make it one."],
+    ["Interest expense", 0, "Same trap as depreciation. It is a flow calculated off the debt schedule, not a schedule of its own."],
+    ["Revolver balance", 1, "A balance whose change is the draw-and-repay logic itself. It lives inside the debt schedule."],
+    ["Income tax expense", 0, "A flow. A percentage of pre-tax income."],
+    ["Goodwill", 0, "A balance, but under US GAAP it does not move absent an acquisition or an impairment. Hold it flat — there is no roll-forward to build."],
+    ["Net intangibles subject to amortisation", 1, "A balance whose change splits into additions and amortisation hitting the income statement. Same shape as PP&amp;E."],
+    ["Share count, with buybacks", 1, "A balance. Buybacks and issuance hit financing cash flow, and the count drives EPS."],
+    ["Accounts receivable", 0, "The honest edge case. It <em>is</em> a balance — but its change goes to exactly one place, operating cash flow, so a days-driven row is structurally enough. It gets grouped into a working capital schedule for convenience, not necessity."],
+    ["Deferred revenue", 0, "Same shape as receivables: a balance, but the change has a single destination. Drive it off revenue as a row."],
+    ["Dividends paid", 0, "A flow. It is one of the two inputs to the equity roll-forward, not a schedule itself."]
+  ];
+
+  /* ---------------- drill 2: pick the driver ---------------- */
+  var DRIVER_OPTS = [
+    "% of revenue",
+    "Days, off revenue",
+    "Days, off COGS",
+    "% of pre-tax income",
+    "From an asset schedule",
+    "From the debt schedule",
+    "Inflation, or hold flat"
+  ];
+  var driverBank = [
+    ["Accounts receivable", 1, "Days sales outstanding. Days separate collection behaviour from growth — a flat percentage hides a collection cycle that is quietly getting worse."],
+    ["Inventory", 2, "Days inventory held, off COGS. You stock at cost, not at selling price."],
+    ["Accounts payable", 2, "Days payable outstanding, off COGS. You owe suppliers at cost too."],
+    ["Cost of goods sold", 0, "Genuinely volume-linked. This is exactly what percentage of revenue is for."],
+    ["Depreciation", 4, "A function of the asset base you already built, not of this year's sales."],
+    ["Amortisation of intangibles", 4, "Same logic as depreciation — it comes off the intangibles schedule."],
+    ["Interest expense", 5, "It follows the debt balances. Tying it to revenue is one of the classic tells of a rushed model."],
+    ["Income taxes", 3, "A percentage of pre-tax income. Obvious stated plainly, routinely fumbled under time pressure."],
+    ["Head office rent", 6, "A fixed cost. Modelling it as a percentage of revenue quietly erases the operating leverage you are trying to show."],
+    ["Sales commissions", 0, "Paid per sale, so it genuinely scales with revenue."],
+    ["Audit and legal fees", 6, "Fixed. They do not care how much you sold this year."],
+    ["Warranty provision", 0, "Scales with units sold, so revenue is a fair proxy."],
+    ["Maintenance capex", 0, "Commonly run as a percentage of revenue — but check the historical ratio is actually stable before you trust it."],
+    ["Prepaid expenses", 6, "Small, sticky, and not worth a driver. Hold it flat unless it is material and moving."]
+  ];
+
+  /* ---------------- drill 3: the cash sweep ---------------- */
+  function genSweep() {
+    var min = pick([30, 40, 50, 60, 75]);
+    var owed = pick([0, 10, 15, 20, 25, 30, 40]);
+    var regime = Math.floor(Math.random() * 3);
+    var before;
+    if (regime === 0) before = Math.max(0, min - pick([5, 10, 15, 20, 25, 30]));
+    else if (regime === 1) before = min + pick([5, 10, 15]);
+    else before = min + owed + pick([5, 10, 20, 30]);
+
+    var draw = Math.max(0, min - before);
+    var repay = Math.min(owed, Math.max(0, before - min));
+    var closing = before + draw - repay;
+    var after = owed + draw - repay;
+
+    var why;
+    if (draw > 0) {
+      why = "Cash before the revolver (" + before + ") is short of the " + min + " minimum, so you draw the gap: MAX(0, " + min + " − " + before + ") = " + draw + ". Nothing to repay. Closing cash lands exactly on the minimum, and the revolver rises to " + after + ".";
+    } else if (repay === owed && owed > 0 && before - min > owed) {
+      why = "There is " + (before - min) + " of cash above the minimum, but only " + owed + " outstanding on the revolver — so the sweep is capped: MIN(" + owed + ", " + (before - min) + ") = " + owed + ". The revolver goes to zero and closing cash stays at " + closing + " rather than being forced down to " + min + ". <strong>That cap is the whole reason the MIN is there.</strong>";
+    } else if (repay > 0) {
+      why = "Excess cash above the minimum is " + (before - min) + ", and you owe " + owed + ". MIN(" + owed + ", " + (before - min) + ") = " + repay + ", so you sweep " + repay + " and closing cash sits at " + closing + ".";
+    } else {
+      why = "Cash is above the minimum, so no draw. But the revolver balance is already zero, so there is nothing to sweep against — MIN(0, …) = 0. The excess simply accumulates as cash.";
+    }
+
+    return {
+      type: "numeric",
+      prompt: "Work the revolver.",
+      givens: "Minimum cash balance        " + min + "\nCash before revolver        " + before + "\nRevolver already drawn      " + owed,
+      ask: "All four answers are positive numbers.",
+      fields: [
+        { label: "Revolver draw", val: draw },
+        { label: "Revolver repayment", val: repay },
+        { label: "Closing cash", val: closing },
+        { label: "Revolver balance after", val: after }
+      ],
+      explain: why
+    };
+  }
+
+  /* ---------------- drill 4: the ripple ---------------- */
+  function genRipple() {
+    var x = pick([10, 20, 25, 40, 50, 60, 100]);
+    var t = pick([21, 25, 30]);
+    var aftertax = x * (1 - t / 100);
+    var shield = x * t / 100;
+
+    var variants = [
+      function () {
+        return {
+          prompt: "Depreciation increases by " + x + ".",
+          givens: "Tax rate                    " + t + "%",
+          ni: -aftertax, cash: shield,
+          explain: "Net income falls by " + x + " × (1 − " + t + "%) = " + fmt(aftertax) + ". On the cash flow statement you add the full " + x + " of depreciation back, so cash rises by " + x + " − " + fmt(aftertax) + " = " + fmt(shield) + " — that is the tax shield. Balance sheet: PP&amp;E −" + x + ", cash +" + fmt(shield) + ", retained earnings −" + fmt(aftertax) + ". Assets fall by " + fmt(aftertax) + " and equity falls by the same, so it balances."
+        };
+      },
+      function () {
+        return {
+          prompt: "Interest expense increases by " + x + ".",
+          givens: "Tax rate                    " + t + "%",
+          ni: -aftertax, cash: -aftertax,
+          explain: "Net income falls by " + fmt(aftertax) + " after tax. Unlike depreciation there is nothing to add back — interest is a genuine cash cost — so cash falls by the same " + fmt(aftertax) + ". Balance sheet: cash −" + fmt(aftertax) + " and retained earnings −" + fmt(aftertax) + "."
+        };
+      },
+      function () {
+        return {
+          prompt: "You collect " + x + " of accounts receivable.",
+          givens: null,
+          ni: 0, cash: x,
+          explain: "Nothing touches the income statement — the revenue was already recognised when the sale happened. Cash rises " + x + ", receivables fall " + x + ". Total assets are unchanged, which is why net income has to be zero for this to balance."
+        };
+      },
+      function () {
+        return {
+          prompt: "You buy " + x + " of inventory on credit.",
+          givens: null,
+          ni: 0, cash: 0,
+          explain: "No income statement impact — nothing has been sold yet. And no cash impact, because you have not paid. Inventory +" + x + " on the asset side, accounts payable +" + x + " on the liability side. Both sides rise together."
+        };
+      },
+      function () {
+        return {
+          prompt: "You spend " + x + " on capex, paid in cash.",
+          givens: null,
+          ni: 0, cash: -x,
+          explain: "Capex never touches the income statement — it arrives there later, spread out as depreciation. Cash falls " + x + " through investing, PP&amp;E rises " + x + ". Assets are flat overall, so equity is unchanged."
+        };
+      },
+      function () {
+        return {
+          prompt: "You write down inventory by " + x + ".",
+          givens: "Tax rate                    " + t + "%",
+          ni: -aftertax, cash: shield,
+          explain: "Same shape as depreciation, and worth recognising as such: a non-cash charge. Net income falls " + fmt(aftertax) + ", you add the full " + x + " back on the cash flow statement, so cash rises " + fmt(shield) + " — the tax shield again. Inventory −" + x + ", cash +" + fmt(shield) + ", retained earnings −" + fmt(aftertax) + "."
+        };
+      },
+      function () {
+        return {
+          prompt: "You issue " + x + " of new debt.",
+          givens: null,
+          ni: 0, cash: x,
+          explain: "Financing activity only — borrowing is not income. Cash +" + x + ", debt +" + x + ". Assets and liabilities rise together and equity does not move. (The interest on it hits next period, not this one.)"
+        };
+      },
+      function () {
+        return {
+          prompt: "You pay a dividend of " + x + ".",
+          givens: null,
+          ni: 0, cash: -x,
+          explain: "A distribution of profit, not an expense — so net income is untouched. Cash −" + x + " through financing, retained earnings −" + x + ". Assets and equity fall together."
+        };
+      }
+    ];
+
+    var v = pick(variants)();
+    return {
+      type: "numeric",
+      prompt: v.prompt,
+      givens: v.givens,
+      ask: "Give the change in each. Use a minus sign for decreases; enter 0 for no change.",
+      fields: [
+        { label: "Change in net income", val: v.ni },
+        { label: "Change in cash", val: v.cash }
+      ],
+      explain: v.explain
+    };
+  }
+
+  /* ---------------- drill 5: working capital signs ---------------- */
+  function genSign() {
+    var items = [
+      ["Accounts receivable", true], ["Inventory", true], ["Prepaid expenses", true],
+      ["Accounts payable", false], ["Accrued expenses", false], ["Deferred revenue", false]
+    ];
+    var it = pick(items);
+    var up = Math.random() < 0.5;
+    var amt = pick([5, 10, 15, 20, 30, 45]);
+    var isAsset = it[1];
+    var effect = (isAsset === up) ? -amt : amt;
+
+    var why;
+    if (isAsset) {
+      why = up
+        ? it[0] + " is an asset. It went <strong>up</strong> by " + amt + ", which means you have parked " + amt + " more of your cash in it — so operating cash flow falls by " + amt + ". Assets and cash move in opposite directions."
+        : it[0] + " is an asset. It went <strong>down</strong> by " + amt + ", which means " + amt + " converted back into cash — so operating cash flow rises by " + amt + ".";
+    } else {
+      why = up
+        ? it[0] + " is a liability. It went <strong>up</strong> by " + amt + ", meaning you are holding on to " + amt + " you have not yet paid out — a source of cash, so operating cash flow rises by " + amt + ". Liabilities and cash move together."
+        : it[0] + " is a liability. It went <strong>down</strong> by " + amt + ", meaning you settled " + amt + " of what you owed — so operating cash flow falls by " + amt + ".";
+    }
+    why += " The formula behind it: assets use <code>prior − current</code>, liabilities use <code>current − prior</code>.";
+
+    return {
+      type: "numeric",
+      prompt: it[0] + (up ? " increases by " : " decreases by ") + amt + ".",
+      givens: null,
+      ask: "What is the effect on operating cash flow? Use a minus sign for a use of cash.",
+      fields: [{ label: "Effect on operating cash flow", val: effect }],
+      explain: why
+    };
+  }
+
+  /* ---------------- drill 6: interest conventions ---------------- */
+  function genInterest() {
+    var open = pick([200, 250, 300, 400, 500, 600, 800]);
+    var move = pick([-100, -80, -50, -25, 25, 50, 100]);
+    var close = Math.max(0, open + move);
+    var rate = pick([4.5, 5, 5.5, 6, 6.5, 7, 8]);
+    var avg = rate / 100 * (open + close) / 2;
+    var beg = rate / 100 * open;
+
+    return {
+      type: "numeric",
+      prompt: "Compute interest expense both ways.",
+      givens: "Opening debt                " + open + "\nClosing debt                " + close + "\nInterest rate               " + rate + "%",
+      ask: "Two decimal places is fine.",
+      fields: [
+        { label: "Average-balance method", val: avg },
+        { label: "Opening-balance method", val: beg }
+      ],
+      explain: "Average method: " + rate + "% × (" + open + " + " + close + ") ÷ 2 = " + fmt(avg) + ". Opening method: " + rate + "% × " + open + " = " + fmt(beg) + ". The gap between them is " + fmt(Math.abs(avg - beg)) + " — and that gap is the entire price of avoiding a circular reference. The average method is more accurate; the opening method needs no iterative calculation at all. Note that neither one <em>is</em> the debt schedule: the schedule is the roll-forward of balances, and these are two conventions for calculating interest off it."
+    };
+  }
+
+  /* ---------------- drill registry ---------------- */
+  var scheduleQ = makeQueue(scheduleBank);
+  var driverQ = makeQueue(driverBank);
+
+  function choiceFrom(getter, opts, promptPrefix, ask) {
+    return function () {
+      var row = getter();
+      return {
+        type: "choice",
+        prompt: promptPrefix + row[0],
+        ask: ask,
+        options: opts,
+        answer: row[1],
+        explain: row[2]
+      };
+    };
+  }
+
+  var DRILLS = [
+    {
+      name: "Schedule or row?",
+      blurb: "Spot the roll-forward",
+      gen: choiceFrom(scheduleQ, SCHEDULE_OPTS, "", "Does this line item need its own schedule, or is a driver row enough?")
+    },
+    {
+      name: "Pick the driver",
+      blurb: "Choose the right basis",
+      gen: choiceFrom(driverQ, DRIVER_OPTS, "", "What should this be projected off?")
+    },
+    { name: "Cash sweep", blurb: "MIN / MAX under pressure", gen: genSweep },
+    { name: "The ripple", blurb: "One change, three statements", gen: genRipple },
+    { name: "Working capital signs", blurb: "Direction, fast", gen: genSign },
+    { name: "Interest conventions", blurb: "Average vs. opening", gen: genInterest }
+  ];
+
+  /* ---------------- state + DOM ---------------- */
+  var el = function (id) { return document.getElementById(id); };
+  var picker = document.querySelector(".picker");
+  var state = { drill: 0, q: null, answered: false, seen: 0, right: 0, streak: 0, best: 0 };
+
+  try {
+    var saved = window.localStorage.getItem("ts-drills-best");
+    if (saved) state.best = parseInt(saved, 10) || 0;
+  } catch (e) { /* storage unavailable; best simply stays 0 */ }
+
+  DRILLS.forEach(function (d, i) {
+    var b = document.createElement("button");
+    b.className = "pick";
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", i === 0 ? "true" : "false");
+    b.innerHTML = '<span class="n">DRILL ' + (i + 1) + '</span><span>' + d.name + '</span>';
+    b.addEventListener("click", function () { selectDrill(i); });
+    picker.appendChild(b);
+  });
+
+  function paintScores() {
+    el("s-seen").textContent = state.seen;
+    el("s-right").textContent = state.right;
+    el("s-streak").textContent = state.streak;
+    el("s-best").textContent = state.best;
+  }
+
+  function selectDrill(i) {
+    state.drill = i;
+    state.seen = 0; state.right = 0; state.streak = 0;
+    Array.prototype.forEach.call(picker.children, function (c, k) {
+      c.setAttribute("aria-selected", k === i ? "true" : "false");
+    });
+    el("dname").textContent = DRILLS[i].name;
+    paintScores();
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    state.q = DRILLS[state.drill].gen();
+    state.answered = false;
+    var q = state.q;
+
+    el("prompt").textContent = q.prompt;
+
+    var g = el("givens");
+    if (q.givens) { g.textContent = q.givens; g.hidden = false; } else { g.hidden = true; }
+
+    var a = el("ask");
+    if (q.ask) { a.textContent = q.ask; a.hidden = false; } else { a.hidden = true; }
+
+    var fb = el("fb");
+    fb.hidden = true;
+    fb.className = "fb";
+
+    el("next").hidden = true;
+    el("check").hidden = (q.type === "choice");
+    el("skip").hidden = false;
+    el("hint").textContent = q.type === "choice" ? "1-9 to pick · Enter for next" : "Enter to check";
+
+    var opts = el("opts"), fields = el("fields");
+    opts.innerHTML = ""; fields.innerHTML = "";
+
+    if (q.type === "choice") {
+      opts.hidden = false; fields.hidden = true;
+      q.options.forEach(function (label, i) {
+        var b = document.createElement("button");
+        b.className = "opt";
+        b.type = "button";
+        b.innerHTML = '<span class="kbd">' + (i + 1) + '</span><span></span>';
+        b.lastChild.textContent = label;
+        b.addEventListener("click", function () { answerChoice(i); });
+        opts.appendChild(b);
+      });
+    } else {
+      opts.hidden = true; fields.hidden = false;
+      q.fields.forEach(function (f, i) {
+        var w = document.createElement("div");
+        w.className = "field";
+        var lab = document.createElement("label");
+        lab.textContent = f.label;
+        lab.setAttribute("for", "f" + i);
+        var inp = document.createElement("input");
+        inp.type = "text";
+        inp.id = "f" + i;
+        inp.inputMode = "decimal";
+        inp.autocomplete = "off";
+        inp.spellcheck = false;
+        var truth = document.createElement("div");
+        truth.className = "truth";
+        w.appendChild(lab); w.appendChild(inp); w.appendChild(truth);
+        fields.appendChild(w);
+      });
+      var first = fields.querySelector("input");
+      if (first) first.focus();
+    }
+  }
+
+  function record(ok) {
+    state.seen++;
+    if (ok) {
+      state.right++;
+      state.streak++;
+      if (state.streak > state.best) {
+        state.best = state.streak;
+        try { window.localStorage.setItem("ts-drills-best", String(state.best)); } catch (e) { /* ignore */ }
+      }
+    } else {
+      state.streak = 0;
+    }
+    paintScores();
+  }
+
+  function showFeedback(ok, extra) {
+    var fb = el("fb");
+    fb.className = "fb " + (ok ? "ok" : "no");
+    el("fb-v").textContent = ok ? "Correct" : "Not quite";
+    el("fb-w").innerHTML = (extra ? extra + " " : "") + state.q.explain;
+    fb.hidden = false;
+    el("check").hidden = true;
+    el("skip").hidden = true;
+    var n = el("next");
+    n.hidden = false;
+    n.focus();
+  }
+
+  function answerChoice(i) {
+    if (state.answered) return;
+    state.answered = true;
+    var q = state.q;
+    var ok = i === q.answer;
+    Array.prototype.forEach.call(el("opts").children, function (b, k) {
+      b.disabled = true;
+      if (k === q.answer) b.classList.add("right");
+      else if (k === i) b.classList.add("wrong");
+    });
+    record(ok);
+    showFeedback(ok, ok ? "" : "The answer is <strong>" + q.options[q.answer] + "</strong>.");
+  }
+
+  function parseNum(s) {
+    if (s == null) return NaN;
+    var t = String(s).trim().replace(/,/g, "").replace(/−/g, "-").replace(/^\+/, "");
+    if (t === "") return NaN;
+    return parseFloat(t);
+  }
+
+  function close(a, b) {
+    return Math.abs(a - b) <= Math.max(0.02, Math.abs(b) * 0.002);
+  }
+
+  function checkNumeric() {
+    if (state.answered) return;
+    var q = state.q;
+    var inputs = el("fields").querySelectorAll("input");
+    var allOk = true, anyBlank = false;
+
+    q.fields.forEach(function (f, i) {
+      var v = parseNum(inputs[i].value);
+      if (isNaN(v)) anyBlank = true;
+    });
+    if (anyBlank) {
+      inputs[0].focus();
+      return;
+    }
+
+    state.answered = true;
+    q.fields.forEach(function (f, i) {
+      var v = parseNum(inputs[i].value);
+      var ok = close(v, f.val);
+      inputs[i].classList.add(ok ? "right" : "wrong");
+      inputs[i].readOnly = true;
+      if (!ok) {
+        allOk = false;
+        inputs[i].parentNode.querySelector(".truth").textContent = "→ " + money(f.val);
+      }
+    });
+
+    record(allOk);
+    showFeedback(allOk, "");
+  }
+
+  el("check").addEventListener("click", checkNumeric);
+  el("next").addEventListener("click", nextQuestion);
+  el("skip").addEventListener("click", function () {
+    state.streak = 0;
+    paintScores();
+    nextQuestion();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (state.answered) nextQuestion();
+      else if (state.q && state.q.type === "numeric") checkNumeric();
+      return;
+    }
+
+    if (!state.answered && state.q && state.q.type === "choice" && /^[1-9]$/.test(e.key)) {
+      var i = parseInt(e.key, 10) - 1;
+      if (i < state.q.options.length) {
+        e.preventDefault();
+        answerChoice(i);
+      }
+    }
+  });
+
+  selectDrill(0);
+})();
+</script>
