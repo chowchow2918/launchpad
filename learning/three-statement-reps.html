@@ -1,0 +1,680 @@
+<title>Three-Statement Reps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root {
+    --paper:      #f5f7fa;
+    --surface:    #ffffff;
+    --surface-2:  #eef1f6;
+    --ink:        #101420;
+    --ink-soft:   #565f70;
+    --ink-faint:  #7d8697;
+    --rule:       #dbe1ea;
+    --rule-hard:  #b9c2d0;
+    --input:      #1546c9;
+    --link:       #0d6f4c;
+    --break:      #ab252c;
+    --warn:       #8a5806;
+    --shadow:     0 1px 2px rgba(16,20,32,.05), 0 8px 24px -16px rgba(16,20,32,.28);
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:    "Newsreader", Georgia, "Times New Roman", serif;
+    --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --measure: 66ch;
+    --pad: clamp(20px, 5vw, 64px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0d1016;
+      --surface:   #151a23;
+      --surface-2: #1c222d;
+      --ink:       #e7eaf1;
+      --ink-soft:  #a3adbe;
+      --ink-faint: #7c8698;
+      --rule:      #262e3b;
+      --rule-hard: #3a4454;
+      --input:     #7ea5ff;
+      --link:      #4ec394;
+      --break:     #ff8079;
+      --warn:      #e0a641;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:     #0d1016;
+    --surface:   #151a23;
+    --surface-2: #1c222d;
+    --ink:       #e7eaf1;
+    --ink-soft:  #a3adbe;
+    --ink-faint: #7c8698;
+    --rule:      #262e3b;
+    --rule-hard: #3a4454;
+    --input:     #7ea5ff;
+    --link:      #4ec394;
+    --break:     #ff8079;
+    --warn:      #e0a641;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 96px;
+  }
+
+  /* ---------- type ---------- */
+  h1, h2, h3, .ui { font-family: var(--display); }
+
+  h1 {
+    font-size: clamp(38px, 6.5vw, 66px);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: clamp(23px, 3vw, 29px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+
+  p { margin: 0; max-width: var(--measure); }
+  strong { font-weight: 600; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .lede {
+    font-size: clamp(19px, 2.2vw, 22px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  a { color: var(--input); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--ink); }
+  a:focus-visible { outline: 2px solid var(--input); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---------- masthead ---------- */
+  header.mast {
+    padding: clamp(56px, 10vw, 104px) 0 clamp(36px, 6vw, 56px);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .mast-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    align-items: baseline;
+  }
+
+  /* ---------- the cell-color legend, used for real below ---------- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    align-self: flex-start;
+  }
+  .legend span { white-space: nowrap; }
+
+  code, .fml { font-family: var(--mono); font-size: .86em; }
+  .in { color: var(--input); font-weight: 500; }   /* hardcoded input */
+  .fx { color: var(--ink);   font-weight: 500; }   /* formula */
+  .lk { color: var(--link);  font-weight: 500; }   /* link to another sheet */
+
+  .fml-block {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.85;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--rule-hard);
+    border-radius: 3px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ---------- sections ---------- */
+  section { padding-top: clamp(52px, 8vw, 84px); }
+  .sec-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ---------- benchmark tiles ---------- */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tile { background: var(--surface); padding: 22px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .tile-n {
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .tile-l { font-family: var(--display); font-size: 13.5px; font-weight: 600; }
+  .tile-d { font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); }
+
+  /* ---------- phase ladder ---------- */
+  .ladder { display: flex; flex-direction: column; gap: 14px; counter-reset: phase; }
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 172px 1fr;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) { .phase { grid-template-columns: 1fr; } }
+
+  .phase-key {
+    background: var(--surface-2);
+    border-right: 1px solid var(--rule);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  @media (max-width: 720px) { .phase-key { border-right: 0; border-bottom: 1px solid var(--rule); } }
+
+  .phase-wk { font-family: var(--display); font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+  .phase-reps {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .phase-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .phase-goal {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--input);
+    font-weight: 500;
+  }
+  .phase-body ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 7px; }
+  .phase-body li { max-width: 72ch; }
+
+  /* ---------- ordered build sequence ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: flex; flex-direction: column; }
+  .steps li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .steps li:first-child { border-top: 1px solid var(--rule); }
+  .steps li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    padding-top: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .steps .st-t { font-family: var(--display); font-weight: 600; font-size: 16px; }
+  .steps .st-d { font-size: 15.5px; color: var(--ink-soft); line-height: 1.5; max-width: 68ch; }
+  .steps li.pivot::before { color: var(--break); }
+  .steps li.pivot .st-t { color: var(--break); }
+
+  /* ---------- triage cards ---------- */
+  .triage { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow);
+  }
+  .card-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--break);
+    font-weight: 700;
+  }
+  .card p { font-size: 15.5px; line-height: 1.5; color: var(--ink-soft); }
+  .card .fix { color: var(--ink); }
+
+  /* ---------- tables ---------- */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th {
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.k { font-family: var(--display); font-weight: 600; color: var(--ink); }
+  td.cost { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; color: var(--ink-soft); }
+  .free { color: var(--link); font-weight: 700; }
+
+  /* keys table */
+  .keys { min-width: 480px; }
+  .keys td:first-child { width: 190px; }
+  .keys kbd {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--rule-hard);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  /* ---------- callout ---------- */
+  .note {
+    border-left: 2px solid var(--warn);
+    padding: 4px 0 4px 18px;
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: var(--measure);
+  }
+  .note b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- log sheet ---------- */
+  .log { min-width: 620px; }
+  .log td { height: 40px; color: var(--ink-faint); font-family: var(--mono); font-size: 12.5px; }
+
+  footer {
+    margin-top: clamp(56px, 9vw, 88px);
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  footer ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="mast-meta">
+      <span class="eyebrow">A practice program</span>
+      <span class="eyebrow">Built from public analyst-training material</span>
+    </div>
+    <h1>Three-Statement Reps</h1>
+    <p class="lede">Nobody gets fluent at this by watching. You get fluent by rebuilding the same model from a blank sheet until the sequence runs without you thinking about it — and by keeping a log of every place it broke.</p>
+    <div class="legend">
+      <span><b class="in">■ blue</b> = hardcoded input</span>
+      <span><b class="fx">■ black</b> = formula on this sheet</span>
+      <span><b class="lk">■ green</b> = link to another sheet</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Where the clock should land</span>
+      <h2>The benchmarks worth aiming at</h2>
+    </div>
+    <div class="stack">
+      <p>These are the timings the training shops publish for a simple company built from a blank sheet. Treat them as a ladder, not a verdict — the gap between the first number and the last is almost entirely linking and debugging speed, not typing speed.</p>
+      <div class="tiles">
+        <div class="tile">
+          <span class="tile-n">8–12h</span>
+          <span class="tile-l">First build</span>
+          <span class="tile-d">Your first model of a simple company. Weak Excel skills can stretch this to a full day or more.</span>
+        </div>
+        <div class="tile">
+          <span class="tile-n">2–3h</span>
+          <span class="tile-l">Competent</span>
+          <span class="tile-d">The level that reads as "can do the job." This is where repetition starts paying compounding returns.</span>
+        </div>
+        <div class="tile">
+          <span class="tile-n">≤90m</span>
+          <span class="tile-l">Fluent</span>
+          <span class="tile-d">Blank sheet to balanced model. This is the muscle-memory threshold and it is reachable with reps.</span>
+        </div>
+      </div>
+      <p class="note"><b>The uncomfortable part:</b> the slow step is never the formulas. It is deciding how a line item should be driven, and finding the one link you forgot when the balance sheet is off by 4. Design your practice around those two things or you will get faster at typing and no faster at modeling.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The method</span>
+      <h2>Reps become skill only when you log the break</h2>
+    </div>
+    <div class="stack">
+      <p>Blocked repetition automates a sequence. Interleaved repetition — a different company, a different quirk, every time — is what makes the skill generalize instead of becoming one memorized spreadsheet. The program below does the first for two weeks, then switches to the second.</p>
+      <p>The device that turns reps into deliberate practice is a two-line entry after every single build: <strong>what broke, and how long it cost you.</strong> After ten builds you will have a ranked list of your own failure modes, and it will not be the list you expected. Drill the top item directly instead of building another whole model around it.</p>
+      <div class="fml-block"><span class="in">Rep 07</span>  Kroger, 2h14m — balance off by 31 from FY3
+        break: forgot deferred rent in the CFS working-capital block
+        cost: 26 min  →  drill: CFS-completeness sweep, 3× tomorrow</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The program</span>
+      <h2>Eight weeks, roughly twenty-five builds</h2>
+    </div>
+    <div class="ladder">
+
+      <article class="phase">
+        <div class="phase-key">
+          <span class="phase-wk">Week 0</span>
+          <span class="phase-reps">0 builds · ~4 hrs</span>
+        </div>
+        <div class="phase-body">
+          <span class="phase-goal">Load the accounting, not the Excel</span>
+          <ul>
+            <li>Write the three links from memory, on paper, before you open Excel: net income into retained earnings; closing cash from the CFS into the balance sheet cash line; every non-cash balance sheet change into the CFS.</li>
+            <li>Walk the classic interview drill out loud — depreciation rises by 10, what happens across all three statements — until it is boring.</li>
+            <li>Adopt the colour convention now, on day one: blue for hardcoded inputs, black for formulas, green for cross-sheet links. It is how you will find your own errors later.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="phase">
+        <div class="phase-key">
+          <span class="phase-wk">Weeks 1–2</span>
+          <span class="phase-reps">8 builds · same company</span>
+        </div>
+        <div class="phase-body">
+          <span class="phase-goal">Blocked reps — automate the sequence</span>
+          <ul>
+            <li>Pick <em>one</em> simple business and stay on it. A grocer, a restaurant chain, a single-product manufacturer — anything without securitisation, big minority interests, or heavy IFRS lease adjustments.</li>
+            <li>Build it once alongside a tutorial. Then close the tutorial and rebuild the same company from an empty workbook, every day, without looking.</li>
+            <li>Do not chase accuracy of the forecast. Chase completing the loop. A crude model that balances beats a sophisticated one that doesn't.</li>
+            <li>Target by the end of week 2: under three hours, unassisted, balanced on the first pass.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="phase">
+        <div class="phase-key">
+          <span class="phase-wk">Weeks 3–5</span>
+          <span class="phase-reps">9 builds · new company each</span>
+        </div>
+        <div class="phase-body">
+          <span class="phase-goal">Interleave — make it generalize</span>
+          <ul>
+            <li>New company every rep, rotating the business model deliberately: retail → subscription software → industrial manufacturer → services. Each one forces different working-capital behaviour, which is the whole point.</li>
+            <li>Add the parts you skipped: a real debt schedule, a revolver sized with <span class="fml"><span class="fx">MIN</span>/<span class="fx">MAX</span></span>, interest on average balances, and the circular reference that comes with it.</li>
+            <li>Pull the raw numbers yourself from the 10-K on SEC EDGAR rather than a prepared template. Reading a messy filing into a clean model is half the actual job.</li>
+            <li>Target: 2 to 2.5 hours including the debt schedule.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="phase">
+        <div class="phase-key">
+          <span class="phase-wk">Weeks 6–8</span>
+          <span class="phase-reps">8 builds · against a clock</span>
+        </div>
+        <div class="phase-body">
+          <span class="phase-goal">Compress — build under pressure</span>
+          <ul>
+            <li>Run 90-minute cuts, then 60-minute cuts. When the clock beats you, stop anyway and write down exactly which step you were on.</li>
+            <li>Practise triage explicitly: when you can't finish, simplify so the model still balances and still answers the main question. Finishing an ugly model scores; an elegant half-model doesn't.</li>
+            <li>Sabotage drill — the highest-yield exercise in the program. Take a finished model, have someone (or a script) break one link at random, and time yourself finding it. Ten minutes a day here is worth an hour of building.</li>
+            <li>Target: 90 minutes, balanced, with a working debt schedule.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="phase">
+        <div class="phase-key">
+          <span class="phase-wk">Ongoing</span>
+          <span class="phase-reps">1 build / week</span>
+        </div>
+        <div class="phase-body">
+          <span class="phase-goal">Maintain</span>
+          <ul>
+            <li>One full build a week keeps it. One 60-minute timed cut a month keeps the speed.</li>
+            <li>Skill decays on the debugging side first, not the building side — so keep the sabotage drill in rotation even when you stop building weekly.</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The sequence to automate</span>
+      <h2>Nine steps, always in this order</h2>
+    </div>
+    <div class="stack">
+      <p>Order matters more than people expect. Building the balance sheet before the cash flow statement, and leaving cash and the revolver until last, is what lets you defer the circular reference to a single controlled moment instead of fighting it the whole way through.</p>
+      <ol class="steps">
+        <li><div><div class="st-t">Input the historicals</div><div class="st-d">Three years, typed in blue, straight from the filing. No formulas, no cleverness. Get the historical balance sheet to balance before you project anything.</div></div></li>
+        <li><div><div class="st-t">Calculate historical ratios and drivers</div><div class="st-d">Growth rates, margins, days receivable / inventory / payable, capex as a percentage of revenue. This is the evidence your assumptions will rest on.</div></div></li>
+        <li><div><div class="st-t">Set the forecast assumptions</div><div class="st-d">One clearly marked block, all blue, all in one place. Every projected line traces back here.</div></div></li>
+        <li><div><div class="st-t">Forecast the income statement — but stop before interest</div><div class="st-d">Down to EBIT. Interest depends on debt balances you haven't built yet, so leaving it out now is deliberate, not an oversight.</div></div></li>
+        <li><div><div class="st-t">Forecast the balance sheet — but leave cash and the revolver empty</div><div class="st-d">Working capital off the days ratios, PP&amp;E off capex and depreciation, retained earnings off net income and dividends.</div></div></li>
+        <li><div><div class="st-t">Build the cash flow statement</div><div class="st-d">Every non-cash balance sheet line must appear here. This step is where the model is actually made or broken.</div></div></li>
+        <li class="pivot"><div><div class="st-t">Close the cash loop with MIN / MAX</div><div class="st-d">Closing cash feeds the balance sheet; the revolver draws when cash falls below the minimum and repays when it doesn't. This is the step that makes the model self-correcting.</div></div></li>
+        <li><div><div class="st-t">Build the interest calculations</div><div class="st-d">On average balances, against the debt schedule you just completed.</div></div></li>
+        <li class="pivot"><div><div class="st-t">Link interest back into the income statement</div><div class="st-d">This creates the circular reference on purpose. Enable iterative calculation, and keep a circuit-breaker switch that zeroes interest so you can kill a <span class="fml">#REF!</span> cascade without rebuilding.</div></div></li>
+      </ol>
+      <div class="fml-block"><span class="fx">Revolver draw</span>   = <span class="fx">MAX</span>(<span class="in">0</span>, <span class="in">min cash</span> − <span class="lk">cash before revolver</span>)
+<span class="fx">Revolver repay</span>  = −<span class="fx">MIN</span>(<span class="lk">revolver balance</span>, <span class="fx">MAX</span>(<span class="in">0</span>, <span class="lk">cash before revolver</span> − <span class="in">min cash</span>))
+<span class="fx">Interest expense</span> = <span class="in">rate</span> × <span class="fx">AVERAGE</span>(<span class="lk">opening debt</span>, <span class="lk">closing debt</span>) × <span class="lk">circuit breaker</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">When it doesn't balance</span>
+      <h2>Check these three before anything else</h2>
+    </div>
+    <div class="stack">
+      <p>The published guidance is consistent on this: in roughly 80–90% of cases the culprit is one of three broken links. Work them in order and stop guessing.</p>
+      <div class="triage">
+        <div class="card">
+          <span class="card-tag">Culprit 01</span>
+          <h3>Net income isn't reaching retained earnings</h3>
+          <p>Rebuild net income independently — revenue less COGS, opex, D&amp;A, interest, tax — and compare. If it doesn't match, your error is on the income statement, not the balance sheet.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Culprit 02</span>
+          <h3>Closing cash isn't feeding the balance sheet</h3>
+          <p>Check the opening cash cell too. When you copy a base case to build a downside, opening cash very often stays hardcoded to the base-case number instead of linking to the prior period.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Culprit 03</span>
+          <h3>A balance sheet line is missing from the CFS</h3>
+          <p class="fix">Highlight every balance sheet line as you reference it in the cash flow statement. Any non-zero line left unhighlighted is, by definition, your error.</p>
+        </div>
+      </div>
+      <div class="fml-block"><span class="fx">Sign convention — the rule that prevents half of all imbalances</span>
+
+Assets:              change = <span class="lk">prior period</span> − <span class="lk">current period</span>
+Liabilities &amp; equity: change = <span class="lk">current period</span> − <span class="lk">prior period</span></div>
+      <p class="note">Every break falls into one of three families: <b>signage</b> (right line, wrong direction), <b>omission</b> (line never made it to the CFS), or <b>classification</b> (right number, wrong section). Naming the family in your rep log is more useful than naming the cell.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">The layer underneath</span>
+      <h2>Get your hands off the mouse</h2>
+    </div>
+    <div class="stack">
+      <p>This is the part that is genuinely muscle memory rather than knowledge, and it is worth training separately from model building. Physically move the mouse out of reach for a fixed block each day. The point isn't raw speed — it's that navigation stops consuming attention you need for the accounting.</p>
+      <div class="tbl-wrap">
+        <table class="keys">
+          <thead><tr><th>Key</th><th>What it buys you</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>arrow</kbd></td><td>Jump to the edge of a data block. This is how you move around a model at all without a mouse.</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>arrow</kbd></td><td>Select to the edge — the basis of every fast copy across a forecast row.</td></tr>
+            <tr><td><kbd>F2</kbd></td><td>Edit in cell and see the precedents highlighted in place. Your fastest first look at a suspect formula.</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>[</kbd></td><td>Jump to the precedents of a formula. The single most useful debugging key there is.</td></tr>
+            <tr><td><kbd>F5</kbd> → Special</td><td>Select all constants in a range — instantly exposes hardcodes hiding inside a formula row.</td></tr>
+            <tr><td><kbd>Alt</kbd> + <kbd>=</kbd></td><td>AutoSum. Subtotal rows without reaching for anything.</td></tr>
+            <tr><td><kbd>Alt</kbd> + <kbd>H</kbd> + <kbd>0</kbd></td><td>Ribbon key sequences — learn the four or five you use constantly rather than all of them.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note"><b>One claim to ignore:</b> several blogs advertise a specific percentage speed gain from going mouse-free within a fixed number of days. That figure is marketing, with no study behind it. The habit is well worth building; the number is invented.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Material</span>
+      <h2>Where to get the reps</h2>
+    </div>
+    <div class="stack">
+      <p>You need two things repeatedly: worked models to check yourself against, and raw filings to build from cold. Start free — the free tier here is genuinely sufficient through week five.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>What it gives you</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k"><a href="https://www.asimplemodel.com/financial-curriculum/financial-modeling">A Simple Model</a></td>
+              <td>A full self-study video curriculum built around the three-statement model, with downloadable files. The best free starting point if you're building from zero.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://www.sec.gov/edgar/searchedgar/companysearch">SEC EDGAR</a></td>
+              <td>Raw 10-Ks. Your infinite supply of week-3-onward material. Pick boring businesses on purpose.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://mergersandinquisitions.com/3-statement-model/">Mergers &amp; Inquisitions</a></td>
+              <td>Full walkthrough of a 90-minute blank-sheet build with the Excel file, plus the timing benchmarks used on this page.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://www.fe.training/free-resources/financial-modeling/3-statement-model/">Financial Edge</a></td>
+              <td>The nine-step build order above, with exercise sheets and a completed Hershey model to check against.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://www.wallstreetprep.com/knowledge/build-integrated-3-statement-financial-model/">Wall Street Prep guide</a> + <a href="https://www.wallstreetprep.com/knowledge/excel-shortcuts/">shortcut sheet</a></td>
+              <td>Step-by-step integrated build, and a printable shortcuts reference for the no-mouse drill.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://corporatefinanceinstitute.com/resources/financial-modeling/common-causes-imbalanced-3-statement-models">CFI — imbalance causes</a></td>
+              <td>Ten documented causes of a model that won't balance. Read it once, then use it as your triage sheet.</td>
+              <td class="cost"><span class="free">Free</span></td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://breakingintowallstreet.com/kb/3-statement-models/">Breaking Into Wall Street</a></td>
+              <td>Timed 30-minute, 60-minute and 2-hour case studies — the closest thing to a real modeling test, and what weeks 6–8 are built around.</td>
+              <td class="cost">Free articles<br>Paid course</td>
+            </tr>
+            <tr>
+              <td class="k"><a href="https://www.wallstreetprep.com/knowledge/best-financial-modeling-certifications/">Paid courses, if you want one</a></td>
+              <td>Wall Street Prep for mechanics, BIWS if you're recruiting for banking, CFI if you're starting with no finance background at all. Buy one, not three.</td>
+              <td class="cost">$300–$500</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note"><b>Don't buy a course to start.</b> Courses solve the "I don't know the steps" problem, and you'll be past that in a week. Nothing sold solves the "I haven't done it twenty-five times" problem, which is the actual one.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Instrument</span>
+      <h2>The rep log</h2>
+    </div>
+    <div class="stack">
+      <p>Keep this in a single sheet. Fill it in immediately after each build, while you still remember where you stalled — the whole value is in the last two columns.</p>
+      <div class="tbl-wrap">
+        <table class="log">
+          <thead>
+            <tr><th>#</th><th>Company</th><th>Time</th><th>Balanced first pass?</th><th>What broke</th><th>Family</th><th>Minutes lost</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>01</td><td>—</td><td>—</td><td>—</td><td>—</td><td>sign / omit / class</td><td>—</td></tr>
+            <tr><td>02</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>03</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>04</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="eyebrow">Sources</span>
+    <ol>
+      <li>Mergers &amp; Inquisitions — <a href="https://mergersandinquisitions.com/3-statement-model/">3-Statement Model: Full Tutorial, Guide, and Excel File</a> (timing benchmarks, build order, practice advice)</li>
+      <li>Financial Edge Training — <a href="https://www.fe.training/free-resources/financial-modeling/3-statement-model/">3-Statement Model</a> (nine-step build order, Hershey exercise files)</li>
+      <li>Corporate Finance Institute — <a href="https://corporatefinanceinstitute.com/resources/financial-modeling/common-causes-imbalanced-3-statement-models">10 Common Causes of Imbalance in 3-Statement Models</a></li>
+      <li>Breaking Into Wall Street — <a href="https://breakingintowallstreet.com/kb/3-statement-models/balance-sheet-not-balancing/">Balance Sheet Not Balancing: How to Fix It</a> and <a href="https://breakingintowallstreet.com/kb/3-statement-models/">3-Statement Models: Tutorials &amp; Examples</a></li>
+      <li>Wall Street Prep — <a href="https://www.wallstreetprep.com/knowledge/build-integrated-3-statement-financial-model/">Complete Guide</a>, <a href="https://www.wallstreetprep.com/knowledge/excel-shortcuts/">Excel Shortcuts</a>, <a href="https://www.wallstreetprep.com/knowledge/best-financial-modeling-certifications/">course comparison</a></li>
+      <li>Chris Reilly — <a href="https://www.financialmodelingeducation.com/pages/blog/top-3-reasons-your-balance-sheet-doesnt-balance">Top 3 Reasons Your Balance Sheet Doesn't Balance</a></li>
+      <li>A Simple Model — <a href="https://www.asimplemodel.com/financial-curriculum/financial-modeling">free financial modeling curriculum</a></li>
+      <li>Spacing and interleaving effects — <a href="https://link.springer.com/article/10.1007/s10648-021-09613-w">systematic review, Educational Psychology Review</a>; <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4339240/">repetitive skills training and expert feedback in early procedural skill acquisition</a></li>
+    </ol>
+  </footer>
+
+</div>
