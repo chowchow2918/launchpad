@@ -274,6 +274,47 @@
   .steps li.pivot::before { color: var(--break); }
   .steps li.pivot .st-t { color: var(--break); }
 
+  /* ---------- Q&A ---------- */
+  .qa { display: flex; flex-direction: column; }
+  .qa-item {
+    border-top: 1px solid var(--rule);
+    padding: 26px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .qa-item:last-child { border-bottom: 1px solid var(--rule); }
+  .qa-q { display: grid; grid-template-columns: 26px 1fr; gap: 14px; align-items: start; }
+  .qa-q::before {
+    content: "Q";
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--input);
+    padding-top: 4px;
+  }
+  .qa-q h3 { font-size: 19px; letter-spacing: -.015em; line-height: 1.3; text-wrap: balance; }
+  .qa-a { padding-left: 40px; display: flex; flex-direction: column; gap: 16px; }
+  @media (max-width: 640px) { .qa-a { padding-left: 0; } }
+
+  .verdict {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+    background: var(--surface-2);
+    border-left: 2px solid var(--link);
+    padding: 14px 18px;
+    border-radius: 0 3px 3px 0;
+    max-width: var(--measure);
+  }
+  .verdict em { font-style: normal; color: var(--link); }
+
+  .calc { min-width: 600px; }
+  .calc td { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .calc td.scen { font-family: var(--display); font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .calc td.out { color: var(--input); font-weight: 700; }
+
   /* ---------- triage cards ---------- */
   .triage { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
   .card {
@@ -522,6 +563,178 @@
       <div class="fml-block"><span class="fx">Revolver draw</span>   = <span class="fx">MAX</span>(<span class="in">0</span>, <span class="in">min cash</span> − <span class="lk">cash before revolver</span>)
 <span class="fx">Revolver repay</span>  = −<span class="fx">MIN</span>(<span class="lk">revolver balance</span>, <span class="fx">MAX</span>(<span class="in">0</span>, <span class="lk">cash before revolver</span> − <span class="in">min cash</span>))
 <span class="fx">Interest expense</span> = <span class="in">rate</span> × <span class="fx">AVERAGE</span>(<span class="lk">opening debt</span>, <span class="lk">closing debt</span>) × <span class="lk">circuit breaker</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Mechanics</span>
+      <h2>Five things worth getting straight</h2>
+    </div>
+    <div class="qa">
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>How do I know which supporting schedules to build?</h3></div>
+        <div class="qa-a">
+          <p>One test settles it: <strong>does this line item's value depend on last period's value?</strong> If the balance rolls forward — opening balance, plus additions, minus subtractions, equals closing balance — it needs a schedule. If it's just a percentage of this year's revenue with no memory of last year, a single driver row is enough.</p>
+          <p>The second test catches the rest: <strong>does one driver touch more than one statement?</strong> Capex hits investing cash flow, the PP&amp;E balance, and — through depreciation — the income statement. Three touchpoints means it needs somewhere to live so they stay consistent.</p>
+          <p>For a standard 3-statement model that's exactly four schedules. Build these and stop:</p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Schedule</th><th>The roll-forward</th><th>What it feeds</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="k">Debt</td>
+                  <td class="cost">opening + draws − repayments</td>
+                  <td>Interest expense (IS), financing cash flow, debt balances (BS)</td>
+                </tr>
+                <tr>
+                  <td class="k">PP&amp;E</td>
+                  <td class="cost">opening + capex − depreciation</td>
+                  <td>D&amp;A (IS), capex (CFI), net PP&amp;E (BS)</td>
+                </tr>
+                <tr>
+                  <td class="k">Working capital</td>
+                  <td class="cost">driven off days ratios</td>
+                  <td>Change in working capital (CFO), AR / inventory / AP (BS)</td>
+                </tr>
+                <tr>
+                  <td class="k">Equity</td>
+                  <td class="cost">opening + net income − dividends ± buybacks</td>
+                  <td>Retained earnings (BS), financing cash flow, share count for EPS</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Add a fifth only when the filing forces you to: intangible amortisation if it's material, or a tax schedule if there are NOLs worth tracking. Everything else is a driver row, not a schedule.</p>
+        </div>
+      </article>
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>How do I know what to project as a percentage of revenue?</h3></div>
+        <div class="qa-a">
+          <p>Percentage of revenue is right when the cost <strong>genuinely scales with volume</strong>. It's wrong — and it's the most common lazy modeling error — when the item is driven by something else entirely.</p>
+          <p>You don't have to guess, and this is the whole reason step 2 of the build order exists. Calculate the historical ratio for three years and read it:</p>
+          <div class="fml-block"><span class="fx">Ratio is stable across 3 years</span>   → percentage of revenue is defensible; use the average
+<span class="fx">Ratio drifts steadily</span>           → project the trend, not the average (that's operating leverage)
+<span class="fx">Ratio is noisy with no pattern</span>  → revenue is the wrong driver; go find the real one</div>
+          <p>And several things should never be driven off revenue at all, because a better driver exists:</p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Line item</th><th>Drive it off</th><th>Why not revenue</th></tr></thead>
+              <tbody>
+                <tr><td class="k">COGS</td><td class="cost">% of revenue</td><td>Genuinely volume-linked. This one is fine.</td></tr>
+                <tr><td class="k">Accounts receivable</td><td class="cost">days sales outstanding</td><td>Days separates collection behaviour from growth. A % hides a worsening collection cycle.</td></tr>
+                <tr><td class="k">Inventory &amp; payables</td><td class="cost">days, off COGS</td><td>You buy and stock at cost, not at selling price.</td></tr>
+                <tr><td class="k">Depreciation</td><td class="cost">the PP&amp;E schedule</td><td>It's a function of the asset base you already built, not this year's sales.</td></tr>
+                <tr><td class="k">Interest</td><td class="cost">the debt schedule</td><td>Same reason — it follows balances.</td></tr>
+                <tr><td class="k">Taxes</td><td class="cost">% of pre-tax income</td><td>Obvious once stated, routinely got wrong under time pressure.</td></tr>
+                <tr><td class="k">Rent, corporate overhead</td><td class="cost">inflation, or hold flat</td><td>Fixed costs don't scale. Modelling them as a % of revenue quietly erases operating leverage.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>The debt schedule — is it based on average debt?</h3></div>
+        <div class="qa-a">
+          <p class="verdict"><em>No — and this distinction is worth being precise about.</em> The schedule is a roll-forward of balances. Average debt is only a convention for calculating interest <em>from</em> that schedule.</p>
+          <p>The schedule itself is just this, repeated once per tranche — term loan, notes, revolver — each with its own rate:</p>
+          <div class="fml-block"><span class="lk">Opening balance</span>   (= prior period closing)
+<span class="fx">+ Draws / issuance</span>
+<span class="fx">− Scheduled amortisation / repayments</span>
+<span class="fx">= Closing balance</span></div>
+          <p>Interest is a separate calculation sitting underneath it, and you get to choose the convention:</p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Method</th><th>Formula</th><th>Trade-off</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="k">Average balance</td>
+                  <td class="cost">rate × AVERAGE(open, close)</td>
+                  <td>More accurate, because the balance changed during the year. <strong>Creates the circular reference</strong> — interest hits net income, which hits cash, which drives the revolver, which changes debt, which changes interest.</td>
+                </tr>
+                <tr>
+                  <td class="k">Opening balance</td>
+                  <td class="cost">rate × opening balance</td>
+                  <td>Slightly less precise. <strong>No circularity at all.</strong> Plenty of professional models use this deliberately for exactly that reason.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Use the opening-balance method for your first several builds. Adding the circularity is a separate skill, and you shouldn't be debugging an iterative-calculation loop while you're still learning where the links go. Interest <em>income</em> on cash works identically, off the cash balance.</p>
+        </div>
+      </article>
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>Closing cash with MIN / MAX — explain it simply</h3></div>
+        <div class="qa-a">
+          <p>Here's the problem it solves. You can't know your closing cash until you know whether you drew on the revolver, and you can't know the revolver draw until you know your cash. MIN and MAX are just how you write that rule down so Excel resolves it in one pass.</p>
+          <p>Work it in three moves:</p>
+          <ol class="steps">
+            <li><div><div class="st-t">Get cash before any revolver activity</div><div class="st-d">Opening cash + operating + investing + financing, with the revolver left out of financing for now.</div></div></li>
+            <li><div><div class="st-t">Compare it to your minimum cash balance</div><div class="st-d">The minimum is an assumption you set — the operating cushion the business needs to keep on hand.</div></div></li>
+            <li><div><div class="st-t">Below the minimum, you draw. Above it, you repay.</div><div class="st-d">MAX(0, …) means "never a negative draw." MIN(balance, …) means "never repay more than you actually owe."</div></div></li>
+          </ol>
+          <p>That's all the two functions are doing — <strong>MAX puts a floor of zero under the draw, MIN puts a ceiling on the repayment.</strong> They aren't clever, they're guardrails.</p>
+        </div>
+      </article>
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>So if cash is above the minimum, does the excess go toward the revolver — yes or no?</h3></div>
+        <div class="qa-a">
+          <p class="verdict"><em>Yes — but only up to what you actually owe on it.</em> Once the revolver is paid off, the rest of the excess just piles up as cash on the balance sheet.</p>
+          <p>That cap is precisely what the MIN is there for, and it's the part people miss. Here it is with real numbers, minimum cash set to 50:</p>
+          <div class="tbl-wrap">
+            <table class="calc">
+              <thead>
+                <tr><th>Scenario</th><th>Cash before revolver</th><th>Revolver owed</th><th>Draw</th><th>Repay</th><th>Closing cash</th><th>Revolver after</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="scen">Short of the minimum</td>
+                  <td>30</td><td>0</td>
+                  <td class="out">+20</td><td>0</td>
+                  <td class="out">50</td><td>20</td>
+                </tr>
+                <tr>
+                  <td class="scen">Excess, partly swept</td>
+                  <td>60</td><td>20</td>
+                  <td>0</td><td class="out">−10</td>
+                  <td class="out">50</td><td>10</td>
+                </tr>
+                <tr>
+                  <td class="scen">Excess exceeds the debt</td>
+                  <td>85</td><td>20</td>
+                  <td>0</td><td class="out">−20</td>
+                  <td class="out">65</td><td>0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Look at the third row, because it answers your question exactly. There was 35 of cash above the minimum, but only 20 outstanding on the revolver — so 20 gets swept, the revolver goes to zero, and closing cash lands at 65 rather than being forced back down to 50. Without the MIN, the model would have "repaid" 35 against a 20 balance and driven the revolver negative.</p>
+          <p class="note"><b>Name for it:</b> this is a <b>cash sweep</b>, and sweeping only the revolver is the standard convention in a 3-statement model. In an LBO you'll also see a partial sweep against term debt, at some percentage set by the credit agreement.</p>
+        </div>
+      </article>
+
+      <article class="qa-item">
+        <div class="qa-q"><h3>How do I deal with genuinely complex companies?</h3></div>
+        <div class="qa-a">
+          <p>By refusing to match the filing's complexity. A financial statement is a compliance document with a legal obligation to disclose everything; your model is a decision tool. Those are different jobs, and copying the first into the second is the mistake.</p>
+          <p>The governing question for every line: <strong>would modelling this separately change the answer?</strong> If splitting revenue into eight segments doesn't move the valuation or the decision, it's one line.</p>
+          <p>In practice, four moves handle almost all of it:</p>
+          <ol class="steps">
+            <li><div><div class="st-t">Re-cast the filing into your own standard format first</div><div class="st-d">This is what analysts actually do and it's rarely taught. Before projecting anything, map the company's line items onto a consistent template you use for every company. Half of "complexity" is just unfamiliar labelling.</div></div></li>
+            <li><div><div class="st-t">Aggregate anything immaterial into "other"</div><div class="st-d">Under roughly 2–3% of revenue or assets and not moving? It becomes "other assets" or "other opex," held flat or grown with revenue. You are not losing accuracy you had.</div></div></li>
+            <li><div><div class="st-t">Keep an explicit plug line so the historicals balance</div><div class="st-d">Get the historical balance sheet to tie <em>before</em> you understand every item. A visible, labelled plug is honest and lets you keep moving; an invisible one is how models rot.</div></div></li>
+            <li><div><div class="st-t">Add complexity in layers, checking the balance after each</div><div class="st-d">Build a balancing model at 30 line items. Then add one layer — leases, then minority interest, then deferred tax — and confirm it still balances before adding the next. Never add three at once, because then you're debugging three interactions instead of one.</div></div></li>
+          </ol>
+          <p>For the usual suspects — minority interest, equity-method investments, IFRS 16 leases, deferred revenue, pensions — run the same materiality test before touching them. Most of the time the honest answer is "hold it flat and move on."</p>
+          <p class="note"><b>While you're learning, this is a separate skill from the mechanics.</b> Deliberately pick simple businesses through week five. Handling a messy filing is week six's problem, and it gets much easier once the build sequence itself is automatic.</p>
+        </div>
+      </article>
+
     </div>
   </section>
 
