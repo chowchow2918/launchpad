@@ -1,0 +1,469 @@
+<title>Larkfield Model Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --paper:     #f6f8f9;
+    --surface:   #ffffff;
+    --band:      #eaeef2;
+    --ink:       #12171d;
+    --ink-soft:  #4e5661;
+    --ink-mute:  #78818d;
+    --rule:      #d8dee5;
+    --rule-str:  #aab3bd;
+    --accent:    #2b4c7e;
+    --crit:      #b3261e;
+    --crit-bg:   #fceceb;
+    --warn:      #96560a;
+    --warn-bg:   #fbf1e3;
+    --struct:    #5b6472;
+    --struct-bg: #eef1f4;
+    --good:      #17694a;
+    --good-bg:   #e8f3ee;
+
+    --display: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+    --body:    "Source Serif 4", Georgia, "Times New Roman", serif;
+    --mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0e1116;
+      --surface:   #161a20;
+      --band:      #1d222a;
+      --ink:       #e6e9ed;
+      --ink-soft:  #a5adb8;
+      --ink-mute:  #7d8794;
+      --rule:      #272d36;
+      --rule-str:  #3b434e;
+      --accent:    #7fa6da;
+      --crit:      #ff8a80;
+      --crit-bg:   #2c1614;
+      --warn:      #e0a559;
+      --warn-bg:   #2b2013;
+      --struct:    #99a2af;
+      --struct-bg: #1f242c;
+      --good:      #56c39a;
+      --good-bg:   #12291f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #0e1116;
+    --surface:   #161a20;
+    --band:      #1d222a;
+    --ink:       #e6e9ed;
+    --ink-soft:  #a5adb8;
+    --ink-mute:  #7d8794;
+    --rule:      #272d36;
+    --rule-str:  #3b434e;
+    --accent:    #7fa6da;
+    --crit:      #ff8a80;
+    --crit-bg:   #2c1614;
+    --warn:      #e0a559;
+    --warn-bg:   #2b2013;
+    --struct:    #99a2af;
+    --struct-bg: #1f242c;
+    --good:      #56c39a;
+    --good-bg:   #12291f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,56px) 90px; }
+
+  h1, h2, h3, .ui { font-family: var(--display); }
+  h1 {
+    font-size: clamp(32px, 5.2vw, 50px);
+    font-weight: 700; letter-spacing: -.025em; line-height: 1.05;
+    margin: 0; text-wrap: balance;
+  }
+  h2 {
+    font-size: clamp(20px, 2.6vw, 26px);
+    font-weight: 700; letter-spacing: -.015em; margin: 0; text-wrap: balance;
+  }
+  h3 { font-size: 17.5px; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+  p { margin: 0; max-width: 68ch; }
+  strong { font-weight: 600; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
+  }
+
+  header.mast {
+    padding: clamp(44px,8vw,80px) 0 26px;
+    border-bottom: 2px solid var(--ink);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .subject {
+    display: flex; flex-wrap: wrap; gap: 6px 28px; margin-top: 6px;
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-mute);
+  }
+  .subject b { color: var(--ink-soft); font-weight: 500; }
+
+  /* ---- verdict ---- */
+  .verdict {
+    margin-top: 30px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--crit);
+    border-radius: 3px;
+    padding: clamp(18px,3vw,26px);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .verdict h2 { font-size: clamp(19px,2.4vw,23px); }
+  .verdict p { font-size: 17px; color: var(--ink-soft); max-width: 76ch; }
+  .verdict em { font-style: normal; color: var(--ink); font-weight: 600; }
+
+  .tally {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+  }
+  .pill {
+    font-family: var(--display); font-size: 12px; font-weight: 600;
+    padding: 5px 11px; border-radius: 2px; white-space: nowrap;
+  }
+  .pill.c { background: var(--crit-bg);   color: var(--crit); }
+  .pill.w { background: var(--warn-bg);   color: var(--warn); }
+  .pill.s { background: var(--struct-bg); color: var(--struct); }
+  .pill.g { background: var(--good-bg);   color: var(--good); }
+
+  section { padding-top: clamp(46px,7vw,72px); }
+  .sec-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+
+  /* ---- findings ---- */
+  .finds { display: flex; flex-direction: column; gap: 18px; }
+  .find {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule-str);
+    border-radius: 3px;
+    padding: 20px clamp(16px,2.6vw,24px);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .find.c { border-left-color: var(--crit); }
+  .find.w { border-left-color: var(--warn); }
+  .find-top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+  .find-n {
+    font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink-mute);
+  }
+  .find h3 { flex: 1 1 22ch; }
+  .find p { font-size: 16px; color: var(--ink-soft); }
+  .find p b { color: var(--ink); font-weight: 600; }
+
+  .ev {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.85;
+    background: var(--band); border-left: 2px solid var(--rule-str);
+    border-radius: 0 2px 2px 0; padding: 12px 15px;
+    overflow-x: auto; white-space: pre; color: var(--ink);
+  }
+  .ev .bad  { color: var(--crit); font-weight: 600; }
+  .ev .ok   { color: var(--good); font-weight: 600; }
+  .ev .dim  { color: var(--ink-mute); }
+
+  .fix {
+    font-family: var(--display); font-size: 15px; font-weight: 600;
+    background: var(--good-bg); color: var(--ink);
+    border-left: 2px solid var(--good);
+    padding: 11px 15px; border-radius: 0 2px 2px 0;
+  }
+  .fix span { color: var(--good); font-family: var(--mono); font-size: 12.5px; font-weight: 600; }
+
+  /* ---- tables ---- */
+  .tw { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 15px; }
+  th {
+    font-family: var(--display); font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase; color: var(--ink-mute);
+    background: var(--band); text-align: left; padding: 10px 14px;
+    border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.k { font-family: var(--display); font-weight: 600; }
+  td.m { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.sev { font-family: var(--display); font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+  td.sev.s { color: var(--struct); }
+  td.sev.w { color: var(--warn); }
+
+  .num { text-align: right; font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+  /* ---- good list ---- */
+  .good-list { display: flex; flex-direction: column; }
+  .good-item {
+    display: grid; grid-template-columns: 20px 1fr; gap: 0 14px;
+    padding: 13px 0; border-bottom: 1px solid var(--rule); align-items: start;
+  }
+  .good-item:first-child { border-top: 1px solid var(--rule); }
+  .good-item .tick { color: var(--good); font-weight: 700; font-family: var(--display); }
+  .good-item p { font-size: 15.5px; }
+  .good-item b { font-family: var(--display); font-weight: 600; color: var(--ink); }
+
+  .note {
+    border-left: 2px solid var(--warn); padding: 4px 0 4px 18px;
+    color: var(--ink-soft); font-size: 16px; max-width: 68ch;
+  }
+  .note b { color: var(--ink); font-weight: 600; }
+
+  ol.order { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 9px; }
+  ol.order li { font-size: 16px; color: var(--ink-soft); max-width: 72ch; }
+  ol.order b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: clamp(44px,7vw,68px); padding-top: 22px;
+    border-top: 1px solid var(--rule); font-size: 14.5px; color: var(--ink-mute);
+    max-width: 76ch;
+  }
+  a { color: var(--accent); text-underline-offset: 2px; }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <span class="eyebrow">Independent review</span>
+    <h1>Larkfield Model Review</h1>
+    <div class="subject">
+      <span><b>File</b> Day_4_Skeleten.xlsx</span>
+      <span><b>Scope</b> 253 rows · 8 periods · FY2022A–FY2029E</span>
+      <span><b>Method</b> every formula read, findings reproduced numerically</span>
+    </div>
+  </header>
+
+  <div class="verdict">
+    <h2>It balances. Two numbers in it are still wrong.</h2>
+    <p>The balance check reads zero in all eight columns — not rounded to zero, <em>genuinely</em> zero, to 2.3&nbsp;×&nbsp;10<sup>−13</sup>. That is a real achievement and it is the hardest part of the build. It is also exactly why the two errors below survived: both of them feed the income statement and the cash flow statement with the <em>same</em> wrong figure, so the two sides move together and the check never complains.</p>
+    <p><em>A balanced model is not a correct model.</em> That is the single most useful thing this rep can teach you.</p>
+    <div class="tally">
+      <span class="pill c">2 critical</span>
+      <span class="pill w">2 dormant</span>
+      <span class="pill s">4 structural</span>
+      <span class="pill g">9 things done right</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Critical — these change the numbers</span>
+      <h2>Wrong figures the balance check cannot see</h2>
+    </div>
+    <div class="finds">
+
+      <article class="find c">
+        <div class="find-top">
+          <span class="find-n">FINDING 1</span>
+          <h3>Interest income is computed from a dead branch</h3>
+        </div>
+        <p>Rows 248–250 of the Interest Income Schedule are <b>hardcoded numbers, not formulas</b>. They were a snapshot of the cash roll-forward at some earlier moment, and they have not moved since. The live cash roll-forward on the cash flow statement has moved. The two now disagree, and the gap widens every year.</p>
+        <div class="ev">                          FY2025    FY2026    FY2027    FY2028    FY2029
+Cash flow stmt (r124)    <span class="ok">137.269   161.178   188.710   215.077   252.857</span>
+Interest schedule (r250) <span class="bad">136.570   159.716   186.357   211.700   248.297</span>
+divergence                 0.699     1.462     2.353     3.376     4.560
+
+r176 "Cash Balance"  =H250   <span class="dim">← the revolver tests the stale number too</span>
+r253 "Interest Earned" = rate x AVERAGE(r249, r250)</div>
+        <p>Interest income therefore earns on a cash balance the model does not have. Because that wrong figure flows into net income and then into <em>both</em> retained earnings and the cash flow statement, the balance sheet still ties perfectly — the error is invisible to the only check you have.</p>
+        <div class="fix">Fix — point rows 248–250 back at the live statement: <span>H248 =H122 · H249 =G250 · H250 =SUM(H248:H249)</span>, or delete the block and reference r122–124 directly.</div>
+      </article>
+
+      <article class="find c">
+        <div class="find-top">
+          <span class="find-n">FINDING 2</span>
+          <h3>Depreciation is calibrated on opening PP&amp;E and charged on closing</h3>
+        </div>
+        <p>Your historical rate is computed correctly — <span class="ev" style="display:inline;padding:2px 6px;white-space:normal">E10 = −(E41/E11)</span> divides depreciation by <b>opening</b> net book value, which is what note 4 of the report discloses. But the forecast applies that same rate to the <b>closing</b> balance: <span class="ev" style="display:inline;padding:2px 6px;white-space:normal">H210 = −H206*H211</span>, where H211 is Ending PP&amp;E.</p>
+        <div class="ev">                       FY2025    FY2026    FY2027    FY2028    FY2029
+Depreciation charged   <span class="bad">41.411    43.460    45.730    48.247    51.035</span>
+rate x OPENING PP&E    <span class="ok">39.559    41.411    43.460    45.730    48.247</span>
+overstated by           1.852     2.049     2.270     2.517     2.788</div>
+        <p>Two consequences. Depreciation runs <b>1.9 to 2.8 too high every year</b>, understating net income. And because closing PP&amp;E is itself <em>=SUM(opening, capex, depreciation)</em>, depreciation now depends on a figure that depends on depreciation — you have created a circular reference. Excel resolves it because iterative calculation is switched on in this workbook, so it never announced itself.</p>
+        <div class="fix">Fix — charge it on the opening balance: <span>H210 = −H206*H208</span>. The circularity disappears with it.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Dormant — wrong, but not firing yet</span>
+      <h2>The revolver is broken and disconnected</h2>
+    </div>
+    <div class="finds">
+
+      <article class="find w">
+        <div class="find-top">
+          <span class="find-n">FINDING 3</span>
+          <h3>The repayment formula is wrong whenever the revolver has a balance</h3>
+        </div>
+        <p>Your draw line is right. The repayment line is <span class="ev" style="display:inline;padding:2px 6px;white-space:normal">=MAX(MIN(0, cash−min), beginning)</span>, which returns the <em>beginning balance</em> whenever cash is above the minimum, and returns it again even while you are drawing. Then <span class="ev" style="display:inline;padding:2px 6px;white-space:normal">Ending =SUM(begin, draw, repay)</span> adds it instead of subtracting.</p>
+        <div class="ev"> begin   cash    min |  yours  d / r / end  |  correct  d / r / end
+     0    120     60 |        0 / 0 / 0    |         0 / 0 / 0     <span class="ok">same</span>
+     0     40     60 |       20 / 0 / 20   |        20 / 0 / 20    <span class="ok">same</span>
+    20    120     60 |       0 / 20 / 40   |         0 / 20 / 0    <span class="bad">wrong</span>
+    20     40     60 |      20 / 20 / 60   |        20 / 0 / 40    <span class="bad">wrong</span>
+    50    200     60 |      0 / 50 / 100   |         0 / 50 / 0    <span class="bad">wrong</span>
+    30     55     60 |       5 / 30 / 65   |         5 / 0 / 35    <span class="bad">wrong</span></div>
+        <p>Wrong in four of six cases — every case where the revolver carries a balance. It reads as correct today only because cash never falls below 60 in this forecast, so the revolver stays at zero and the formula is never exercised. <b>Change one assumption and it produces nonsense.</b></p>
+        <div class="fix">Fix — cap the repayment and subtract it: <span>Repay =MIN(begin, MAX(0, cash−min))</span> and <span>Ending =begin + draw − repay</span>.</div>
+      </article>
+
+      <article class="find w">
+        <div class="find-top">
+          <span class="find-n">FINDING 4</span>
+          <h3>Even if it worked, the revolver is wired to nothing</h3>
+        </div>
+        <p>The schedule computes a balance that no other statement reads.</p>
+        <div class="ev">Balance sheet r77 "Credit Revolver"   H  I  J  K  L  →  <span class="bad">all empty</span>
+Cash flow financing r116-r119         LT debt · ST debt · equity · dividends
+                                      <span class="bad">no revolver line</span>
+Revolver tests r176 = r250            <span class="bad">the stale cash from finding 1</span></div>
+        <p>So a draw would never reach the balance sheet, never move cash, and would be tested against the wrong cash figure. Three separate breaks in one chain. There is also a third cash definition problem hiding here: the revolver must test <b>cash before revolver activity</b>, not final cash — otherwise, once you connect it, it will chase its own tail.</p>
+        <div class="fix">Fix — fill r77 from the schedule's ending balance, add a revolver row to financing, and feed the schedule cash before any revolver movement.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Structural — right answers, fragile wiring</span>
+      <h2>Four places the links point the wrong way</h2>
+    </div>
+    <div class="stack">
+      <p>None of these change a number today. All of them will the moment a balance stops being flat, and each is the kind of thing a reviewer marks down even when the output is right.</p>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Where</th><th>What it does</th><th>Why it is wrong</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sev s">5</td>
+              <td class="k">Ending balances pull from the <em>next</em> column</td>
+              <td class="m">r157 E =F155<br>r167 E =F162 · F =G165 · G =H162<br>r236 E =F234 · F =G234 · G =H234</td>
+              <td>A closing balance is defined as next year's opening balance — the dependency runs right to left. It gives the right answer only because these balances happen to be known and flat. Closing should be <span class="m">opening + movement</span>, always.</td>
+            </tr>
+            <tr>
+              <td class="sev s">6</td>
+              <td class="k">Short-term debt openings skip the roll</td>
+              <td class="m">r165 G =G162 · H =H162<br><span class="dim">should be F167 and G167</span></td>
+              <td>The opening reads the current year's balance row instead of the prior year's closing. Correct by coincidence — the balance is flat at 30.</td>
+            </tr>
+            <tr>
+              <td class="sev s">7</td>
+              <td class="k">Two self-referential opening balances</td>
+              <td class="m">r208 E =SUM(E209:E211) → 288<br>r238 E =SUM(E239:E241) → 297.6</td>
+              <td>Opening PP&amp;E is set to capex + depreciation + <em>closing</em>, giving 288 where note 4 says 268 — and contradicting your own E11, which correctly holds 268. Same pattern on opening retained earnings. Neither feeds anything, so they are dead cells carrying wrong numbers.</td>
+            </tr>
+            <tr>
+              <td class="sev s">8</td>
+              <td class="k">Goodwill and intangibles are transposed</td>
+              <td class="m">r68 "Intangibles" = 112.0<br>r69 "Goodwille" = 38.0</td>
+              <td>The report has goodwill at 112.0 and intangibles at 38.0. The labels are swapped. The total is unaffected, so nothing breaks — but the balance sheet says something untrue.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Credit where it is due</span>
+      <h2>What this model gets right</h2>
+    </div>
+    <div class="stack">
+      <p>This is a genuinely competent build, and several of the things below are exactly the items you have been missing for six reps running.</p>
+      <div class="good-list">
+        <div class="good-item"><span class="tick">✓</span><p><b>It balances to 2.3 × 10⁻¹³ across all eight periods.</b> No plugs, no forced numbers.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>You avoided the SG&amp;A trap.</b> SG&amp;A grows at inflation off its own prior year, not as a percentage of revenue. That was the single most likely way to get this case wrong, and note 2 is exactly why. This is the best decision in the model.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Working capital drivers are on the right bases.</b> Receivables on revenue; inventory and payables on COGS; income taxes payable on the tax charge. Getting inventory and payables onto COGS rather than revenue is the detail most people miss.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Income taxes payable is fully wired</b> — a balance in current liabilities, sized in the working capital schedule, with only its change reaching the cash flow statement. Three reps ago this line did not exist.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Historicals are hardcoded, forecasts are formulas,</b> and the boundary is clean at FY2025. Interest expense keeps the reported figure in history and switches to the built-up figure in the forecast, which is the right call.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Every historical ratio is derived, not typed.</b> Growth, margin, tax rate, payable days and capex intensity are all live formulas off the statements — so the calibration updates if an input changes.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Debt is modelled per tranche</b> with separate rates, separate interest lines, and a total interest aggregation feeding one income statement row.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>Receivables days are modelled back toward the target</b> in note 3 rather than held at the FY2024 actual. That is reading the case, not just the numbers.</p></div>
+        <div class="good-item"><span class="tick">✓</span><p><b>You picked up the commitment fee and the facility cap</b> from note 5 and built rows for both.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Judgement, not errors</span>
+      <h2>Assumptions a reviewer would push back on</h2>
+    </div>
+    <div class="stack">
+      <p>These are defensible positions, not mistakes. But you should be able to say why — and for two of them I do not think you can.</p>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Assumption</th><th>History</th><th>You set</th><th>The challenge</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="k">Revenue growth</td>
+              <td class="m">8.4% → 6.8%</td>
+              <td class="m">6.5 · 6.4 · 6.7 · 7.0 · 7.2</td>
+              <td>Growth <em>accelerates</em> through your forecast against a decelerating history and note 1's mid-single-digit guidance. Hard to defend.</td>
+            </tr>
+            <tr>
+              <td class="k">Gross margin</td>
+              <td class="m">42.0 · 42.6 · 43.1</td>
+              <td class="m">42.5% flat</td>
+              <td>A 0.6pt step <em>down</em> from the FY2024 actual, then flat, against three years of steady expansion. Conservatism is fine — but say so, don't leave it looking accidental.</td>
+            </tr>
+            <tr>
+              <td class="k">Inflation</td>
+              <td class="m">4.8% · 3.9%</td>
+              <td class="m">4.0 · 4.5 · 3.5 · 5.0 · 3.25</td>
+              <td>Zig-zags with no stated rationale, and it drives your whole SG&amp;A line. Pick one rate, or give the path a reason.</td>
+            </tr>
+            <tr>
+              <td class="k">Interest income rate</td>
+              <td class="m">0.65% · 1.0% · 1.63%</td>
+              <td class="m">1.0% flat</td>
+              <td>Below the latest actual and against a rising trend, on a cash pile you let grow to 252.9.</td>
+            </tr>
+            <tr>
+              <td class="k">Interest build-up</td>
+              <td class="m">reported 14.2 · 13.4 · 12.5</td>
+              <td class="m">built 15.6 · 14.6 · 13.3</td>
+              <td>Your rate build-up runs about 1.0–1.4 above the reported figure in every historical year. That gap is your calibration error, and it carries into the forecast unexamined.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note"><b>The one analytical observation.</b> Cash grows from 118.3 to 252.9 while the company pays 5.4% on term debt it is contractually amortising at only 20.0 a year. No sweep, no buyback, no step-up in dividends. That is a legitimate modelling choice, but it is a choice — and in a real review it is the first question you would be asked.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Next</span>
+      <h2>Fix in this order</h2>
+    </div>
+    <ol class="order">
+      <li><b>Relink rows 248–250</b> to the live cash roll-forward. One change, and interest income becomes real. Watch the balance check stay at zero while the numbers all move — that is the lesson landing.</li>
+      <li><b>Move depreciation onto opening PP&amp;E.</b> Net income rises, and a circular reference you did not intend disappears.</li>
+      <li><b>Rebuild the revolver</b> with the capped repayment, then connect it: balance sheet row 77, a financing line, and cash measured before revolver activity.</li>
+      <li><b>Repoint the backwards links</b> in rows 157, 165, 167 and 236 so every closing balance is opening plus movement.</li>
+      <li><b>Swap the goodwill and intangibles labels,</b> and clear the two self-referential opening cells.</li>
+      <li><b>Then stress it.</b> Set revenue growth to −5% and check the revolver draws, the balance check holds, and nothing goes negative that shouldn't. A model you have not broken on purpose is a model you have not finished.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>Reviewed against the Larkfield Instruments practice report, whose statements are internally consistent by construction — so any tie-out failure is the model's, not the source's. Findings 1–4 and 5–8 were each reproduced numerically from the workbook's own formulas and cached values before being written up.</p>
+  </footer>
+
+</div>
