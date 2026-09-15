@@ -1,0 +1,4 @@
+# Cached EDGAR responses — re-downloadable, and the facts file is ~4MB per company
+data/*.json
+__pycache__/
+*.pyc
