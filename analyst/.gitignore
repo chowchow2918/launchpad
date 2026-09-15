@@ -1,4 +1,13 @@
-# Cached EDGAR responses — re-downloadable, and the facts file is ~4MB per company
-data/*.json
+# Cached EDGAR responses — re-downloadable, and a facts file is ~4MB per company
+data/
+
+# Your actual positions. This repo is public; keep holdings out of it.
+# watchlist.example.json is committed as the format reference.
+watchlist.json
+
+# Your research notes are yours. Drop this line if you want them versioned.
+notes/*.md
+!notes/TEMPLATE.md
+
 __pycache__/
 *.pyc

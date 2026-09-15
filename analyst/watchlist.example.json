@@ -1,0 +1,20 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "company": "MICROSOFT CORP",
+      "cik": 789019,
+      "status": "held",
+      "tag": "software",
+      "added": "2026-01-15"
+    },
+    {
+      "ticker": "KO",
+      "company": "COCA COLA CO",
+      "cik": 21344,
+      "status": "watching",
+      "tag": "staples",
+      "added": "2026-02-03"
+    }
+  ]
+}

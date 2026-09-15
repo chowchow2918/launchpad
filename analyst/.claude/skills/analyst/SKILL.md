@@ -1,6 +1,6 @@
 ---
 name: analyst
-description: Fundamental analysis of a public company from its SEC filings — pulls XBRL financials, computes metrics deterministically, reads the actual 10-K/10-Q, and maintains a running thesis note per company. Use when asked to analyze, research, value, or re-check a stock or ticker, compare two companies, or review holdings.
+description: Fundamental analysis of public companies from SEC filings — pulls XBRL financials, computes metrics deterministically, reads the actual 10-K/10-Q, compares peers, and maintains a running thesis note per company. Use when asked to analyze, research, value, or re-check a stock or ticker, compare companies, or review a watchlist or holdings.
 ---
 
 # Equity analyst
@@ -42,13 +42,37 @@ the full structure including which XBRL tag each figure came from — check
 `tags_used` when a number looks wrong, since tag choice is the usual culprit.
 
 **3. Read the actual filing.** The numbers tell you what happened; only the
-text tells you why. Get URLs with `python3 scripts/edgar.py filings TICKER -n 4`
-and fetch the latest 10-K and 10-Q. Go to:
+text tells you why. A 10-K is over a megabyte of HTML, so pull sections rather
+than the whole document:
+
+```bash
+python3 scripts/filing.py TICKER --list                  # what is in there
+python3 scripts/filing.py TICKER --section mda           # ~20k chars
+python3 scripts/filing.py TICKER --section risk
+python3 scripts/filing.py TICKER --form 10-Q --section mda
+```
+
+Read, in order of value per minute:
 
 - **MD&A** — management's own explanation of the numbers that just moved
-- **Risk factors** — read what changed from last year's, not the boilerplate
-- **Segment footnote** — where revenue and margin actually come from
-- **Subsequent events** and any recent 8-K
+- **Risk factors** — compare against last year's (`--index 1`) and read what
+  they *added*. The boilerplate is unchanged every year; the new paragraph is
+  the signal.
+- **Segment footnote**, inside `--section financials` — where revenue and
+  margin actually come from
+- The latest **10-Q** for anything that changed since the annual report
+
+If `--list` marks a section as a likely cross-reference, the filing satisfies
+that item by pointing elsewhere — read the full text instead. Banks and
+insurers do this constantly.
+
+**3b. Compare against peers.** A multiple in isolation tells you nothing.
+
+```bash
+python3 scripts/compare.py TICKER PEER1 PEER2
+```
+
+Pick peers that earn money the same way, not ones that share a sector label.
 
 **4. Write the analysis.** Structure it as:
 
@@ -64,9 +88,24 @@ and fetch the latest 10-K and 10-Q. Go to:
   margins." "Gross margin below 60% for two consecutive quarters" is checkable.
 
 **5. Update the note.** Append a dated entry to `notes/<TICKER>.md` with the
-conclusion, the price and multiple at the time, and the watch items. This file
-is the reason this system beats asking a chatbot: in six months it is what you
-thought and why, and you can check yourself against it.
+conclusion, the price and multiple at the time, and the watch items. Start from
+`notes/TEMPLATE.md` for a new name. Use a `## YYYY-MM-DD` heading — the
+watchlist reads those dates to work out what is stale.
+
+This file is the reason this system beats asking a chatbot: in six months it is
+what you thought and why, and you can check yourself against it.
+
+## Reviewing the watchlist
+
+When asked what needs attention, or to review holdings:
+
+```bash
+python3 scripts/watchlist.py check
+```
+
+It lists every company that has filed with the SEC since the date of your last
+note, plus anything added but never analyzed. Work through those, most recent
+filing first. `watchlist.py add TICKER --held` puts a company on the list.
 
 ## Things that will trip you up
 
@@ -88,6 +127,14 @@ against revenue growth before calling it deterioration.
 
 **Fiscal years are not calendar years.** Always label periods by the fiscal
 period end date the script prints, never by "last year."
+
+**A warning in the output is information, not noise.** When `metrics.py` says
+it dropped a figure because the company stopped using a tag, that metric is
+genuinely unavailable — say so and read it off the filing if it matters. Do not
+quietly omit the warning and present the rest as complete.
+
+**Check the tooling still works before blaming the data.** `python3
+tests/test_metrics.py` runs in a second and covers the extraction logic.
 
 ## Framing
 

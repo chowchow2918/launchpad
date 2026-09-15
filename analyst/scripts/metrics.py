@@ -169,8 +169,10 @@ def div(a, b):
     return a / b if a is not None and b not in (None, 0) else None
 
 
-def build(ticker, years=5, price=None, refresh=False):
-    facts = edgar.company_facts(ticker, refresh)
+def build(ticker, years=5, price=None, refresh=False, facts=None):
+    """Assemble every figure for one company. Pass `facts` to skip the network."""
+    if facts is None:
+        facts = edgar.company_facts(ticker, refresh)
     out = {"ticker": facts["_ticker"], "company": facts["_name"], "cik": facts["_cik"],
            "source": "SEC EDGAR XBRL companyfacts", "tags_used": {},
            "annual": {}, "ttm": {}, "balance_sheet": {}, "derived": {}, "warnings": []}
