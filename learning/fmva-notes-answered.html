@@ -1,0 +1,1175 @@
+<title>FMVA Notes Answered</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --paper:#f7f5f0;
+  --paper-2:#fffefb;
+  --rule:#ded8cc;
+  --rule-soft:#e9e4da;
+  --ink:#1d2023;
+  --ink-2:#4a4f55;
+  --ink-3:#73797f;
+  --ledger:#1f6b55;
+  --ledger-soft:#e6f0ec;
+  --flag:#95570a;
+  --flag-soft:#f6ecd9;
+  --wrong:#9c2f2a;
+  --wrong-soft:#f7e7e5;
+  --code-bg:#efece4;
+  --shadow:0 1px 2px rgba(29,32,35,.06), 0 8px 24px -16px rgba(29,32,35,.25);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#15171a;
+    --paper-2:#1c1f23;
+    --rule:#32373d;
+    --rule-soft:#262b30;
+    --ink:#e8e6e1;
+    --ink-2:#b3b7bb;
+    --ink-3:#8b9196;
+    --ledger:#5fc3a3;
+    --ledger-soft:#17302a;
+    --flag:#d9a44f;
+    --flag-soft:#2d2518;
+    --wrong:#e38b84;
+    --wrong-soft:#32211f;
+    --code-bg:#22262b;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15171a;
+  --paper-2:#1c1f23;
+  --rule:#32373d;
+  --rule-soft:#262b30;
+  --ink:#e8e6e1;
+  --ink-2:#b3b7bb;
+  --ink-3:#8b9196;
+  --ledger:#5fc3a3;
+  --ledger-soft:#17302a;
+  --flag:#d9a44f;
+  --flag-soft:#2d2518;
+  --wrong:#e38b84;
+  --wrong-soft:#32211f;
+  --code-bg:#22262b;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15.5px;
+  line-height:1.62;
+  margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- nav ---------- */
+.topbar{
+  position:sticky;
+  top:env(safe-area-inset-top, 0px);
+  z-index:20;
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule);
+}
+.topbar-in{
+  max-width:980px;
+  margin:0 auto;
+  padding:8px 20px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.mark{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ledger);
+  white-space:nowrap;
+}
+.topnav{
+  display:flex;
+  gap:2px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  min-width:0;
+  flex:1;
+}
+.topnav::-webkit-scrollbar{display:none}
+.topnav a{
+  font-size:12.5px;
+  font-weight:500;
+  color:var(--ink-3);
+  text-decoration:none;
+  padding:5px 9px;
+  border-radius:5px;
+  white-space:nowrap;
+}
+.topnav a:hover{color:var(--ink);background:var(--rule-soft)}
+
+/* ---------- shell ---------- */
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:0 72px}
+
+header.hero{padding-block:52px 34px;border-bottom:2px solid var(--ink)}
+.kicker{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--flag);margin:0 0 14px;
+}
+h1{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-weight:700;
+  font-size:clamp(2rem,5.5vw,3.1rem);
+  line-height:1.06;
+  letter-spacing:-.02em;
+  margin:0 0 16px;
+  text-wrap:balance;
+}
+.standfirst{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:clamp(1.02rem,2.4vw,1.2rem);
+  line-height:1.52;
+  color:var(--ink-2);
+  max-width:62ch;
+  margin:0;
+}
+.standfirst em{color:var(--ink)}
+
+/* ---------- sections ---------- */
+section{padding-block:40px;border-bottom:1px solid var(--rule);scroll-margin-top:64px}
+section:last-of-type{border-bottom:none}
+.sec-head{display:flex;gap:14px;align-items:baseline;margin-bottom:6px}
+.num{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:12px;font-weight:600;
+  color:var(--ledger);
+  padding-top:.5em;
+  flex:none;
+}
+h2{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-weight:600;
+  font-size:clamp(1.42rem,3.4vw,1.95rem);
+  line-height:1.16;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+h3{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-weight:600;
+  font-size:1.14rem;
+  line-height:1.3;
+  margin:30px 0 8px;
+}
+h4{
+  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);
+  font-family:Inter,sans-serif;
+  margin:22px 0 7px;
+}
+p{margin:0 0 14px;max-width:68ch}
+ul,ol{margin:0 0 14px;padding-left:1.25em;max-width:68ch}
+li{margin-bottom:7px}
+li::marker{color:var(--ink-3)}
+strong{font-weight:600;color:var(--ink)}
+a{color:var(--ledger)}
+.q{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-style:italic;
+  font-size:1.02rem;
+  color:var(--ink-2);
+  border-left:2px solid var(--flag);
+  padding:2px 0 2px 14px;
+  margin:0 0 20px;
+  max-width:64ch;
+}
+
+/* ---------- components ---------- */
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em}
+code{background:var(--code-bg);padding:.12em .36em;border-radius:3px}
+.formula{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:13.5px;
+  line-height:1.75;
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-left:3px solid var(--ledger);
+  border-radius:0 6px 6px 0;
+  padding:13px 16px;
+  margin:0 0 16px;
+  overflow-x:auto;
+  white-space:pre;
+  max-width:100%;
+}
+.callout{
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:8px;
+  padding:16px 18px;
+  margin:0 0 18px;
+  box-shadow:var(--shadow);
+}
+.callout > :last-child{margin-bottom:0}
+.callout.warn{background:var(--flag-soft);border-color:color-mix(in srgb,var(--flag) 34%,transparent)}
+.callout.err{background:var(--wrong-soft);border-color:color-mix(in srgb,var(--wrong) 34%,transparent)}
+.callout.good{background:var(--ledger-soft);border-color:color-mix(in srgb,var(--ledger) 34%,transparent)}
+.tag{
+  display:inline-block;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:10px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;
+  margin-bottom:8px;
+}
+.callout.warn .tag{background:var(--flag);color:var(--paper)}
+.callout.err .tag{background:var(--wrong);color:var(--paper)}
+.callout.good .tag{background:var(--ledger);color:var(--paper)}
+
+.scroll{overflow-x:auto;margin:0 0 18px;border:1px solid var(--rule);border-radius:8px;background:var(--paper-2)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 13px;text-align:left;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+thead th{
+  font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);background:var(--rule-soft);white-space:nowrap;
+  border-bottom:1px solid var(--rule);
+}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",ui-monospace,monospace}
+tr.sum td{font-weight:600;border-top:1px solid var(--ink-3);background:var(--rule-soft)}
+td.lbl{font-weight:500}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:16px;margin:0 0 18px}
+.cols > *{min-width:0}
+.card{
+  background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;
+  padding:15px 17px;box-shadow:var(--shadow);
+}
+.card > :last-child{margin-bottom:0}
+.card h4{margin-top:0}
+.card p,.card ul{max-width:none}
+
+.rank{counter-reset:r;list-style:none;padding:0;max-width:68ch}
+.rank li{
+  counter-increment:r;
+  position:relative;
+  padding-left:38px;
+  margin-bottom:13px;
+}
+.rank li::before{
+  content:counter(r);
+  position:absolute;left:0;top:1px;
+  width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
+  background:var(--ledger);color:var(--paper);
+}
+.rank li.weak::before{background:var(--ink-3)}
+
+.chk{list-style:none;padding:0;max-width:68ch}
+.chk li{padding-left:26px;position:relative}
+.chk li::before{
+  content:"";position:absolute;left:2px;top:.56em;
+  width:11px;height:11px;border:1.5px solid var(--ledger);border-radius:2.5px;
+}
+
+/* ---------- drill ---------- */
+.drill{
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:0;
+  margin:22px 0 18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.drill-top{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:13px 18px;border-bottom:1px solid var(--rule);background:var(--rule-soft);
+}
+.drill-top .mark{color:var(--ink-2)}
+.route{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--ledger);color:var(--paper);padding:3px 9px;border-radius:4px;
+}
+.drill-body{padding:16px 18px}
+.drill-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:0;border:1px solid var(--rule-soft);border-radius:6px;overflow:hidden;margin-bottom:16px;
+}
+.cell{padding:9px 12px;border-right:1px solid var(--rule-soft);border-bottom:1px solid var(--rule-soft);min-width:0}
+.cell .k{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);display:block}
+.cell .v{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.answer-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+input[type=text]{
+  font-family:"IBM Plex Mono",monospace;font-size:14px;
+  padding:8px 11px;width:140px;
+  background:var(--paper);color:var(--ink);
+  border:1px solid var(--rule);border-radius:6px;
+}
+input[type=text]:focus{outline:2px solid var(--ledger);outline-offset:-1px;border-color:var(--ledger)}
+button{
+  font-family:Inter,sans-serif;font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--rule);background:var(--paper);color:var(--ink);
+}
+button:hover{border-color:var(--ink-3)}
+button.primary{background:var(--ledger);border-color:var(--ledger);color:var(--paper)}
+button.primary:hover{filter:brightness(1.08)}
+.verdict{font-size:13.5px;font-weight:600;padding:2px 0}
+.verdict.ok{color:var(--ledger)}
+.verdict.no{color:var(--wrong)}
+.sol{margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.sol .formula{margin-bottom:10px;border-left-color:var(--flag)}
+.score{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);
+  margin-left:auto;white-space:nowrap;
+}
+
+footer{
+  padding-block:34px;border-top:2px solid var(--ink);
+  font-size:13px;color:var(--ink-3);max-width:68ch;
+}
+footer p{max-width:none}
+
+@media (max-width:560px){
+  body{font-size:15px}
+  section{padding-block:32px}
+  .sec-head{gap:10px}
+  th,td{padding:7px 10px}
+}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <span class="mark">FMVA&nbsp;·&nbsp;Notes</span>
+    <nav class="topnav">
+      <a href="#ev">EV bridge</a>
+      <a href="#ltm">LTM</a>
+      <a href="#dcf">DCF inputs</a>
+      <a href="#tax">Depreciation &amp; tax</a>
+      <a href="#ufcf">UFCF drill</a>
+      <a href="#sources">Sources</a>
+      <a href="#stuck">When stuck</a>
+      <a href="#onebook">One workbook?</a>
+      <a href="#beyond">Beyond M&amp;A</a>
+      <a href="#plan">The plan</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+<header class="hero">
+  <p class="kicker">Answers to the notes you took during your last two CFI courses</p>
+  <h1>Your questions, worked through</h1>
+  <p class="standfirst">Ten answers, in the order you wrote them, plus the thing you asked me to generate: <em>a number of projects that would actually prove you can do this.</em> Short version at the bottom — 10 throwaway reps and 3 portfolio builds, about five months at a daily cadence. One project a week is right for a rep and wrong for a portfolio piece, and that distinction is most of the plan.</p>
+</header>
+
+<!-- ======================= 1 ======================= -->
+<section id="ev">
+  <div class="sec-head"><span class="num">01</span><h2>Why NCI gets added and affiliates get subtracted</h2></div>
+  <p class="q">Why we add Non-Controlling Interest in the Enterprise Value formula. Why we subtract investments in affiliates in the Enterprise Value Formula.</p>
+
+  <p>Both adjustments exist for one reason, and if you hold that reason in your head you never have to memorise the signs again:</p>
+
+  <div class="callout good">
+    <span class="tag">The rule</span>
+    <p><strong>The numerator of a multiple must cover exactly the same business as the denominator.</strong> Equity value covers what the parent's shareholders own. Consolidated EBITDA covers something slightly different. Every line in the EV bridge is a patch closing that gap.</p>
+  </div>
+
+  <h3>Non-controlling interest: add it</h3>
+  <p>Say the parent owns 80% of a subsidiary. Under consolidation accounting, <strong>100% of that subsidiary's revenue, EBITDA and EBIT</strong> flow into the parent's income statement. The other 20% is not removed from EBITDA — it is stripped out far below, as "net income attributable to non-controlling interests."</p>
+  <p>So your denominator (EBITDA) reflects the whole subsidiary. But market cap reflects only the parent's shareholders' claim — the 80%. Without a patch, <code>EV / EBITDA</code> would divide a partial claim by a full earnings stream and come out artificially cheap. Adding NCI puts the minority holders' claim into the numerator so the numerator also covers the whole subsidiary.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Sub is 80%-owned, generates 100 of EBITDA</th><th class="n">In EBITDA?</th><th class="n">In market cap?</th><th>Patch</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Parent's 80% share</td><td class="n">Yes</td><td class="n">Yes</td><td>none needed</td></tr>
+        <tr><td class="lbl">Minority's 20% share</td><td class="n">Yes</td><td class="n">No</td><td><strong>add NCI</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Which NCI number: the balance sheet carrying value, because minorities in a consolidated sub almost never trade. It is a book number sitting in an otherwise market-value bridge, which is ugly but standard. If the NCI is large and you can see a market price for the listed sub, mark it to market instead and say so in your sources note.</p>
+
+  <div class="callout warn">
+    <span class="tag">Don't double-patch</span>
+    <p>If you instead build <strong>proportionate</strong> EBITDA — only the parent's 80% — then you must <em>not</em> add NCI. Pick one treatment and apply it to every comp. Mixing proportionate EBITDA with a full-consolidation bridge is the single most common comps error after calendarisation.</p>
+  </div>
+
+  <h3>Equity-method investments in affiliates: subtract them</h3>
+  <p>Exactly the mirror image. When a company owns 20–50% of another, it does <strong>not</strong> consolidate. None of the affiliate's revenue or EBITDA appears anywhere in the income statement. All you get is one line — "equity income in affiliates" — typically sitting below operating income, representing the parent's share of the affiliate's net income.</p>
+  <p>So your denominator excludes the affiliate entirely. But market cap <em>does</em> price the stake, because it is a real asset the shareholders own. The stake is therefore a <strong>non-operating asset relative to your EBITDA</strong> — identical in logic to cash — and you subtract it, for the identical reason you subtract cash.</p>
+
+  <div class="formula">EV = Market cap
+   + Total debt
+   + Preferred stock
+   + Non-controlling interest      ← consolidated EBITDA includes 100% of subs
+   − Cash &amp; equivalents            ← not an operating asset
+   − Investments in affiliates     ← EBITDA excludes them entirely
+   ( ± pension deficit, operating leases, other claims, as applicable )</div>
+
+  <p>Which affiliate number: <strong>market value if the affiliate is listed</strong>, book value otherwise. This matters enormously for the company you are planning to model.</p>
+
+  <div class="callout">
+    <p><strong>KO specifically.</strong> Coca-Cola's bottling affiliates are not obscure private stakes — several are listed (Coca-Cola Europacific Partners, Coca-Cola FEMSA, Coca-Cola HBC, Coca-Cola Consolidated). You can look up each stake's ownership percentage in KO's equity-method footnote, multiply by the affiliate's own market cap, and subtract a genuine market value. Book value understates them badly. Doing this and showing your work is the kind of detail that separates a project from a homework assignment.</p>
+    <p>Then check the other side: equity income is a material slice of KO's pretax income, and <strong>some data providers leave equity income inside their "EBITDA" figure.</strong> If yours does, you are subtracting the stake from the numerator while its earnings remain in the denominator — the bridge double-counts against you. Build EBITDA yourself from the income statement so you know what is in it.</p>
+  </div>
+
+  <h4>The test, for any future line item</h4>
+  <p>Ask: <em>is this claim or asset reflected in my EBITDA?</em> In EBITDA but not in market cap → add it. In market cap but not in EBITDA → subtract it. In both or neither → leave it alone. That one question generates the whole bridge, including the items the textbook does not list.</p>
+</section>
+
+<!-- ======================= 2 ======================= -->
+<section id="ltm">
+  <div class="sec-head"><span class="num">02</span><h2>LTM, when the fiscal clocks don't line up</h2></div>
+  <p class="q">Understand the formula when there is a timing mismatch better. Examples of the formula = Latest fiscal year EBITDA + newest YTD EBITDA − Previous YTD EBITDA.</p>
+
+  <p>Your formula is correct. Here is why it works, which is the part worth owning.</p>
+
+  <div class="formula">LTM = Last full fiscal year  +  Current YTD  −  Prior-year YTD (same stub)</div>
+
+  <p>Decompose the fiscal year into the stub you are adding and the rest:</p>
+
+  <div class="formula">FY2025            = H1-2025 + H2-2025
++ H1-2026
+−  H1-2025
+─────────────────────────────────────
+= H2-2025 + H1-2026   ← exactly twelve consecutive months, ending 30 Jun 2026</div>
+
+  <p>The subtraction's whole job is to <strong>evict the stale stub</strong> so the fresh one can take its place. Nothing more mysterious than that. Worked, at Q2:</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Component</th><th>Period</th><th class="n">EBITDA</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">FY2025 (10-K)</td><td>Jan–Dec 2025</td><td class="n">1,000</td><td>the anchor</td></tr>
+        <tr><td class="lbl">+ YTD 2026 (Q2 10-Q)</td><td>Jan–Jun 2026</td><td class="n">+560</td><td>the fresh stub</td></tr>
+        <tr><td class="lbl">− YTD 2025 (same 10-Q, comparative column)</td><td>Jan–Jun 2025</td><td class="n">−520</td><td>the stale stub</td></tr>
+        <tr class="sum"><td>LTM to 30 Jun 2026</td><td>Jul 2025 – Jun 2026</td><td class="n">1,040</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Same mechanic at Q1 (one quarter in, three quarters out) and at Q3 (nine in, nine out). At Q4 there is no stub — the 10-K <em>is</em> the LTM.</p>
+
+  <h3>Why anyone bothers</h3>
+  <p>Multiples are only comparable if every company is measured on the same clock. If you price Company A on a fiscal year ending December and Company B on one ending June, you have embedded six months of divergent trading into the comparison and called it a valuation difference. LTM pulls everyone to the same as-of date. Where fiscal year-ends differ by more than a quarter you go further and <strong>calendarise</strong> — rebuild each comp onto a common December year-end, which is the same arithmetic applied to a longer stub.</p>
+
+  <h3>Five things that break it</h3>
+  <ol>
+    <li><strong>Pull the prior-year stub from the current filing, not last year's.</strong> This is the one that catches everybody. Take the Jan–Jun 2025 column out of the <em>Q2 2026</em> 10-Q, where it appears as the comparative. That column has been restated for anything reclassified since — discontinued operations, segment changes, new accounting standards. The number in the original Q2 2025 filing is on the old basis, and subtracting an old-basis stub from a new-basis year produces a silent error you will never find.</li>
+    <li><strong>Mid-period acquisitions.</strong> If the company bought something in March 2026, LTM contains four months of the target and the forward year will contain twelve. The multiple looks high for a reason that has nothing to do with value. Either pro-forma the target in for the full period, or use a forward multiple and say so.</li>
+    <li><strong>52/53-week calendars.</strong> Retailers and restaurants. Some LTM windows contain 53 weeks of trading, which is ~2% more revenue out of thin air. Check the fiscal calendar note.</li>
+    <li><strong>Non-GAAP drift.</strong> Management's definition of "adjusted EBITDA" changes between periods more often than you would believe. Build EBITDA from reported lines yourself and keep the add-backs as visible, separate rows.</li>
+    <li><strong>Seasonality is not a bug here.</strong> LTM always contains exactly one of each quarter, so seasonality cancels. That is a feature — but it also means LTM lags a genuine inflection by up to three quarters. When a business has just turned, LTM is the wrong measure and you want forward.</li>
+  </ol>
+</section>
+
+<!-- ======================= 3 ======================= -->
+<section id="dcf">
+  <div class="sec-head"><span class="num">03</span><h2>The three DCF inputs you flagged</h2></div>
+  <p class="q">How do I get the terminal growth for my model? How do I get the debt yield for my DCF Model? [Areas of concern] Risk premium for Equity.</p>
+
+  <h3>Terminal growth</h3>
+  <p>There is no formula that produces it. There is a ceiling, a floor, and three cross-checks, and the professional answer is the number that survives all five.</p>
+
+  <div class="cols">
+    <div class="card">
+      <h4>The hard ceiling</h4>
+      <p>Long-run <strong>nominal</strong> GDP growth of the economies the company sells into. A perpetuity growing faster than its economy eventually becomes the economy. Nominal ≈ real + inflation; for a developed-market-weighted global business that is roughly 1.5–2% real plus 2% target inflation, so ~3.5–4% is an absolute cap.</p>
+    </div>
+    <div class="card">
+      <h4>The practical floor</h4>
+      <p>Central bank inflation target, ~2%, if you believe the company can hold volumes flat and price with inflation forever. Below that you are forecasting real decline — defensible for a structurally shrinking business, but say so out loud.</p>
+    </div>
+    <div class="card">
+      <h4>Where most land</h4>
+      <p><strong>2.0–2.5%</strong> for mature developed-market businesses; up to 3% where emerging-market revenue mix is genuinely large. Weight by <em>revenue exposure</em>, never by country of domicile.</p>
+    </div>
+  </div>
+
+  <h4>Cross-check 1 — the implied exit multiple</h4>
+  <p>Back into the multiple your terminal value implies and ask whether you would pay it.</p>
+  <div class="formula">TV = FCF_n × (1 + g) / (WACC − g)
+   = 600 × 1.025 / (0.075 − 0.025)  =  12,300
+
+Implied exit EV/EBITDA = 12,300 / 1,300 terminal EBITDA = 9.5x</div>
+  <p>Now compare 9.5x against where the comps trade today and against the company's own ten-year range. If your perpetuity assumption implies an exit at 15x on a business that has never traded above 11x, the growth rate is doing work the business cannot do. Nudge g until the implied multiple is defensible — then present both numbers, because the multiple is the one a reviewer can argue with.</p>
+
+  <h4>Cross-check 2 — terminal value as a share of total EV</h4>
+  <p>Compute it. If TV is more than ~75% of enterprise value, your DCF is not a cash flow analysis, it is a terminal multiple bet wearing a disguise. That is not automatically wrong — it is normal for long-duration businesses — but you need to know it, say it, and sensitise it, because every conclusion you draw is really a conclusion about g and WACC.</p>
+
+  <h4>Cross-check 3 — is the terminal year internally consistent?</h4>
+  <p>Perpetual growth requires perpetual reinvestment. The link is:</p>
+  <div class="formula">g = ROIC × reinvestment rate     →     reinvestment rate = g / ROIC
+g = 2.5%, ROIC = 20%  →  12.5% of NOPAT must be reinvested, forever</div>
+  <p>So in your terminal year, capex cannot equal D&amp;A while you grow at 2.5% with low returns — that combination assumes growth for free. Check that terminal capex ≈ maintenance (≈ D&amp;A) <em>plus</em> the growth reinvestment the equation demands, and that working capital still grows with revenue. Two mechanical musts as well: <code>g &lt; WACC</code> always, and discount the terminal value with the <strong>same stub period</strong> as the final forecast year, including the mid-year convention if you are using one.</p>
+
+  <h3>Cost of debt — your "debt yield"</h3>
+  <div class="callout warn">
+    <span class="tag">Vocabulary</span>
+    <p>"Debt yield" means something else in real estate — NOI divided by loan amount, a lender's sizing metric. What a DCF needs is the <strong>cost of debt</strong>, <code>R<sub>d</sub></code>: the rate at which this company could borrow <em>today</em>. Use the right term in an interview; the slip is noticeable.</p>
+  </div>
+
+  <ol class="rank">
+    <li><strong>Yield to maturity on the company's own traded bonds.</strong> Best answer when it exists. Take a benchmark-size, liquid issue whose remaining maturity is closest to your forecast horizon — a 10-year DCF wants a ~10-year bond, not the 2027 maturity. Free source: FINRA's bond centre, which publishes TRACE-reported prices and yields by issuer. Avoid tiny or odd-structure issues; their yields are noise.</li>
+    <li><strong>Risk-free rate plus a credit spread for the rating.</strong> The standard fallback. Take the 10-year Treasury from the Fed's H.15 release, then add the option-adjusted spread for the company's rating bucket — FRED carries the ICE BofA OAS series by rating (single-A, BBB, and so on), updated daily. Pull the rating from the company's own 10-K or a rating agency's free issuer page.</li>
+    <li><strong>Synthetic rating from interest coverage.</strong> For unrated or private companies. Compute EBIT / interest expense, look the ratio up in Damodaran's published coverage-to-spread table, add the spread to the risk-free. Crude, transparent, universally accepted as the method of last resort.</li>
+    <li class="weak"><strong>Interest expense ÷ average debt.</strong> <em>Cross-check only.</em> This is the blended historical coupon on debt the company already issued, possibly at rates from a different decade. It tells you what they <em>are</em> paying, and WACC needs what they <em>would</em> pay. If it diverges a long way from methods 1–3, that gap is itself worth a sentence in your memo — it usually means refinancing risk or an embedded below-market legacy coupon.</li>
+  </ol>
+
+  <p>Then tax-affect it inside WACC, because interest is deductible:</p>
+  <div class="formula">WACC = E/(D+E) × R_e  +  D/(D+E) × R_d × (1 − t)</div>
+  <p>Use <strong>market</strong> weights, not book — market cap for E, market value of debt for D (book is an acceptable proxy for investment-grade bank debt, not for distressed or deeply discounted bonds). And target weights rather than today's snapshot if the capital structure is clearly moving.</p>
+
+  <h3>Equity risk premium</h3>
+  <p>Three legitimate approaches. Pick one, cite the source <em>and the date</em>, and hold it fixed across the whole project.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Approach</th><th>What it is</th><th>Typical US range</th><th>Trade-off</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Historical</td><td>Realised equity returns minus government bond returns over a long window (1928–present is the standard)</td><td class="n">4.5–5.5%</td><td>Backward-looking; the answer moves a lot with the window and with arithmetic vs geometric averaging. Use geometric for a long-horizon discount rate.</td></tr>
+        <tr><td class="lbl">Implied</td><td>The discount rate that equates today's index price to expected index cash flows, minus the risk-free. Damodaran publishes it monthly, free.</td><td class="n">~4–5%, spikes in crises</td><td>Forward-looking and internally consistent with current prices — the most defensible choice. Depends on the consensus cash flow forecast it is built from.</td></tr>
+        <tr><td class="lbl">Survey</td><td>Recommended premiums from Kroll (formerly Duff &amp; Phelps) or Fernandez's annual survey</td><td class="n">5.0–5.5%</td><td>Easy to cite, audit-friendly, but it is an opinion average, not a measurement.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mono" style="font-size:12px;color:var(--ink-3)">Ranges are indicative and move over time — look up the current figure and date-stamp it in your model rather than reusing these.</p>
+
+  <p>CFI teaches ~5% and that is a perfectly respectable working number. What is not respectable is an ERP with no stated source.</p>
+
+  <h4>Country risk, for anything multinational</h4>
+  <p>A single US ERP understates risk for a company earning half its money in emerging markets. Two steps:</p>
+  <div class="formula">CRP_country = sovereign default spread × (σ_equity index / σ_sovereign bond)
+              ( that volatility ratio runs ~1.2–1.5 in published estimates )
+
+Blended ERP = Σ ( revenue share_country × ERP_country )</div>
+  <p>Weight by <strong>where revenue comes from</strong>, not where headquarters sits. For KO this is not an optional refinement — a mature-markets-only ERP on a business with that geographic mix is simply the wrong discount rate, and noticing it is a genuine analytical point for a memo.</p>
+
+  <h4>And the beta that multiplies it</h4>
+  <div class="formula">R_e = R_f + β × ERP ( + CRP, if not already blended in )
+
+Regression beta:  5y monthly or 2y weekly returns vs a broad local index
+Bottom-up beta:   industry unlevered β, relevered to the company's structure
+                  β_L = β_U × [ 1 + (1 − t) × D/E ]</div>
+  <p>Bottom-up is more stable and more defensible for a single-company project, because one regression on one stock is a noisy estimate. Showing both and reconciling them is better still.</p>
+</section>
+
+<!-- ======================= 4 ======================= -->
+<section id="tax">
+  <div class="sec-head"><span class="num">04</span><h2>Two depreciations, two tax schedules</h2></div>
+  <p class="q">[Areas of concern] Accounting Depreciation · Tax Depreciation · Income Tax Schedule (Levered and Unlevered) · Depreciation Schedules.</p>
+
+  <h3>Book vs tax depreciation</h3>
+  <p>The same asset is depreciated twice, on two different sets of rules, for two different audiences. Neither is wrong; they are answering different questions.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th></th><th>Accounting (book) depreciation</th><th>Tax depreciation</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Rulebook</td><td>GAAP/IFRS — management's estimate of useful life</td><td>The tax code — a prescribed schedule, no judgement</td></tr>
+        <tr><td class="lbl">Method</td><td>Usually straight line over useful life, net of salvage</td><td>US: MACRS, accelerated by asset class; plus bonus depreciation</td></tr>
+        <tr><td class="lbl">Audience</td><td>Investors. Goal: match cost to the periods benefiting</td><td>The revenue service. Goal: compute the cheque</td></tr>
+        <tr><td class="lbl">Shows up in</td><td>Reported income statement; the D&amp;A you add back in CFO</td><td>A separate tax schedule computing <em>cash</em> taxes</td></tr>
+        <tr><td class="lbl">Total over asset life</td><td colspan="2" style="text-align:center"><strong>Identical.</strong> Only the timing differs — which is the entire point</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Because tax depreciation is front-loaded, early-year taxable income is lower than book income, so <strong>cash taxes paid are lower than the tax expense you report</strong>. That gap does not vanish — it parks on the balance sheet as a <strong>deferred tax liability</strong>, and unwinds later when book depreciation continues after tax depreciation has run out. Worked, with 100% first-year expensing:</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Capex 1,000 · book life 10y straight line · tax rate 21%</th><th class="n">Year 1</th><th class="n">Years 2–10 (each)</th><th class="n">Cumulative</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Book depreciation</td><td class="n">100</td><td class="n">100</td><td class="n">1,000</td></tr>
+        <tr><td class="lbl">Tax depreciation</td><td class="n">1,000</td><td class="n">0</td><td class="n">1,000</td></tr>
+        <tr><td class="lbl">Temporary difference</td><td class="n">900</td><td class="n">(100)</td><td class="n">0</td></tr>
+        <tr class="sum"><td>Change in DTL (diff × 21%)</td><td class="n">+189</td><td class="n">(21)</td><td class="n">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The DTL builds to 189 in year one and amortises to exactly zero by year ten. In the model that change in DTL is a <strong>non-cash item added back in cash flow from operations</strong> — it is the bridge between book tax expense and cash tax paid.</p>
+
+  <div class="callout warn">
+    <span class="tag">Current rules move</span>
+    <p>US bonus depreciation has been legislated and re-legislated repeatedly — phased down, then restored to 100% for qualifying property under the 2025 tax act, alongside changes to domestic R&amp;D expensing. <strong>Look up the rules in force on your model's as-of date</strong> rather than trusting any schedule you memorised, mine included, and cite what you used in the assumptions tab.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Does your 3-statement model need this?</strong> Usually not. A single effective tax rate applied to pretax income is standard, acceptable practice for a generic operating model, and it is what CFI will have you build. Model the two schedules separately when (a) the business is capex-heavy enough that the timing difference is material, (b) you are building an LBO or any model where cash taxes drive debt paydown, (c) there are large NOL carryforwards, or (d) the deferred tax balances on the real balance sheet are big enough that ignoring them makes your balance sheet fiction. For KO, the effective-rate approach is fine for the operating model — but read the tax footnote, because the open transfer-pricing dispute means the tax line has a tail risk a reviewer may well ask about.</p>
+  </div>
+
+  <h3>The depreciation schedule, and the waterfall version</h3>
+  <p>The simple schedule — one depreciation rate on opening PP&amp;E — is the right default:</p>
+  <div class="formula">Opening PP&amp;E, net
++ Capex
+− Depreciation          = depreciation rate × OPENING net PP&amp;E
+− Disposals, net
+= Closing PP&amp;E, net     → straight to the balance sheet
+                           depreciation → income statement + CFO add-back
+                           capex        → investing section of CFO</div>
+  <p>Depreciating the <strong>opening</strong> balance, not the average or the closing balance, is deliberate: closing PP&amp;E depends on depreciation, so depreciating it creates a circular reference for no analytical gain.</p>
+
+  <p>The <strong>waterfall</strong> replaces that single rate with one row per capex vintage. Each year's capex gets its own row, depreciated over its own life, and the column total is that year's depreciation:</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Vintage (5-year life, half-year convention)</th><th class="n">2026</th><th class="n">2027</th><th class="n">2028</th><th class="n">2029</th><th class="n">2030</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Existing PP&amp;E (legacy)</td><td class="n">80</td><td class="n">80</td><td class="n">80</td><td class="n">60</td><td class="n">40</td></tr>
+        <tr><td class="lbl">2026 capex: 100</td><td class="n">10</td><td class="n">20</td><td class="n">20</td><td class="n">20</td><td class="n">20</td></tr>
+        <tr><td class="lbl">2027 capex: 120</td><td class="n">—</td><td class="n">12</td><td class="n">24</td><td class="n">24</td><td class="n">24</td></tr>
+        <tr><td class="lbl">2028 capex: 130</td><td class="n">—</td><td class="n">—</td><td class="n">13</td><td class="n">26</td><td class="n">26</td></tr>
+        <tr><td class="lbl">2029 capex: 140</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">14</td><td class="n">28</td></tr>
+        <tr><td class="lbl">2030 capex: 150</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">15</td></tr>
+        <tr class="sum"><td>Total depreciation</td><td class="n">90</td><td class="n">112</td><td class="n">137</td><td class="n">144</td><td class="n">153</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Read it as a staircase: each new vintage adds a step, each step runs for the asset's life and then falls away. The half-year convention is the <code>10</code> instead of <code>20</code> in a vintage's first year — one half-year of service, because assets are assumed to arrive mid-year. The same grid built on tax lives and MACRS rates instead of book lives <em>is</em> your tax depreciation schedule; that is why the two topics on your concerns list are really one topic.</p>
+  <p>Use the waterfall when asset lives differ materially across capex types, when you need tax depreciation separately, or when a capex programme is ramping so hard that a single blended rate misses the depreciation step-up. Otherwise the one-rate version is cleaner and easier to audit — and auditability is worth more than precision in a project someone else will read.</p>
+
+  <h3>Levered vs unlevered income tax schedule</h3>
+  <p>One business, two tax numbers, and using the wrong one is the most common serious DCF error there is.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th></th><th>Unlevered tax</th><th>Levered tax</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Base</td><td>EBIT (operating profit, before interest)</td><td>EBT = EBIT − interest expense + interest income</td></tr>
+        <tr><td class="lbl">Question it answers</td><td>What would this business pay in tax if it had no debt?</td><td>What will this company actually remit?</td></tr>
+        <tr><td class="lbl">Lives in</td><td>The UFCF build inside an unlevered DCF</td><td>Your 3-statement model's income statement; LFCF / FCFE</td></tr>
+        <tr><td class="lbl">Interest deduction</td><td>Excluded on purpose</td><td>Included</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="formula">EBIT 1,000 · interest 100 · tax rate 25%
+
+Unlevered tax = 1,000 × 25%           = 250
+Levered tax   = (1,000 − 100) × 25%   = 225
+─────────────────────────────────────────────
+Interest tax shield                   =  25   =  interest × t</div>
+
+  <div class="callout err">
+    <span class="tag">The error</span>
+    <p><strong>Never feed your 3-statement model's tax expense into an unlevered DCF.</strong> That figure is levered — the interest deduction is already inside it. Meanwhile WACC prices the same shield a second time through <code>R<sub>d</sub> × (1 − t)</code>. You have counted one benefit twice and your valuation is too high by roughly the present value of the tax shield. In an unlevered DCF the cash flows must be tax-affected at <code>EBIT × t</code> and the leverage benefit must live <em>only</em> in the discount rate. The alternative is APV: discount unlevered flows at the unlevered cost of equity and add the PV of the shield as an explicit, separate line — never both.</p>
+  </div>
+
+  <p><strong>NOLs.</strong> If loss carryforwards are material, they belong in the <em>levered</em> schedule: track opening balance, usage limited to the allowed share of taxable income, additions from current-year losses, closing balance. The unlevered schedule would consume them on a different path, so the clean treatment in an unlevered DCF is to tax at <code>EBIT × t</code> in the cash flows and add the present value of the NOL benefit as its own line in the valuation bridge — the same way you treat any other non-operating asset.</p>
+</section>
+
+<!-- ======================= 5 ======================= -->
+<section id="ufcf">
+  <div class="sec-head"><span class="num">05</span><h2>Unlevered free cash flow, four ways</h2></div>
+  <p class="q">UFCF Formula (Know it, but it is not muscle memory yet) — additional drills using all methods of finding UFCF (EBIT, EBITDA, Net Income).</p>
+
+  <p>Every route is the same destination approached from a different altitude on the income statement. The trick to making it muscle memory is not memorising four formulas — it is seeing that each one just climbs to EBIT&nbsp;×&nbsp;(1−t) by a different staircase, and then applies the identical three adjustments.</p>
+
+  <div class="formula">Every route converges on:   EBIT × (1 − t)   +  D&amp;A  −  ΔNWC  −  Capex
+                            └── "NOPAT" ──┘     └── identical, always ──┘</div>
+
+  <div class="cols">
+    <div class="card">
+      <h4>From EBIT</h4>
+      <p class="mono" style="font-size:12.5px">EBIT × (1 − t)<br>+ D&amp;A<br>− ΔNWC<br>− Capex</p>
+      <p style="font-size:13px;color:var(--ink-2)">The definition. Everything else is algebra on this.</p>
+    </div>
+    <div class="card">
+      <h4>From EBITDA</h4>
+      <p class="mono" style="font-size:12.5px">EBITDA<br>− (EBIT × t)<br>− ΔNWC<br>− Capex</p>
+      <p style="font-size:13px;color:var(--ink-2)">D&amp;A is already in EBITDA, so you never add it back. But tax is still computed on <strong>EBIT</strong> — D&amp;A is deductible.</p>
+    </div>
+    <div class="card">
+      <h4>From Net Income</h4>
+      <p class="mono" style="font-size:12.5px">Net income<br>+ Interest × (1 − t)<br>+ D&amp;A<br>− ΔNWC<br>− Capex</p>
+      <p style="font-size:13px;color:var(--ink-2)">Un-lever it: add interest back <em>after tax</em>, since the deduction already reduced the tax line.</p>
+    </div>
+    <div class="card">
+      <h4>From CFO</h4>
+      <p class="mono" style="font-size:12.5px">Cash flow from ops<br>+ Interest × (1 − t)<br>− Capex</p>
+      <p style="font-size:13px;color:var(--ink-2)">CFO already contains D&amp;A and ΔNWC. Shortest route, and the one that ties your DCF directly to the statement.</p>
+    </div>
+  </div>
+
+  <h4>The one piece of algebra worth doing once, by hand</h4>
+  <div class="formula">Net income = (EBIT − Interest) × (1 − t)
+           = EBIT × (1 − t) − Interest × (1 − t)
+
+so   Net income + Interest × (1 − t) = EBIT × (1 − t)      ✓ the two routes meet
+
+and  EBIT × (1 − t) + D&amp;A = EBIT + D&amp;A − EBIT × t
+                          = EBITDA − EBIT × t              ✓ so does the third</div>
+
+  <p>Do that derivation on paper twice and you will stop needing to recall the formulas — you will be able to regenerate any of them from the income statement in about fifteen seconds, which is what fluency actually is.</p>
+
+  <h3>One set of numbers, all four routes</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>EBIT 1,000 · D&amp;A 200 · interest 100 · t 25% · capex 300 · ΔNWC +50</th><th class="n">Build</th><th class="n">UFCF</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">From EBIT</td><td class="n">1,000×0.75 = 750; +200 −50 −300</td><td class="n">600</td></tr>
+        <tr><td class="lbl">From EBITDA</td><td class="n">1,200 −250 −50 −300</td><td class="n">600</td></tr>
+        <tr><td class="lbl">From Net income</td><td class="n">675 +75 +200 −50 −300</td><td class="n">600</td></tr>
+        <tr><td class="lbl">From CFO</td><td class="n">825 +75 −300</td><td class="n">600</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13.5px;color:var(--ink-2)">Supporting figures: EBITDA 1,200 · EBT 900 · levered tax 225 · net income 675 · CFO = 675 + 200 − 50 = 825. Note the levered tax of 225 never touches the UFCF build — the unlevered tax of 250 does.</p>
+
+  <div class="callout warn">
+    <span class="tag">Signs — where reps go wrong</span>
+    <ul style="margin-bottom:0">
+      <li><strong>ΔNWC:</strong> an <em>increase</em> in net working capital is a cash <em>outflow</em>. Growing receivables and inventory consume cash. Define the row as "(increase)/decrease in NWC" so the sign is in the label and you cannot flip it.</li>
+      <li><strong>Interest add-back:</strong> after tax, <code>× (1 − t)</code>. Adding back the gross interest double-counts the shield.</li>
+      <li><strong>Tax on EBITDA:</strong> never. Always <code>EBIT × t</code>, even on the EBITDA route.</li>
+      <li><strong>Non-operating income:</strong> if net income contains equity income, gains on sale, or other non-operating items, strip them out (after tax) — your UFCF should reflect operations only, matching the EV bridge where you subtracted those assets.</li>
+    </ul>
+  </div>
+
+  <h3>Drill it</h3>
+  <p>Fresh numbers each time, with the route dictated so you cannot default to the one you like. Work it on paper, type the answer, then open the solution and check your signs line by line — not just the total.</p>
+
+  <div class="drill">
+    <div class="drill-top">
+      <span class="mark">Drill</span>
+      <span class="route" id="d-route">FROM EBIT</span>
+      <span class="score" id="d-score">0 / 0 correct</span>
+    </div>
+    <div class="drill-body">
+      <div class="drill-grid" id="d-grid"></div>
+      <div class="answer-row">
+        <input type="text" id="d-input" inputmode="decimal" placeholder="UFCF" aria-label="Your UFCF answer">
+        <button class="primary" id="d-check">Check</button>
+        <button id="d-reveal">Show solution</button>
+        <button id="d-new">New problem</button>
+        <span class="verdict" id="d-verdict"></span>
+      </div>
+      <div class="sol" id="d-sol" hidden></div>
+    </div>
+  </div>
+
+  <p style="font-size:13.5px;color:var(--ink-3)">Target: all four routes, correct signs, under 60 seconds each, ten in a row. Rotate the route every rep rather than drilling one to death — interleaving is slower per attempt and far more durable than blocking.</p>
+</section>
+
+<!-- ======================= 6 ======================= -->
+<section id="sources">
+  <div class="sec-head"><span class="num">06</span><h2>Filings, IR decks, equity research — which, and when</h2></div>
+  <p class="q">What information and when should I go to Equity and Research Reports and Investor presentations when building 3 statement models and DCF models.</p>
+
+  <p>Three tiers, used in a strict order. Working out of order is how students end up with models whose inputs they cannot defend.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tier</th><th>Go here for</th><th>Never use it for</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="lbl">1. Filings<br><span style="font-weight:400;color:var(--ink-3);font-size:12.5px">10-K, 10-Q, 8-K, proxy · SEC EDGAR</span></td>
+          <td>Every historical number in your model. Segment data. Debt maturity schedule and rates. Lease obligations. Share count and dilutive instruments. Tax footnote and effective rate reconciliation. Equity-method stakes. Pension. Commitments and contingencies. Accounting policies.</td>
+          <td>Forward guidance — it is barely there. This is the record, not the forecast.</td>
+        </tr>
+        <tr>
+          <td class="lbl">2. Company IR<br><span style="font-weight:400;color:var(--ink-3);font-size:12.5px">Earnings release, slide deck, call transcript, investor day</span></td>
+          <td><strong>Your year-one forecast assumptions.</strong> Management guidance on revenue, margin, capex, FX, tax rate. Volume / price-mix / currency / structural decompositions. Segment detail beyond the 10-K. Capital allocation and buyback plans. Deal rationale and synergy targets. The call Q&amp;A, where analysts ask the awkward questions and you learn what the market is actually worried about.</td>
+          <td>Anything you cannot reconcile to GAAP. "Comparable," "underlying," "organic" and "adjusted" are management's own definitions and they move.</td>
+        </tr>
+        <tr>
+          <td class="lbl">3. Equity research<br><span style="font-weight:400;color:var(--ink-3);font-size:12.5px">Sell-side notes, initiations, industry primers</span></td>
+          <td>Consensus estimates, to see whether your forecast is eccentric and why. A segment build-up when disclosure is too thin to do it yourself. Purchased industry data you cannot otherwise get — market sizes, channel shares, regional volumes. The bear case you had not thought of. Initiation notes are the best single primer on an industry's drivers.</td>
+          <td><strong>Your conclusion.</strong> And never copy a calculation you cannot rebuild from primary sources.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>The practical sequence for one build</h4>
+  <ol>
+    <li>Three years of historicals from the 10-Ks, typed from the filings, with a source column recording filing and page for every line.</li>
+    <li>Latest 10-Q for the stub and for anything that changed after the year-end.</li>
+    <li>Latest earnings deck and transcript — write down management's guidance verbatim in your assumptions tab, attributed.</li>
+    <li>Build your forecast. <strong>Now</strong> look at consensus. If you are materially off, find out why. Sometimes you are wrong; sometimes you have found the thesis.</li>
+    <li>Research only for the gaps that remain, cited.</li>
+  </ol>
+
+  <div class="callout good">
+    <span class="tag">For a resume project specifically</span>
+    <p>Prefer sources your reviewer can open: SEC EDGAR, the company's IR site, FRED, the Fed's H.15, FINRA's bond centre. If a key input rests on a paywalled research note, nobody can check your work — and an unverifiable model is worth less than a simpler verifiable one. Keep a Sources tab listing every external figure, where it came from, and the date pulled. Interviewers notice that tab more than they notice your WACC.</p>
+    <p>And if you do lean on research, expect the question: <em>"what did you disagree with?"</em> Having a real answer is the whole point of reading it.</p>
+  </div>
+</section>
+
+<!-- ======================= 7 ======================= -->
+<section id="stuck">
+  <div class="sec-head"><span class="num">07</span><h2>What actually happens when you don't know how</h2></div>
+  <p class="q">What happens in the real world when I don't know how to do something within a model?</p>
+
+  <p>The honest answer, which nobody teaching a course will quite say: <strong>nobody builds from memory, and nobody expects you to.</strong> Analysts work from the last deal's model, the group template, or a precedent file. The skill being hired for is not recall. It is knowing what the right structure looks like, recognising when a model is wrong, and resolving unknowns without creating silent errors.</p>
+
+  <p>So "I don't know how to do this" is the normal state, several times a week, for people ten years in. What separates them is the procedure:</p>
+
+  <ol class="rank">
+    <li><strong>Find the precedent.</strong> Someone has modelled this before — in the deal folder, in a prior transaction, in the group template, in a CFI or Macabacus example file. Ninety per cent of unknowns are solved by finding a worked instance and reading its formulas. Start building your own precedent library now: every mechanic you solve once, save as a two-tab example file. That library is the actual asset you are accumulating this year, more than any individual project.</li>
+    <li><strong>Find the authority.</strong> If no precedent exists, go to the source: the 10-K footnote describing how <em>this company</em> handles it, the accounting standard, a textbook. Ten minutes in the footnotes beats an hour of guessing, and it is usually where the answer was all along.</li>
+    <li><strong>Build the smallest possible toy.</strong> New tab, five rows, made-up numbers, test the mechanic in isolation. Does the convertible dilution math behave as you expect at three different share prices? Does the cash sweep hold at the minimum balance when EBITDA goes negative? Prove the mechanic on a toy, then port it in. Debugging a mechanic inside a live 400-row model is how people lose days.</li>
+    <li><strong>Then ask — early and narrow.</strong> Compare the two versions of the same question:<br>
+      <span style="color:var(--wrong)">"How do I model convertibles?"</span> → a lecture, and a reputation for not trying.<br>
+      <span style="color:var(--ledger)">"I'm treating the convert as if-converted for diluted EPS because the add-back makes it dilutive at this price — here's the math, am I right that we don't use treasury stock method here?"</span> → a thirty-second yes, and a reputation for thinking.<br>
+      Every senior person prefers a question at hour one to a mistake found at hour forty. The specific ask, with your attempt attached, is the format.</li>
+    <li><strong>Make the unknown visible.</strong> Whatever you do, do not bury a guess inside a formula. Hardcode it in its own clearly-flagged input cell, with a comment, and log it on an <strong>Open Items</strong> tab: what you assumed, why, what would change it, who can confirm. Every real model has one of these tabs. Ship the model with the question still open rather than with the question hidden.</li>
+    <li><strong>Bound it before you research it.</strong> Run the input at a high and a low extreme. If the answer barely moves, stop — document the range and move on, you have just saved yourself a day. If it moves a lot, you now know precisely how much the answer is worth, which tells you how hard to work and makes the case for asking someone senior.</li>
+  </ol>
+
+  <div class="callout err">
+    <span class="tag">What actually gets people in trouble</span>
+    <p>Not ignorance. <strong>The silent guess.</strong> A plug nobody can find, a hardcode inside a formula, a circular reference someone switched iterative calculation on to hide. Models get handed to clients and to committees; an error with a visible owner is a conversation, and an error nobody knew was there is a crisis. Flag everything you are unsure about, every time, and you will never be the cause of the second kind.</p>
+  </div>
+</section>
+
+<!-- ======================= 8 ======================= -->
+<section id="onebook">
+  <div class="sec-head"><span class="num">08</span><h2>One workbook or three</h2></div>
+  <p class="q">When making a project would it be a bad idea or a good idea to make a 3-statement model, DCF Model, and Valuation Model all in one.</p>
+
+  <p><strong>Good idea — and it is what a real model looks like.</strong> Practitioners do not build these as three artefacts, because they are not three analyses. They are one analysis with three outputs, chained together:</p>
+
+  <div class="formula">3-statement model  ──►  DCF  ──►  Valuation conclusion
+        │                 │              ▲
+  EBIT, D&amp;A,         UFCF, WACC,         │
+  capex, ΔNWC,       terminal value      │
+  net debt                               │
+                                         │
+  Trading comps ─── calibrate exit multiple, sanity-check WACC ─┘</div>
+
+  <p>The DCF has no independent existence: every one of its inputs is an output of the three statements. Build them separately and the DCF's assumptions have no provenance — which is the single clearest tell of a student model. A reviewer points at your 2029 capex and asks where it came from; "I assumed it" is a weak answer, and "it's the PP&amp;E schedule driven off the capex-to-revenue ratio, which I set from management's guided range here" is the answer you want to be able to give. That answer only exists if the model is integrated.</p>
+
+  <p>The comps are not decoration either. They calibrate the implied exit multiple from your terminal value (§3) and cross-check your WACC against where the market is actually discounting these businesses. Three methods that disagree is interesting; three methods you built in isolation is just three numbers.</p>
+
+  <h3>How to lay out one workbook</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Tab</th><th>Contents</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Cover</td><td>Company, as-of date, what this is, what it concludes in one line, how to navigate, colour-coding legend. First thing a reviewer opens.</td></tr>
+        <tr><td class="lbl">Sources</td><td>Every external figure, its origin, the date pulled. Cheap to keep, disproportionately persuasive.</td></tr>
+        <tr><td class="lbl">Assumptions</td><td>Every input, blue, in one place. If a forecast driver lives anywhere else, it is a bug.</td></tr>
+        <tr><td class="lbl">Historicals</td><td>As reported, untouched, with any adjustments shown as separate visible rows.</td></tr>
+        <tr><td class="lbl">Model</td><td>IS, BS, CFS stacked on one sheet, plus the four supporting schedules (debt, PP&amp;E, working capital, equity) and the balance check.</td></tr>
+        <tr><td class="lbl">DCF</td><td>UFCF build, WACC calculation, terminal value both ways (perpetuity and exit multiple), sensitivity grid on WACC × g.</td></tr>
+        <tr><td class="lbl">Comps</td><td>Trading comps with calendarised LTM and forward metrics; precedent transactions if the question warrants them.</td></tr>
+        <tr><td class="lbl">Summary</td><td>Football field — DCF range, comps range, 52-week range, analyst targets — and the output table.</td></tr>
+        <tr><td class="lbl">Open items</td><td>What you could not resolve and what you assumed instead. Include it. It reads as rigour, not weakness.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="tag">The real risk is scope, not structure</span>
+    <p>Integration is correct; <strong>trying to do all three well on your first integrated build is where this goes wrong.</strong> One finished, auditable, internally consistent model beats three half-finished ones every time — and half-finished is obvious to anyone who opens the file. If you are running out of time, finish the 3-statement model and the DCF properly. Comps are the fastest piece to bolt on afterwards, and the easiest to do badly in a hurry.</p>
+  </div>
+</section>
+
+<!-- ======================= 9 ======================= -->
+<section id="beyond">
+  <div class="sec-head"><span class="num">09</span><h2>Valuation is not just for acquisitions</h2></div>
+  <p class="q">Additionally does Valuation models only get used when looking at acquisitions.</p>
+
+  <p>No — not even close. Acquisitions are the most visible use because they make the news, but the majority of valuation work in the economy has nothing to do with a company being bought. Whenever somebody has to attach a number to a business or an asset, and that number has consequences, a valuation gets built.</p>
+
+  <div class="cols">
+    <div class="card">
+      <h4>Transactions</h4>
+      <ul style="margin-bottom:0;font-size:13.5px">
+        <li>M&amp;A, buy side and sell side</li>
+        <li>IPO pricing and pre-IPO rounds</li>
+        <li>Divestitures, carve-outs, spin-offs</li>
+        <li>Fairness opinions for boards</li>
+        <li>Venture and growth-equity rounds</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Public markets</h4>
+      <ul style="margin-bottom:0;font-size:13.5px">
+        <li>Equity research price targets</li>
+        <li>Long/short investment theses</li>
+        <li>Credit analysis — asset coverage, recovery</li>
+        <li>Activist campaigns (sum-of-the-parts)</li>
+        <li>Index and portfolio construction</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Accounting and compliance</h4>
+      <ul style="margin-bottom:0;font-size:13.5px">
+        <li>Goodwill and asset impairment testing</li>
+        <li>Purchase price allocation after a deal</li>
+        <li>409A valuations for employee options</li>
+        <li>ESOP and gift/estate tax valuation</li>
+        <li>Transfer pricing for tax authorities</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Corporate and legal</h4>
+      <ul style="margin-bottom:0;font-size:13.5px">
+        <li>Internal capital allocation, build vs buy</li>
+        <li>Buyback vs dividend decisions</li>
+        <li>Debt raises, ratings, covenant headroom</li>
+        <li>Bankruptcy: plan feasibility, fresh-start</li>
+        <li>Litigation damages, shareholder disputes, divorce</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>Two of those are worth noticing for where you are heading. <strong>Impairment and purchase price allocation</strong> are an enormous, steady industry — the Big Four and the valuation advisory firms employ thousands of people doing nothing else, and it is one of the most reliable entry points into the discipline. And <strong>transfer pricing</strong> is directly relevant to the company on your list: KO's long-running dispute with the IRS turns substantially on the valuation of intangibles and intercompany arrangements. Valuation is not a deal activity. It is the way finance converts an opinion about the future into a number that someone can be held to.</p>
+</section>
+
+<!-- ======================= 10 ======================= -->
+<section id="plan">
+  <div class="sec-head"><span class="num">10</span><h2>How many projects, and which</h2></div>
+  <p class="q">A comfortable number of projects to complete to feel comfortable, and prove that I have built my skills. Goal of at least one project a week.</p>
+
+  <p>Your one-a-week goal is right and wrong at the same time, and splitting it in two fixes everything:</p>
+
+  <div class="cols">
+    <div class="card">
+      <h4>Reps — one a week ✓</h4>
+      <p>Throwaway builds. Unseen company, timed, scored against a checklist, archived and never shown to anyone. Their only job is to make mechanics automatic. Volume is the point; polish is wasted here. <strong>One a week is exactly right.</strong></p>
+    </div>
+    <div class="card">
+      <h4>Portfolio projects — one a month</h4>
+      <p>Pieces a stranger will open and judge. Clean formatting, cited sources, a written memo, a defensible conclusion. <strong>A week is not enough</strong> — the memo and the verification alone eat days. Forcing these weekly produces four mediocre files instead of one good one.</p>
+    </div>
+  </div>
+
+  <div class="callout good">
+    <span class="tag">The number you asked for</span>
+    <p><strong>10 reps + 3 portfolio projects = 13 builds, roughly five months at a daily cadence.</strong> Three polished pieces is the right size for a resume — enough to pick from by role, few enough that each is genuinely good. Nobody opens the fourth one.</p>
+  </div>
+
+  <h3>The ladder</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Weeks</th><th>Build</th><th>Company</th><th>New thing it teaches</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl n">1–4</td><td>Reps 1–4</td><td>Fictional — I supply the financials</td><td>Full 3-statement with all four schedules, clean. Then layer in: PP&amp;E waterfall (rep 2), separate tax schedule with DTLs (rep 3), revolver cash sweep with circular interest (rep 4).</td><td>Under 2h by rep 4; balance check ties on first run</td></tr>
+        <tr><td class="lbl n">5–8</td><td>Reps 5–8</td><td>Real, deliberately simple public companies</td><td>Pulling historicals from actual 10-Ks — which is harder and slower than anyone expects. Source discipline. Reconciling your typed numbers to the filing.</td><td>Under 3h including data entry</td></tr>
+        <tr><td class="lbl n">9–10</td><td>Reps 9–10</td><td>Real, medium complexity</td><td>Bolt a DCF on top: UFCF build, WACC from primary sources, terminal value both ways, sensitivity grid.</td><td>Model + DCF in one sitting</td></tr>
+        <tr><td class="lbl n">11–14</td><td><strong>Portfolio 1</strong></td><td>A mid-cap you find genuinely interesting</td><td>The full integrated workbook of §8, plus a two-page memo. The first time you write a conclusion you have to defend.</td><td>Someone else can open it and follow it unaided</td></tr>
+        <tr><td class="lbl n">15–19</td><td><strong>Portfolio 2 — KO</strong></td><td>Coca-Cola</td><td>Everything hard at once: the volume/price-mix/currency/structural revenue build you are already templating, equity-method bottlers, refranchising, the HBC Africa transaction, FX translation, a real tax contingency.</td><td>The centrepiece. Roughly 50 hours; do not rush it</td></tr>
+        <tr><td class="lbl n">20–23</td><td><strong>Portfolio 3</strong></td><td>Chosen for the roles you are applying to</td><td>LBO with returns attribution → PE. Back-test plus reverse DCF → research or public equities. Credit model with covenant headroom → credit, DCM, restructuring. Merger model with accretion/dilution → M&amp;A advisory.</td><td>Pick this one last, once you know the jobs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Picking the simple real companies for reps 5–8</h4>
+  <p>Screen on structure, not on whether you like the brand. You want: <strong>one reportable segment; mostly domestic revenue; no equity-method investments; no non-controlling interests; plain debt</strong> (a revolver and term loans, no converts, no PIK, no securitisations); <strong>no large acquisition in the last three years</strong>; and ideally under about $5bn of revenue so the filings are readable. Restaurant chains, regional retailers, single-product consumer companies and franchisors tend to fit. Check the structure in the filing before you commit — a company that looked simple and turns out to carry three segments and a joint venture will cost you a week.</p>
+  <p>Then deliberately break one rule per rep: add the one with an equity-method stake, then the one with real FX, then the one mid-acquisition. Each complication is a mechanic you will meet again in KO.</p>
+
+  <h3>The daily cadence</h3>
+  <p>You said you want to work at this every day. Here is the shape that actually survives contact with a week, including during the portfolio phases when there is no rep to finish:</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th class="n">Minutes</th><th>Block</th><th>What</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl n">20–30</td><td>Blank-page warm-up</td><td>Rotate daily, from memory, no reference: full 3-statement structure · debt schedule with the sweep · PP&amp;E waterfall · tax schedule with DTLs · UFCF four ways · the EV bridge. This is the block that builds muscle memory, and the one easiest to skip.</td></tr>
+        <tr><td class="lbl n">60–90</td><td>The build</td><td>This week's rep, or the current portfolio project. Timed. Stop when the timer stops.</td></tr>
+        <tr><td class="lbl n">10</td><td>Findings log</td><td>Every error you made, every mechanic you had to look up. Re-read last week's log before the next build. This closes the loop you have been losing things through — the fix-the-flagged-list-and-drop-something-solid pattern from your skeleton reps.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>How you will know you are actually comfortable</h3>
+  <p>Not "I did thirteen builds." These are the tests — all seven, not most:</p>
+  <ul class="chk">
+    <li>Blank workbook to complete 3-statement skeleton, all four schedules, <strong>under 25 minutes</strong>, no reference</li>
+    <li>Balance check ties on the <strong>first</strong> run — not after debugging — on three consecutive builds</li>
+    <li>Someone points at any cell at random and you explain where the number came from and what breaks if it changes</li>
+    <li>You write out UFCF from EBIT, EBITDA, net income and CFO with correct signs, from memory, in under two minutes</li>
+    <li>You run the four-step verification sweep and find <strong>nothing</strong> — because you already caught it while building</li>
+    <li>You walk the whole model out loud in five minutes: drivers, conclusion, what would change your mind</li>
+    <li>You can name the three weakest assumptions in your own model before anybody asks</li>
+  </ul>
+  <p>That last one is the real test, and it is the one most candidates fail. A model whose author knows exactly where it is fragile reads as the work of an analyst. A model presented as correct reads as the work of a student.</p>
+
+  <div class="callout">
+    <p><strong>The drills you asked for.</strong> You wanted step-by-step drills in your own template format, starting with made-up companies and moving to real ones, plus DCF input-sourcing drills. Send me the template you want every drill to match — the one you will actually use for KO — and I will build the packs against it: blank-shell drills with graduated reveals for the 3-statement mechanics, then the same shell against real filings, plus a sourcing drill where you are handed a company and have to produce <code>R<sub>f</sub></code>, <code>β</code>, ERP, <code>R<sub>d</sub></code>, tax rate, net debt and share count with a citation and date for each. The UFCF drill in §5 works now; the rest should be built to your format rather than mine, so they transfer straight into your builds.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Answers to notes taken during CFI FMVA coursework · 7 October 2026. Figures in the worked examples are illustrative. Market-dependent inputs — equity risk premium, credit spreads, tax depreciation rules — move; look up the current value and date-stamp it in your model rather than reusing the ranges shown here.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var ROUTES = ['EBIT','EBITDA','NET INCOME','CFO'];
+  var st = {p:null, route:0, right:0, total:0, scored:false};
+
+  function ri(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function fmt(n){
+    var s = Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1});
+    return (n<0 ? '('+s+')' : s);
+  }
+
+  function gen(){
+    var ebit = ri(40,200)*10;                      // 400 - 2000
+    var da   = Math.round(ebit*(ri(10,25)/100));
+    var ebitda = ebit + da;
+    var interest = ri(2,20)*10;                    // 20 - 200
+    var t = pick([0.21,0.23,0.25,0.26,0.27,0.30]);
+    var capex = Math.round(ebitda*(ri(15,40)/100));
+    var dnwc = ri(-12,18)*10;                      // -120 .. +180
+    var ebt = ebit - interest;
+    var taxLev = ebt*t;
+    var ni = ebt - taxLev;
+    var cfo = ni + da - dnwc;
+    var ufcf = ebit*(1-t) + da - dnwc - capex;
+    return {ebit:ebit,da:da,ebitda:ebitda,interest:interest,t:t,capex:capex,
+            dnwc:dnwc,ebt:ebt,taxLev:taxLev,ni:ni,cfo:cfo,ufcf:ufcf};
+  }
+
+  var GRID = [
+    ['EBIT',        function(p){return fmt(p.ebit)}],
+    ['D&amp;A',     function(p){return fmt(p.da)}],
+    ['EBITDA',      function(p){return fmt(p.ebitda)}],
+    ['Interest exp',function(p){return fmt(p.interest)}],
+    ['Tax rate',    function(p){return (p.t*100).toFixed(0)+'%'}],
+    ['Capex',       function(p){return fmt(p.capex)}],
+    ['(Incr)/decr NWC', function(p){return fmt(-p.dnwc)}],
+    ['Net income',  function(p){return fmt(p.ni)}],
+    ['CFO',         function(p){return fmt(p.cfo)}]
+  ];
+
+  function render(){
+    var p = st.p;
+    document.getElementById('d-route').textContent = 'FROM ' + ROUTES[st.route];
+    document.getElementById('d-grid').innerHTML = GRID.map(function(r){
+      return '<div class="cell"><span class="k">'+r[0]+'</span><span class="v">'+r[1](p)+'</span></div>';
+    }).join('');
+    document.getElementById('d-input').value = '';
+    document.getElementById('d-verdict').textContent = '';
+    document.getElementById('d-verdict').className = 'verdict';
+    document.getElementById('d-sol').hidden = true;
+    score();
+  }
+
+  function score(){
+    document.getElementById('d-score').textContent = st.right+' / '+st.total+' correct';
+  }
+
+  function row(l,v){
+    var lab = (l + '                                        ').slice(0,34);
+    var val = ('            ' + v).slice(-12);
+    return lab + val;
+  }
+
+  function solution(){
+    var p = st.p, L = [];
+    var nopat = p.ebit*(1-p.t);
+    var rule = '──────────────────────────────────────────────';
+    if(st.route===0){
+      L.push('UFCF = EBIT × (1 − t) + D&A − ΔNWC − Capex');
+      L.push('');
+      L.push(row('EBIT × (1 − t)   '+fmt(p.ebit)+' × '+(1-p.t).toFixed(2), fmt(nopat)));
+      L.push(row('+ D&A', fmt(p.da)));
+      L.push(row('− ΔNWC   (NWC '+(p.dnwc>=0?'rose':'fell')+' by '+fmt(Math.abs(p.dnwc))+')', fmt(-p.dnwc)));
+      L.push(row('− Capex', fmt(-p.capex)));
+    } else if(st.route===1){
+      L.push('UFCF = EBITDA − (EBIT × t) − ΔNWC − Capex');
+      L.push('   D&A is already inside EBITDA — do NOT add it back.');
+      L.push('   But tax is still computed on EBIT, never on EBITDA.');
+      L.push('');
+      L.push(row('EBITDA', fmt(p.ebitda)));
+      L.push(row('− EBIT × t       '+fmt(p.ebit)+' × '+p.t.toFixed(2), fmt(-(p.ebit*p.t))));
+      L.push(row('− ΔNWC', fmt(-p.dnwc)));
+      L.push(row('− Capex', fmt(-p.capex)));
+    } else if(st.route===2){
+      L.push('UFCF = Net income + Interest × (1 − t) + D&A − ΔNWC − Capex');
+      L.push('   Interest is added back AFTER tax: the deduction already');
+      L.push('   cut the tax line, so adding gross interest would');
+      L.push('   double-count the shield.');
+      L.push('');
+      L.push(row('Net income', fmt(p.ni)));
+      L.push(row('+ Interest × (1 − t)   '+fmt(p.interest)+' × '+(1-p.t).toFixed(2), fmt(p.interest*(1-p.t))));
+      L.push('     ( net income + after-tax interest = EBIT × (1 − t) = '+fmt(nopat)+' )');
+      L.push(row('+ D&A', fmt(p.da)));
+      L.push(row('− ΔNWC', fmt(-p.dnwc)));
+      L.push(row('− Capex', fmt(-p.capex)));
+    } else {
+      L.push('UFCF = CFO + Interest × (1 − t) − Capex');
+      L.push('   CFO already contains D&A and ΔNWC — do not touch either again.');
+      L.push('   CFO = NI '+fmt(p.ni)+' + D&A '+fmt(p.da)+' − ΔNWC '+fmt(p.dnwc)+' = '+fmt(p.cfo));
+      L.push('');
+      L.push(row('Cash flow from operations', fmt(p.cfo)));
+      L.push(row('+ Interest × (1 − t)', fmt(p.interest*(1-p.t))));
+      L.push(row('− Capex', fmt(-p.capex)));
+    }
+    L.push(rule);
+    L.push(row('UFCF', fmt(p.ufcf)));
+    L.push('');
+    L.push('Cross-check — the levered tax of '+fmt(p.taxLev)+' on EBT of '+fmt(p.ebt));
+    L.push('never enters this build. Unlevered tax is '+fmt(p.ebit*p.t)+'. The');
+    L.push(fmt(p.interest*p.t)+' difference is the interest tax shield, and it');
+    L.push('belongs in WACC, not in the cash flows.');
+
+    var esc = L.join('\n').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    return '<h4 style="margin-top:0">Worked solution</h4><div class="formula">'+esc+'</div>';
+  }
+
+  document.getElementById('d-check').addEventListener('click', function(){
+    var raw = document.getElementById('d-input').value.replace(/[,\s$]/g,'');
+    var v = parseFloat(raw);
+    var el = document.getElementById('d-verdict');
+    if(isNaN(v)){ el.textContent = 'Enter a number.'; el.className='verdict no'; return; }
+    var ok = Math.abs(v - st.p.ufcf) <= 1.0;
+    if(!st.scored){
+      st.total++;
+      if(ok) st.right++;
+      st.scored = true;
+      score();
+    }
+    el.textContent = ok ? 'Correct — ' + fmt(st.p.ufcf) : 'Not yet. Check your signs on ΔNWC and the tax base.';
+    el.className = 'verdict ' + (ok ? 'ok' : 'no');
+    if(ok){ document.getElementById('d-sol').innerHTML = solution(); document.getElementById('d-sol').hidden = false; }
+  });
+
+  document.getElementById('d-reveal').addEventListener('click', function(){
+    if(!st.scored){ st.total++; st.scored = true; score(); }
+    document.getElementById('d-sol').innerHTML = solution();
+    document.getElementById('d-sol').hidden = false;
+  });
+
+  document.getElementById('d-new').addEventListener('click', function(){
+    st.p = gen();
+    st.route = (st.route + 1) % 4;
+    st.scored = false;
+    render();
+    document.getElementById('d-input').focus();
+  });
+
+  document.getElementById('d-input').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') document.getElementById('d-check').click();
+  });
+
+  st.p = gen();
+  render();
+})();
+</script>
