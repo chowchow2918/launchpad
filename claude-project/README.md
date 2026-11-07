@@ -27,7 +27,7 @@ Your resume changes, so the project doesn't store a resume at all. It stores an 
 - **Never delete old experience.** Mark it `[archived]`. Claude will leave it off resumes but can still use it for stories.
 - **The date stamp is the safety net:** if the inventory is more than 60 days old, Claude will ask whether anything changed.
 - **Monthly 5-minute check:** GPA, hours/metrics at current job, certifications in progress.
-- **Keep what you actually sent:** save every submitted PDF with the naming convention in `preferences.md` and record the filename in the tracker's *Resume Version* column. That way you always know which version a company saw before an interview.
+- **Keep what you actually sent:** save every submitted PDF with the naming convention in `preferences.md` and record the filename in the tracker's *Resume File* column. That way you always know which version a company saw before an interview.
 
 ## How tracking works
 Claude Projects can't edit files, so **your real tracker is `Job_Search_Tracker.xlsx` on your computer**. It has an Applications sheet (dropdowns, follow-up date that turns red when due), a Dashboard (totals, follow-ups due, counts by stage), and a How to Use sheet. The flow:
