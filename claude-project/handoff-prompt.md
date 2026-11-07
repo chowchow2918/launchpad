@@ -15,7 +15,7 @@ I'm Cole Schwochow, a finance senior at UW–Whitewater (B.B.A. Finance, GPA 3.4
 - **Projects:** my paper trading portfolio Excel workbook is fine to feature for now. Newer projects (like my FMVA models) should take priority once added.
 - Salary: $52k minimum, $68k target, no commission-dependent pay.
 - Dealbreakers: cold calling, high-pressure sales, commission-only pay, strict quotas, "advisor" roles that are really sales recruiting.
-- Location, commute, start date, and work style are decided per company (I'm based in Whitewater, WI; hybrid preferred).
+- Target locations: **Tampa, Sarasota, and the Carolinas** (relocating after graduation; don't base anything on Whitewater). Fully remote is also fine. Work style doesn't matter. Start date is decided per company.
 - US citizen, no sponsorship needed.
 - Privacy: keep my phone number and street address out of anything public.
 

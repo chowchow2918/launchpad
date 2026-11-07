@@ -21,9 +21,13 @@
 - **Industries to avoid:** [ADD or "none"]
 
 ## Location & work style
-- **Base:** Whitewater, WI
-- **Location, commute & relocation:** decided per company. Don't filter postings out on location alone. Show the location and approximate commute from Whitewater, and let me decide.
-- **Work style:** Hybrid preferred, but decided per company.
+- **Target areas (relocating after graduation):**
+  1. **Tampa**, FL (Tampa Bay area, including St. Petersburg and Clearwater)
+  2. **Sarasota**, FL (including Bradenton and Lakewood Ranch)
+  3. **The Carolinas**: North and South Carolina (e.g. Charlotte, Raleigh-Durham, Greensboro, Greenville, Charleston, Columbia)
+- **Do not** use Whitewater, WI as a base or measure commutes from it. I'm moving.
+- Roles outside these areas: skip them unless they're fully remote.
+- **Work style:** doesn't matter. In-office, hybrid, and remote are all fine. Don't filter or rank on it.
 
 ## Compensation
 - **Minimum base salary:** $52,000

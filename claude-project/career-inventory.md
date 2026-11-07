@@ -15,6 +15,8 @@
 - Email: schwochow2918@gmail.com
 - Phone: [add only to the copy you upload to Claude, kept out of the public repo]
 - Location (for resume): Whitewater, WI
+- Relocation: moving after May 2027 graduation to Tampa, Sarasota, or the Carolinas
+  [CONFIRM resume header style, e.g. "Whitewater, WI · Relocating to Tampa, FL" tailored to each job's city]
 - LinkedIn: linkedin.com/in/cole-schwochow
 - Work authorization: US citizen, no sponsorship needed
 

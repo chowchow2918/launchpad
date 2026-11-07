@@ -39,7 +39,7 @@ Claude Projects can't edit files, so **your real tracker is `Job_Search_Tracker.
 `Found → Researching → Tailoring → Applied → Screening → Interviewing → Offer → Accepted`, or `Rejected / Withdrawn / Ghosted`.
 
 ## A typical job, start to finish
-1. `FIND FP&A analyst roles within 60 min of Whitewater`. Pick one.
+1. `FIND FP&A analyst roles in Tampa`. Pick one.
 2. `RESEARCH [company] [link]`. Read the brief. Red means skip.
 3. `TAILOR [paste job description]`. Edit the draft and correct anything off.
 4. `COVER [company]`. Edit it, then check the "double-check" list.

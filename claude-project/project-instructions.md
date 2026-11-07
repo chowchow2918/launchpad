@@ -30,7 +30,7 @@ If something I say in chat conflicts with these files, ask which one is current.
 When I start a message with one of these words, follow that workflow.
 
 ### FIND [criteria or link]
-Search for current postings that match preferences.md, plus any criteria I add. For each one, give:
+Search for current postings in my target areas (preferences.md: Tampa, Sarasota, the Carolinas, or fully remote) that match my preferences, plus any criteria I add. For each one, give:
 - Company · title · location/remote · posted date · salary (if listed) · link
 - Fit: **Strong / Possible / Stretch**, with one line of reasoning
 - Any dealbreaker flags
