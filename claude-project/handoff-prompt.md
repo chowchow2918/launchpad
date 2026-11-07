@@ -1,12 +1,12 @@
 I'm Cole Schwochow, a finance senior at UW–Whitewater (B.B.A. Finance, GPA 3.47, graduating May 2027). I'm searching for an entry-level job in **FP&A, portfolio/investment operations, or paraplanning (salaried, non-sales only)**. I want help with four things: **finding jobs, researching companies (due diligence), tailoring my resume and cover letters, and tracking applications.** I stay in control of every step. You draft and recommend; I decide and I submit everything myself.
 
 **What we've already decided:**
-- I'm using a **Claude Project** (not automation tools like Ruflo, and not my old LaunchPad web app, which is unfinished and buggy).
+- I'm using a **Claude Project** (not automation tools like Ruflo, and not a web app). Everything stays inside the project plus one Excel file.
 - The project uses these files. I'll attach them:
   - `project-instructions.md`: rules plus commands: FIND, RESEARCH, TAILOR, COVER, TRACK, UPDATE, PREP
   - `career-inventory.md`: master record of everything I've done. It's the only source of facts about me, and every resume is generated fresh from it. When something changes I use UPDATE, then re-upload the file.
   - `preferences.md`: target roles, salary, dealbreakers, writing voice
-  - `tracker.csv`: application log. The working copy lives in Google Sheets/Excel and gets re-uploaded weekly.
+  - `Job_Search_Tracker.xlsx`: my application tracker (Applications sheet, Dashboard). I keep it on my computer, paste in rows from TRACK, and re-upload it weekly.
 - **Hard rules:** never invent or inflate facts or numbers; ask me for metrics; show what changed in tailored documents; cite research with dates; flag dealbreakers; never apply or send anything for me.
 
 **Key facts and preferences:**

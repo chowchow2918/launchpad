@@ -7,13 +7,13 @@ Four files make up the project:
 | `project-instructions.md` | Project → **Instructions** (paste the text) | Rules + commands (FIND, RESEARCH, TAILOR, COVER, TRACK, UPDATE, PREP) |
 | `career-inventory.md` | Project → **Knowledge** (upload) | Master record of everything you've done. The only source of facts about you |
 | `preferences.md` | Project → **Knowledge** (upload) | Targets, dealbreakers, salary, writing voice |
-| `tracker.csv` | Project → **Knowledge** (upload) *and* keep a working copy in Google Sheets/Excel | Application log |
+| `Job_Search_Tracker.xlsx` | Keep on your computer as your working tracker; upload a copy to Project → **Knowledge** weekly | Application log with dropdowns, auto follow-up dates, and a dashboard |
 
 ## Setup (about 15 minutes)
 1. Fill in the `[ADD]` / `[CONFIRM]` items in `career-inventory.md` and `preferences.md`. Metrics matter most.
 2. On claude.ai: **Projects → Create project** → name it "Job Search".
 3. Paste the part of `project-instructions.md` below the line into **Instructions**.
-4. Upload `career-inventory.md`, `preferences.md`, `tracker.csv` to **Knowledge**.
+4. Upload `career-inventory.md`, `preferences.md`, `Job_Search_Tracker.xlsx` to **Knowledge**. If .xlsx isn't accepted, open it in Excel → File → Save As → CSV and upload the CSV.
 5. Turn on **web search** in chats (needed for FIND and RESEARCH).
 6. Test it with a new chat: `RESEARCH Northwestern Mutual`.
 
@@ -30,10 +30,10 @@ Your resume changes, so the project doesn't store a resume at all. It stores an 
 - **Keep what you actually sent:** save every submitted PDF with the naming convention in `preferences.md` and record the filename in the tracker's *Resume Version* column. That way you always know which version a company saw before an interview.
 
 ## How tracking works
-Claude Projects can't edit files, so the **real tracker lives in Google Sheets or Excel** (import `tracker.csv`). The flow:
-1. `TRACK applied to Baird FP&A analyst today, used tailored resume v1`. Claude gives you a ready-to-paste row.
-2. Paste it into your sheet.
-3. About once a week, export the sheet as CSV and replace `tracker.csv` in Project Knowledge, then run `TRACK REVIEW` for follow-ups and stale entries.
+Claude Projects can't edit files, so **your real tracker is `Job_Search_Tracker.xlsx` on your computer**. It has an Applications sheet (dropdowns, follow-up date that turns red when due), a Dashboard (totals, follow-ups due, counts by stage), and a How to Use sheet. The flow:
+1. `TRACK applied to Baird FP&A analyst today`. Claude gives you a ready-to-paste row.
+2. Click the first empty cell in column A of the Applications sheet and paste. It fills across.
+3. About once a week, replace the tracker in Project Knowledge with your current file, then run `TRACK REVIEW` for follow-ups and stale entries.
 
 **Stage values** (keep them consistent so reviews work):
 `Found → Researching → Tailoring → Applied → Screening → Interviewing → Offer → Accepted`, or `Rejected / Withdrawn / Ghosted`.

@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-11-07
 
-> Pre-filled from my LaunchPad settings. Items marked **[CONFIRM]** need a check.
+> Items marked **[CONFIRM]** or **[ADD]** are optional to fill in.
 
 ## What I'm looking for
 - **Level:** Entry level / new grad, plus internships [CONFIRM: internships too?]
