@@ -13,7 +13,7 @@
 ## Contact
 - Name: Cole Schwochow
 - Email: schwochow2918@gmail.com
-- Phone: (419) 603-9486
+- Phone: [add only to the copy you upload to Claude, kept out of the public repo]
 - Location (for resume): Whitewater, WI
 - LinkedIn: linkedin.com/in/cole-schwochow
 - Work authorization: US citizen, no sponsorship needed
