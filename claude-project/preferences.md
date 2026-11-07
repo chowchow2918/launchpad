@@ -7,7 +7,7 @@
 ## What I'm looking for
 - **Level:** Entry level / new grad, plus internships [CONFIRM: internships too?]
 - **Graduation:** May 2027 (B.B.A. Finance, UW–Whitewater)
-- **Start date:** [CONFIRM: full-time starting ~June 2027? Open to part-time or internship before then?]
+- **Start date:** decided per company. Graduating May 2027; ask me if a posting's start date seems off
 - **Work authorization:** US citizen, no sponsorship needed
 - **Target roles (priority order, from 10-2026 resume headline):**
   1. FP&A Analyst / Financial Analyst
@@ -15,16 +15,15 @@
   3. Paraplanner / Associate Financial Planner (**salaried, non-sales only**)
   4. Still interested? [CONFIRM] Financial Examiner (state/federal regulators, e.g. WI DFI, FDIC, OCC)
   5. Other open-to roles: [ADD, e.g. credit analyst, treasury analyst, portfolio analyst]
-- **Credentials to lean on:** FINRA SIE (passed Aug 2026), FMVA (completed), WI Life & Health license
+- **Credentials to lean on:** FINRA SIE (passed Aug 2026), FMVA (completed Nov 2026), WI Life & Health license
 - **Don't emphasize:** the Northwestern Mutual internship (keep it brief; never the centerpiece)
 - **Industries of interest:** [ADD, e.g. banking, insurance, asset management, corporate finance in any industry]
 - **Industries to avoid:** [ADD or "none"]
 
 ## Location & work style
 - **Base:** Whitewater, WI
-- **Open to:** [CONFIRM: Madison, Milwaukee, Janesville, Chicago? Willing to relocate? Where?]
-- **Commute limit:** [ADD, e.g. 45 minutes]
-- **Work style:** Hybrid preferred · [CONFIRM: OK with fully in-office? Remote?]
+- **Location, commute & relocation:** decided per company. Don't filter postings out on location alone. Show the location and approximate commute from Whitewater, and let me decide.
+- **Work style:** Hybrid preferred, but decided per company.
 
 ## Compensation
 - **Minimum base salary:** $52,000

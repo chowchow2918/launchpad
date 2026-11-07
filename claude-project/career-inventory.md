@@ -1,7 +1,7 @@
 # Career Inventory — Cole Schwochow
 
 **Last updated:** 2026-11-07
-**Version:** 3
+**Version:** 4
 
 > This is my master record, not a resume. It holds **everything**, including
 > things that won't fit on one page, so Claude can pick the best parts for each
@@ -33,7 +33,7 @@ supports data-informed decision-making.
 ## Education
 ### University of Wisconsin–Whitewater | Whitewater, WI | 2025 – Present
 - Bachelor of Business Administration, Finance, expected May 2027
-- GPA: 3.468 (as of LaunchPad profile) [CONFIRM: current GPA, and whether to show it. It's left off the 10-2026 resume]
+- GPA: 3.47
 - Member, UW–Whitewater Baseball Team
 - Relevant coursework: Corporate Finance, Investments, Financial Modeling, Accounting
 
@@ -50,7 +50,7 @@ supports data-informed decision-making.
 | Name | Status | Date | Notes |
 |---|---|---|---|
 | FINRA Securities Industry Essentials (SIE) | Passed | Aug 2026 | Self-studied, no employer sponsorship. A strong differentiator, so lead with it for wealth/portfolio roles |
-| Financial Modeling & Valuation Analyst (FMVA), Corporate Finance Institute | Completed | [ADD month, Oct/Nov 2026] | Lead with it for FP&A and analyst roles |
+| Financial Modeling & Valuation Analyst (FMVA), Corporate Finance Institute | Completed | Nov 2026 | Lead with it for FP&A and analyst roles |
 | Life & Health Insurance License, State of Wisconsin | Active | 2026 | Open to licensure in additional states |
 | LTC & Annuity Sales Training, Northwestern Mutual | Completed | 2026 | |
 
@@ -129,6 +129,7 @@ One page. No photo. No "References available upon request."
 ## Changelog
 | Date | Change |
 |---|---|
+| 2026-11-07 | v4: UW–Whitewater GPA 3.47; FMVA completed Nov 2026; phone kept out of repo copy |
 | 2026-11-07 | v3: added contact/work auth/coursework; FMVA completed; trimmed licenses to actual held credentials; NM internship set to low-key (2 bullets max); project priority rule |
 | 2026-11-07 | v2: updated from Cole_Schwochow_Resume_10-2026.docx. Added SIE, FMVA, B.B.A. + May 2027 grad, Finance Minor + Investment Club at LEC, corrected NM dates to May–Jul 2026, project dates to 2025–Mar 2026, new headline and summary, resume layout |
 | 2026-11-07 | v1: created from LaunchPad resume |
